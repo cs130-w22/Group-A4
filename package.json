@@ -1,0 +1,19 @@
+{
+  "name": "group-a4",
+  "version": "1.0.0",
+  "description": "[![Build Status](https://travis-ci.org/cs130-w21/template.svg?branch=master)](https://travis-ci.org/cs130-w21/template)\r [![Release](https://img.shields.io/github/v/release/cs130-w21/template?label=release)](https://github.com/cs130-w21/template/releases/latest)",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cs130-w22/Group-A4.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/cs130-w22/Group-A4/issues"
+  },
+  "homepage": "https://github.com/cs130-w22/Group-A4#readme"
+}
