@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/cs130-w22/Group-A4/issues"
   },
-  "homepage": "https://github.com/cs130-w22/Group-A4#readme"
+  "homepage": "https://github.com/cs130-w22/Group-A4#readme",
+  "dependencies": {
+    "vue-browser-geolocation": "^1.8.0"
+  }
 }
