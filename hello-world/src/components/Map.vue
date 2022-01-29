@@ -1,14 +1,26 @@
 <template>
     <div>
-        <h1>Your coordinates:</h1>
-        <p>{{ coordinates.lat }} Latitude, {{coordinates.lng }} Longtitude </p>
-        <gmap-map
-        :center="{lat:10, lng:10}"
-        :zoom="7"
-        map-type-id="terrain"
-        style="width: 500px; height: 300px"
+        <img src="https://dewey.tailorbrands.com/production/brand_version_mockup_image/489/6731495489_3b8557d8-c0d8-47fc-9342-25855ec3a96d.png?cb=1643487708" alt="">
+        <div style="max-width: 800px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between">
+            <div>
+                <h2>Your coordinates:</h2>
+                <p>{{ userCoordinates.lat }} Latitude, {{ userCoordinates.lng }} Longtitude </p>
+            </div>
+
+            <div>
+                <h2>Map coordinates:</h2>
+                <p>{{ mapCoordinates.lat }} Latitude, {{ mapCoordinates.lng }} Longtitude </p>
+            </div>       
+        </div>
+    
+    
+        <GmapMap
+            :center="userCoordinates"
+            :zoom="zoom"
+            style="width: 80%; height: 400px; margin: 32px auto;"
+            ref="mapRef"
         >
-        </gmap-map>>
+        </GmapMap>
             
     </div>
 </template>
@@ -18,18 +30,39 @@ export default {
     name: 'GoogleMap',
     data() {
         return {
-            coordinates: {
+            map: null,
+            userCoordinates: {
                 lat : 0,
                 lng : 0
-            }
+            },
+            zoom: 8
         }
     },
 
     created(){
         this.$getLocation({})
             .then(coordinates=>{
-                this.coordinates = coordinates;
-            }).catch(error => alert(error));
+                this.userCoordinates = coordinates;
+            }).catch(error => alert(error)); // users do not grant permission of the location
+    },
+
+    mounted(){
+        this.$refs.mapRef.$mapPromise.then(map => this.map = map);
+    },
+
+    computed: {
+        mapCoordinates(){ 
+            if (!this.map) { // google map not inited 
+                return {
+                    lat : 0,
+                    lnt : 0 
+                }
+            }
+            return {
+                lat : this.map.getCenter().lat(),
+                lng : this.map.getCenter().lng()
+            }
+        }
     }
 }
 </script>
