@@ -2,7 +2,7 @@
 
 ## Project setup
 ```
-pip install django==4.0.1
+pip install -r requirements.txt
 ```
 
 ## Run Project
