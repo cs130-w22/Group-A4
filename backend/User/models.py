@@ -18,7 +18,7 @@ class UserProfile(models.Model):
         """
         return user's name
         """
-        return str(self.user)
+        return str(self.user) + "-profile"
 
 @receiver(post_save, sender=User)
 def create_uesr_profile(sender, instance, created, **kwargs):

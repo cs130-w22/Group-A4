@@ -3,7 +3,7 @@ from django.http import HttpResponse
 
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from rest_framework import generics, permissions
+from rest_framework import generics, permissions, mixins
 
 from .serializers import UserProfileSerializer
 from .models import UserProfile
@@ -17,10 +17,22 @@ class UserList(generics.ListAPIView):
     queryset = UserProfile.objects.all()
     serializer_class = UserProfileSerializer
 
-class UserDetail(generics.RetrieveUpdateDestroyAPIView):
+class UserDetail(generics.RetrieveAPIView):
     queryset = UserProfile.objects.all()
     serializer_class = UserProfileSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
+
+class UserUpdate(generics.GenericAPIView, mixins.UpdateModelMixin):
+    queryset = UserProfile.objects.all()
+    serializer_class = UserProfileSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
+
+    def patch(self, request, *args, **kwargs):
+        return self.partial_update(request, *args, **kwargs)
+
+    def get(self, request, *args, **kwargs):
+        return self.partial_update(request, *args, **kwargs)
+
 
 class UserDelete(generics.DestroyAPIView):
     queryset = UserProfile.objects.all()
@@ -28,7 +40,18 @@ class UserDelete(generics.DestroyAPIView):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
 
 
-
+"""
+Types of generic class based views: 
+CreateAPIView
+ListAPIView
+RetrieveAPIView
+DestroyAPIView
+UpdateAPIView
+ListCreateAPIView
+RetrieveUpdateAPIView
+RetrieveDestroyAPIView
+RetrieveUpdateDestroyAPIView
+"""
 
 # User CRUD (function based views, DEPRICATED!)
 @api_view(['GET'])
