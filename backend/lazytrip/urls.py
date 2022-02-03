@@ -21,5 +21,8 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.home, name='homepage'),
     path('', include('User.urls')),
-    path('', include('allauth.urls')),
+    path('allauth/', include('allauth.urls')),
+    # rest-auth
+    path('', include('dj_rest_auth.urls')),
+    path('registration/', include('dj_rest_auth.registration.urls')),
 ]

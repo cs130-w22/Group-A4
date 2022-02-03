@@ -11,3 +11,14 @@ pip install -r requirements.txt
 python manage.py runserver
 ```
 
+## REST APIs
+```
+# Login (POST)
+http://localhost:8000/auth/login/
+
+# Signup (POST)
+http://localhost:8000/auth/registration/
+
+# Logout
+
+```

@@ -17,4 +17,5 @@ class IsOwnerOrReadOnly(permissions.BasePermission):
             return True
 
         # Write permissions are only allowed to the User itself
+        print("Permission Check: ", obj.user == request.user)
         return obj.user == request.user

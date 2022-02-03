@@ -37,20 +37,25 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    # for Google OAuth (django-allauth)
+    # for Google OAuth (django-allauth, dj_rest_auth)
     'django.contrib.sites',
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
+    'dj_rest_auth',
+    'dj_rest_auth.registration',
     # for REST API
     'rest_framework',
+    'rest_framework.authtoken',
     # django apps for the project
     'User',
 ]
 
 # for Google OAuth (django-allauth)
 SITE_ID = 1
+# redirect confirmation email to CONSOLE, could've set up a email service provider to sent to user
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 AUTHENTICATION_BACKENDS = [
     # Needed to login by username in Django admin, regardless of `allauth`
@@ -59,6 +64,13 @@ AUTHENTICATION_BACKENDS = [
     # `allauth` specific authentication methods, such as login by e-mail
     'allauth.account.auth_backends.AuthenticationBackend',
 ]
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        # for Token authentication
+        'rest_framework.authentication.TokenAuthentication',
+    ]
+}
 
 # Google Auth / Registration Settings
 LOGIN_REDIRECT_URL = "/"                            # the url that redirects after user logged in
