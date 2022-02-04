@@ -14,7 +14,7 @@ jobs:
       - name: Set Up Python $
         uses: actions/setup-python@v2
         with:
-          python-version: $
+          python-version: 3.x
       - name: CD Into Backend
         run: cd backend
       - name: Install Dependencies
