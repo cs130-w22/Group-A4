@@ -1,5 +1,5 @@
 # LazyTrip Backend
-[![<your-github-actions-name>](https://github.com/<your-user-name>/<your-project-name>/actions/workflows/django-ci.yml/badge.svg)](https://github.com/cs130-w22/Group-A4/actions/workflows/django-ci.yml)
+[![Github CI](https://github.com/cs130-w22/Group-A4/actions/workflows/django-ci.yml/badge.svg)](https://github.com/cs130-w22/Group-A4/actions/workflows/django-ci.yml)
 
 ## Project setup
 ```

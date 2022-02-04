@@ -1,5 +1,6 @@
 # Repository Template
 
+[![Github CI](https://github.com/cs130-w22/Group-A4/actions/workflows/django-ci.yml/badge.svg)](https://github.com/cs130-w22/Group-A4/actions/workflows/django-ci.yml)
 [![Build Status](https://travis-ci.org/cs130-w21/template.svg?branch=master)](https://travis-ci.org/cs130-w21/template)
 [![Release](https://img.shields.io/github/v/release/cs130-w21/template?label=release)](https://github.com/cs130-w21/template/releases/latest)
 
