@@ -1,4 +1,4 @@
-name: LazyTrip Django CI
+name: LazyTrip CI
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
       - backend-dev
     
 jobs:
-  test:
+  django-test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
