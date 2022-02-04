@@ -1,0 +1,27 @@
+name: LazyTrip Django CI
+
+on:
+  push:
+    branches:
+      - main
+      - backend-dev
+    
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set Up Python $
+        uses: actions/setup-python@v2
+        with:
+          python-version: $
+      - name: CD Into Backend
+        run: cd backend
+      - name: Install Dependencies
+        run:  |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+      - name: Run Migrations
+        run: python manage.py migrate
+      - name: Run Tests
+        run: python manage.py test
