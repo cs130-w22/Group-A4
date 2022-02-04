@@ -7,7 +7,7 @@ from rest_framework import generics, permissions, mixins
 
 from .serializers import UserProfileSerializer
 from .models import UserProfile
-from .permissions import IsOwnerOrReadOnly
+from .permissions import IsOwnerOrReadOnly, IsAdmin, IsOwnerOrAdmin
 
 # User CRUD (generic class based views)
 class UserList(generics.ListAPIView):
@@ -16,16 +16,17 @@ class UserList(generics.ListAPIView):
     """
     queryset = UserProfile.objects.all()
     serializer_class = UserProfileSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsAdmin]
 
 class UserDetail(generics.RetrieveAPIView):
     queryset = UserProfile.objects.all()
     serializer_class = UserProfileSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsOwnerOrAdmin]
 
 class UserUpdate(generics.GenericAPIView, mixins.UpdateModelMixin):
     queryset = UserProfile.objects.all()
     serializer_class = UserProfileSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsOwnerOrAdmin]
 
     def patch(self, request, *args, **kwargs):
         return self.partial_update(request, *args, **kwargs)
@@ -37,7 +38,7 @@ class UserUpdate(generics.GenericAPIView, mixins.UpdateModelMixin):
 class UserDelete(generics.DestroyAPIView):
     queryset = UserProfile.objects.all()
     serializer_class = UserProfileSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsOwnerOrAdmin]
 
 
 """

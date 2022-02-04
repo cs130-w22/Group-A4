@@ -20,7 +20,7 @@ from . import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.home, name='homepage'),
-    path('', include('User.urls')),
+    path('user/', include('User.urls')),
     path('allauth/', include('allauth.urls')),
     # rest-auth
     path('', include('dj_rest_auth.urls')),
