@@ -16,13 +16,20 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from . import views
+from User.views import GoogleLogin
+from allauth.socialaccount.providers.google import views as google_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.home, name='homepage'),
     path('user/', include('User.urls')),
-    path('allauth/', include('allauth.urls')),
+    path('trip/', include('Trip.urls')),
     # rest-auth
     path('', include('dj_rest_auth.urls')),
     path('registration/', include('dj_rest_auth.registration.urls')),
+    # user registration/login using backend template (depreciated)
+    # path('auth/', include('allauth.urls')),
+    path('auth/google/', GoogleLogin.as_view(), name='google_login'),
+    path('auth/google/callback/', GoogleLogin.google_callback, name='google_callback'),
+    path('auth/google/url/', google_views.oauth2_login)
 ]
