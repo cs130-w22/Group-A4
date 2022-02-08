@@ -8,17 +8,16 @@ pip install -r requirements.txt
 
 ## Run Project
 ```
-# server listening on port 8080 by default
+# django setup
+python manage.py makemigrations
+python manage.py migrate
+# run server listening on port 8000 by default
 python manage.py runserver
 ```
 
-## REST APIs
+## TODO: REST APIs
 ```
 # Login (POST)
-http://localhost:8000/auth/login/
-
-# Signup (POST)
-http://localhost:8000/auth/registration/
 
 # Logout
 
