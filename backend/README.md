@@ -16,6 +16,7 @@ python manage.py runserver
 ```
 
 ## REST API: Login using Google OAuth Examples
+[Google Developer Console: Setting Redirect URIs](https://console.developers.google.com/apis/credentials/oauthclient/113665789634-ouu64vjjn7mnj0slrmtmm5e5gauu17o7.apps.googleusercontent.com?project=core-song-339901)
 ```
 """
 Example: Login Using Google
