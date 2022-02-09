@@ -37,7 +37,47 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    # for Google OAuth (django-allauth, dj_rest_auth)
+    'django.contrib.sites',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.google',
+    'dj_rest_auth',
+    'dj_rest_auth.registration',
+    # for REST API
+    'rest_framework',
+    'rest_framework.authtoken',
+    # django apps for the project
+    'User',
+    'Trip',
 ]
+
+# for Google OAuth (django-allauth)
+SITE_ID = 1
+# redirect confirmation email to CONSOLE, could've set up a email service provider to sent to user
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+AUTHENTICATION_BACKENDS = [
+    # Needed to login by username in Django admin, regardless of `allauth`
+    'django.contrib.auth.backends.ModelBackend',
+
+    # `allauth` specific authentication methods, such as login by e-mail
+    'allauth.account.auth_backends.AuthenticationBackend',
+]
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        # for Token authentication
+        'rest_framework.authentication.TokenAuthentication',
+    ]
+}
+
+# Google Auth / Registration Settings
+LOGIN_REDIRECT_URL = "/"                            # the url that redirects after user logged in
+ACCOUNT_AUTHENTICATION_METHOD = "username_email"    # login using either email/username
+ACCOUNT_PRESERVE_USERNAME_CASING = False            # user name case-insensitive
+ACCOUNT_USERNAME_BLACKLIST = ["admin"]              # blacklist of username when registering
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

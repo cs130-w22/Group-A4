@@ -1,0 +1,101 @@
+
+### SAMPLE TOKEN FOR TESTING
+### User/2: 2416649de62a3db2ef3e4ad0dde44b747ef305bb
+### Admin: 43b6d7f9e6eb57f22c866503d44cc78c50b07e3b
+
+### https://dj-rest-auth.readthedocs.io/en/latest/api_endpoints.html
+### REST API Registration Test
+### Register using below info, will return token key
+POST http://127.0.0.1:8000/registration/ HTTP/1.1
+Content-Type: application/json
+
+{
+    "username": "test-ppnk-api-3",
+    "password1": "iamtestpwd123",
+    "password2": "iamtestpwd123",
+    "email": "test-api-registration-3@test.com"
+}
+
+
+### REST API Login Test 1
+### Login using below username & password, will return token key
+POST http://127.0.0.1:8000/login/ HTTP/1.1
+Content-Type: application/json
+
+{
+    "username": "test-ppnk-api-2",
+    "password": "iamtestpwd123"
+}
+
+### REST API Login Test 2
+POST http://127.0.0.1:8000/login/ HTTP/1.1
+Content-Type: application/json
+
+{
+    "username": "admin",
+    "password": "123123"
+}
+
+
+### REST API Login Test 3
+POST http://127.0.0.1:8000/login/ HTTP/1.1
+Content-Type: application/json
+
+{
+    "username": "test-ppnk1",
+    "password": "nickpipi19981122"
+}
+
+### REST API Logout Test 1
+### (Don't use GET on logout, use POST)
+### logout is an illusion when using REST API, 
+### REST API authenticate with token on every request anyways.
+POST http://127.0.0.1:8000/logout/ HTTP/1.1
+Content-Type: application/json
+
+
+### REST API Update User Test 1
+### Update user_id==1 with age=10
+PATCH http://127.0.0.1:8000/user/update/2 HTTP/1.1
+Content-Type: application/json
+Authorization: Token 2416649de62a3db2ef3e4ad0dde44b747ef305bb
+
+{
+    "age": 23
+}
+
+### REST API Password Reset Test 1
+### Reset Password
+POST http://127.0.0.1:8000/password/reset/ HTTP/1.1
+Content-Type: application/json
+# Authorization: Token 2416649de62a3db2ef3e4ad0dde44b747ef305bb
+
+{
+    "email": "test-api-registration@test.com"
+}
+
+
+### REST API Password Reset Confirmation Test 1
+### Reset Password
+POST http://127.0.0.1:8000/password/reset/ HTTP/1.1
+Content-Type: application/json
+Authorization: Token 2416649de62a3db2ef3e4ad0dde44b747ef305bb
+
+{
+    "token": "2416649de62a3db2ef3e4ad0dde44b747ef305bb",
+    "email": "test-api-registration@test.com",
+    "new_password1": "iamtestpwd123",
+    "new_password2": "iamtestpwd123"
+}
+
+
+### REST API List All Users Test 1
+GET http://127.0.0.1:8000/user HTTP/1.1
+Content-Type: application/json
+Authorization: Token 43b6d7f9e6eb57f22c866503d44cc78c50b07e3b
+
+### REST API Check Profile Test 1
+GET http://127.0.0.1:8000/user/4 HTTP/1.1
+Content-Type: application/json
+Authorization: Token 2416649de62a3db2ef3e4ad0dde44b747ef305bb
+
