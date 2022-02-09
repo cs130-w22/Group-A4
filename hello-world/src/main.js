@@ -2,6 +2,10 @@ import Vue from 'vue'
 import App from './App.vue'
 import VueGeolocation from 'vue-browser-geolocation'
 
+
+import GSignInButton from 'vue-google-signin-button'
+Vue.use(GSignInButton)
+
 Vue.config.productionTip = false
 Vue.use(VueGeolocation)
 
@@ -12,6 +16,8 @@ Vue.use(VueGoogleMaps, {
     key: 'AIzaSyCrt7b1kPOg4J7ayO6IgIJfy6R_9vp5Rlw'
   }
 })
+
+
 
 new Vue({
   vuetify,

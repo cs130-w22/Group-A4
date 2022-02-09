@@ -17,7 +17,9 @@
   },
   "homepage": "https://github.com/cs130-w22/Group-A4#readme",
   "dependencies": {
+    "axios": "^0.25.0",
     "vue-browser-geolocation": "^1.8.0",
+    "vue-google-signin-button": "^1.0.4",
     "vue2-google-maps": "^0.10.7"
   }
 }
