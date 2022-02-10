@@ -53,16 +53,6 @@ class GoogleLogin(SocialLoginView):
     # callback_url = "http://localhost:8000/allauth/google/login/callback/"
     client_class = OAuth2Client
 
-    @property
-    def callback_url(self):
-        # use the same callback url as defined in your Google developer console, this url
-        # must be absolute:
-        return self.request.build_absolute_uri(reverse('google_callback'))
-
-    def google_callback(request):
-        params = urllib.parse.urlencode(request.GET)
-        FRONTEND_URL = "http://localhost:8000"
-        return redirect(f'{FRONTEND_URL}/auth/google?{params}')
 """
 Types of generic class based views: 
 CreateAPIView

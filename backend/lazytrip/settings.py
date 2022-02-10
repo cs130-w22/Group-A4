@@ -71,9 +71,14 @@ AUTHENTICATION_BACKENDS = [
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         # for Token authentication
-        'rest_framework.authentication.TokenAuthentication',
+        # 'rest_framework.authentication.TokenAuthentication',
+        'dj_rest_auth.jwt_auth.JWTCookieAuthentication',
     ]
 }
+# User JWT (JSON Web Token)
+REST_USE_JWT = True
+JWT_AUTH_COOKIE = 'LazyTrip-auth'
+JWT_AUTH_REFRESH_COOKIE = 'LazyTrip-refresh-token'
 
 # Google Auth / Registration Settings
 LOGIN_REDIRECT_URL = "/"                            # the url that redirects after user logged in

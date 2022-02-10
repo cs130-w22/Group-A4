@@ -30,6 +30,4 @@ urlpatterns = [
     # user registration/login using backend template (depreciated)
     # path('auth/', include('allauth.urls')),
     path('auth/google/', GoogleLogin.as_view(), name='google_login'),
-    path('auth/google/callback/', GoogleLogin.google_callback, name='google_callback'),
-    path('auth/google/url/', google_views.oauth2_login)
 ]

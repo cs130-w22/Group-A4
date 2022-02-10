@@ -101,7 +101,7 @@ export default {
   data: () => ({
     links: ["Map", "Profile", "Schedule"],
     googleSignInParams: {
-      client_id: '600729137370-h25svjos6nbofm48mmtacd3hjq6ogu95.apps.googleusercontent.com'
+      client_id: '113665789634-ouu64vjjn7mnj0slrmtmm5e5gauu17o7.apps.googleusercontent.com'
     },
     user: {},
 
@@ -117,6 +117,7 @@ export default {
       })
         .then(resp => {
           this.user = resp.data.user
+          console.log(this.user)
         })
         .catch(err => {
           console.log(err.response)
