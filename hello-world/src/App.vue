@@ -44,16 +44,13 @@
         </v-tab>
       </v-tabs>
 
-
       <g-signin-button
         v-if="isEmpty(user)"
         :params="googleSignInParams"
         @success="onGoogleSignInSuccess"
         @error="onGoogleSignInError"
       >
-        <button class="btn btn-block btn-success">
-          Google Signin
-        </button>
+        <v-btn dark> Sign in </v-btn>
       </g-signin-button>
       <user-panel v-else :user="user"></user-panel>
     </v-app-bar>
@@ -81,12 +78,11 @@
 </template>
 
 <script>
-import axios from 'axios'
-
+import axios from "axios";
 
 import Map from "./components/Map";
 import Stepper from "./components/Stepper";
-import UserPanel from './components/UserPanel.vue'
+import UserPanel from "./components/UserPanel.vue";
 // import Form from "./components/Form";
 
 export default {
@@ -95,39 +91,41 @@ export default {
   components: {
     Map,
     Stepper,
-    UserPanel
+    UserPanel,
   },
 
   data: () => ({
     links: ["Map", "Profile", "Schedule"],
     googleSignInParams: {
-      client_id: '113665789634-ouu64vjjn7mnj0slrmtmm5e5gauu17o7.apps.googleusercontent.com'
+      client_id:
+        "113665789634-ouu64vjjn7mnj0slrmtmm5e5gauu17o7.apps.googleusercontent.com",
     },
     user: {},
-
   }),
 
   methods: {
-    onGoogleSignInSuccess (resp) {
-      console.log(resp)
-
-      const token = resp.wc.access_token
-      axios.post('http://localhost:8000/auth/google/', {
-        access_token: token
-      })
-        .then(resp => {
-          this.user = resp.data.user
-          console.log(this.user)
+    onGoogleSignInSuccess(resp) {
+      // console.log(resp)
+      const token = resp.wc.access_token;
+      axios
+        .post("http://localhost:8000/auth/google/", {
+          access_token: token,
         })
-        .catch(err => {
-          console.log(err.response)
+        .then((resp) => {
+          this.user = resp.data.user;
+          console.log(this.user);
         })
+        .catch((err) => {
+          console.log(err.response);
+        });
     },
-    onGoogleSignInError (error) {
-      console.log('OH NOES', error)
+    onGoogleSignInError(error) {
+      console.log("OH NOES", error);
     },
-    isEmpty (obj) {
-      return Object.keys(obj).length === 0
-    }
-  }};
+    isEmpty(obj) {
+      console.log(obj);
+      return Object.keys(obj).length === 0;
+    },
+  },
+};
 </script>

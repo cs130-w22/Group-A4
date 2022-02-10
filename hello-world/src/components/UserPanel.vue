@@ -1,43 +1,21 @@
 <template>
-  <div class="panel">
-    <div class="panel-header text-center">
-      <figure class="avatar avatar-lg">
-        <img :src="user.photo" alt="Avatar">
-      </figure>
-      <div class="panel-title h5 mt-10">{{ user.first_name }} {{ user.last_name }}</div>
-      <div class="panel-subtitle">{{ user.username }}</div>
-    </div>
-    <nav class="panel-nav">
-      <ul class="tab tab-block">
-        <li class="tab-item active">
-          <a>Profile</a>
-        </li>
-      </ul>
-    </nav>
-    <div class="panel-body">
-      <div class="tile tile-centered">
-        <div class="tile-content">
-          <div class="tile-title">E-mail</div>
-          <div class="tile-subtitle">{{ user.email }}</div>
-        </div>
+  <!-- <div class="panel"> -->
+  <!-- <div class="panel-header text-center"> -->
+
+  <v-avatar class="grey darken-3" size="50">
+    <span class="white--text"> {{ user.username }} </span>
+  </v-avatar>
+  <!-- <v-avatar color="teal" size="40">} </v-avatar> -->
+  <!-- <div class="panel-title h5 mt-10">
+        {{ user.first_name }} {{ user.last_name }}
       </div>
     </div>
-  </div>
+  </div> -->
 </template>
-
-      <!-- <v-avatar
-      
-        class="hidden-sm-and-down"
-        color="grey darken-1 shrink"
-        size="32"
-      >
-       
-          
-      </v-avatar> -->
 
 <script>
 export default {
-  name: 'UserPanel',
-  props: ['user']
-}
+  name: "UserPanel",
+  props: ["user"],
+};
 </script>
