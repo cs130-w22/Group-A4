@@ -25,13 +25,35 @@
       </div>
     </div>
 
-    <GmapMap
-      :center="userCoordinates"
-      :zoom="zoom"
-      style="width: 80%; height: 400px; margin: 32px auto"
-      ref="mapRef"
-    >
-    </GmapMap>
+    <v-card class="pa-4" flat style="position: relative">
+      <GmapMap
+        :center="userCoordinates"
+        :zoom="zoom"
+        style="width: 100%; height: 400px; margin: 32px auto"
+        ref="mapRef"
+      >
+      </GmapMap>
+
+      <v-toolbar
+        dense
+        floating
+        style="position: absolute; top: 60px; left: 30%; z-index: 99"
+      >
+        <v-text-field
+          hide-details
+          prepend-icon="mdi-magnify"
+          single-line
+        ></v-text-field>
+
+        <v-btn icon>
+          <v-icon>mdi-crosshairs-gps</v-icon>
+        </v-btn>
+
+        <v-btn icon>
+          <v-icon>mdi-dots-vertical</v-icon>
+        </v-btn>
+      </v-toolbar>
+    </v-card>
   </div>
 </template>
 
