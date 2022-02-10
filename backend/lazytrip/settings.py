@@ -37,11 +37,59 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    # for Google OAuth (django-allauth, dj_rest_auth)
+    'django.contrib.sites',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.google',
+    'dj_rest_auth',
+    'dj_rest_auth.registration',
+    # for REST API
+    'rest_framework',
+    'rest_framework.authtoken',
+    # CORS
+    'corsheaders',
+    # django apps for the project
+    'User',
+    'Trip',
 ]
+
+# for Google OAuth (django-allauth)
+SITE_ID = 1
+# redirect confirmation email to CONSOLE, could've set up a email service provider to sent to user
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+AUTHENTICATION_BACKENDS = [
+    # Needed to login by username in Django admin, regardless of `allauth`
+    'django.contrib.auth.backends.ModelBackend',
+
+    # `allauth` specific authentication methods, such as login by e-mail
+    'allauth.account.auth_backends.AuthenticationBackend',
+]
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        # for Token authentication
+        # 'rest_framework.authentication.TokenAuthentication',
+        'dj_rest_auth.jwt_auth.JWTCookieAuthentication',
+    ]
+}
+# User JWT (JSON Web Token)
+REST_USE_JWT = True
+JWT_AUTH_COOKIE = 'LazyTrip-auth'
+JWT_AUTH_REFRESH_COOKIE = 'LazyTrip-refresh-token'
+
+# Google Auth / Registration Settings
+LOGIN_REDIRECT_URL = "/"                            # the url that redirects after user logged in
+ACCOUNT_AUTHENTICATION_METHOD = "username_email"    # login using either email/username
+ACCOUNT_PRESERVE_USERNAME_CASING = False            # user name case-insensitive
+ACCOUNT_USERNAME_BLACKLIST = ["admin"]              # blacklist of username when registering
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -121,3 +169,5 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+CORS_ORIGIN_ALLOW_ALL = True
