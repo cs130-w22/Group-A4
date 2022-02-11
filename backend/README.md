@@ -1,7 +1,21 @@
-# LazyTrip Backend
+# LazyTrip Backend API & Doc
+
+## **Table of Content**
+- [LazyTrip Backend API & Doc](#lazytrip-backend-api--doc)
+  - [**Table of Content**](#table-of-content)
+  - [**Project Setup**](#project-setup)
+  - [**Run Project**](#run-project)
+  - [**Login/Signup**](#loginsignup)
+    - [1. Google OAuth Examples](#1-google-oauth-examples)
+    - [2. Local Authentication System](#2-local-authentication-system)
+  - [**Logout**](#logout)
+  - [***CRUD* User Profile**](#crud-user-profile)
+    - [1. As regular user](#1-as-regular-user)
+    - [2. As admin (superuser)](#2-as-admin-superuser)
+  - [TODO: ***CRUD* Itinerary**](#todo-crud-itinerary)
 
 
-## **Project setup**
+## **Project Setup**
 ```bash
 # install pip file
 pip install -r requirements.txt
@@ -16,7 +30,6 @@ python manage.py migrate
 python manage.py runserver
 ```
 
-# Backend REST API Docs 
 ## **Login/Signup**
 Our backend support both local authentication and google authentication, here I will make short examples for each method.
 
@@ -54,7 +67,7 @@ Logout is used for when you want to switch account, because the backend will set
 POST http://127.0.0.1:8000/logout/ HTTP/1.1
 ```
 
-## **Check User Profile**
+## ***CRUD* User Profile**
 ### 1. As regular user
 As a regular user, you can only view/update your own profile. To view your own information, send a `GET` request to http://127.0.0.1:8000/user/profile/ with your `access_token` added. Example is listed below:
 ```http
@@ -63,6 +76,27 @@ Content-Type: application/json
 
 {
     "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjQ0NjQ3NDA2LCJpYXQiOjE2NDQ1NjEwMDYsImp0aSI6ImE4N2Q0ZjhmOGFiNDRmNzNhZDJkM2U4YzhlZGQ2NDc0IiwidXNlcl9pZCI6NH0._UfZD6JmlhY1Wkf-piz8Be727VTn6o50qtW2jRChuKA"
+}
+```
+To update your own information, let's say you're user `id=4`, you can send a `PATCH` request to http://127.0.0.1:8000/user/update/4/. You can only update your own info, while admin is able to update every user's info. Example is listed below: (Because `age` is inside `profile`, we wrap `age` with `profile`)
+```http
+PATCH http://127.0.0.1:8000/user/update/4/ HTTP/1.1
+Content-Type: application/json
+
+{
+    "profile":{
+        "age":"20"
+    },
+    "access_token": "<YOUR-OR-ADMIN-ACCESS-TOKEN>"
+}
+```
+To delete your account, let's say you're user `id=4`, you can send a `DELETE` request to http://127.0.0.1:8000/user/delete/4/. You can only delete your own account, but if you are admin, you know what shit you can do. Example is listed below:
+```http
+DELETE http://127.0.0.1:8000/user/delete/4/ HTTP/1.1
+Content-Type: application/json
+
+{
+    "access_token": "<YOUR-OR-ADMIN-ACCESS-TOKEN>"
 }
 ```
 
@@ -76,15 +110,18 @@ Content-Type: application/json
     "access_token": "<ADMIN'S ACCESS TOKEN>"
 }
 ```
-As an admin, you can also retrieve each individual user's information with their user_id (called `id` or `pk`). Let's say you want to view user with `id=4`, you can send a `GET` request to http://127.0.0.1:8000/user/4/, with your `access_token` added. Example is listed below:
+As an admin, you can also retrieve each individual user's information with their user ID (`id`). Let's say you want to view user with `id=4`, you can send a `GET` request to http://127.0.0.1:8000/user/profile/4/, with your `access_token` added. Example is listed below:
 ```http
-GET http://127.0.0.1:8000/user/4/ HTTP/1.1
+GET http://127.0.0.1:8000/user/profile/4/ HTTP/1.1
 Content-Type: application/json
 
 {
     "access_token": "<ADMIN'S ACCESS TOKEN>"
 }
 ```
+
+## TODO: ***CRUD* Itinerary**
+
 
 <!-- ```
 """
