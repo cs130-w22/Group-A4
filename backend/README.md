@@ -31,13 +31,13 @@ python manage.py runserver
 ```
 
 ## **Login/Signup**
-Our backend support both local authentication and google authentication, here I will make short examples for each method.
+Our backend support both local authentication and google authentication, here we will list short examples for each method.
 
 ### 1. Google OAuth Examples
-The necessary configuration is already setup on [Google Developer Console](https://console.developers.google.com/apis/credentials/oauthclient/113665789634-ouu64vjjn7mnj0slrmtmm5e5gauu17o7.apps.googleusercontent.com?project=core-song-339901). We provide a url link for [google login window](https://accounts.google.com/o/oauth2/auth/oauthchooseaccount?client_id=113665789634-ouu64vjjn7mnj0slrmtmm5e5gauu17o7.apps.googleusercontent.com&redirect_uri=http%3A%2F%2Flocalhost%3A8000%2Fauth%2Fgoogle%2Fcallback%2F&scope=profile&response_type=code&state=Uvpq2v78tkM&flowName=GeneralOAuthFlow), after confirming and choosing your google account at that window, it will redirects to `<front-end-url>` and reply to you with an `access_token`, that can be used in our backend token system. Simply adding this `access_token` to each of your request (JSON) for authentication.
+The necessary configuration is already setup on [Google Developer Console](https://console.developers.google.com/apis/credentials/oauthclient/113665789634-ouu64vjjn7mnj0slrmtmm5e5gauu17o7.apps.googleusercontent.com?project=core-song-339901). We provide a url link for [google login window](https://accounts.google.com/o/oauth2/auth/oauthchooseaccount?client_id=113665789634-ouu64vjjn7mnj0slrmtmm5e5gauu17o7.apps.googleusercontent.com&redirect_uri=http%3A%2F%2Flocalhost%3A8000%2Fauth%2Fgoogle%2Fcallback%2F&scope=profile&response_type=code&state=Uvpq2v78tkM&flowName=GeneralOAuthFlow), after confirming and choosing your google account at that window, it will redirect to `<front-end-url>` and reply to you with an `access_token`, that can be used in our backend token system. Simply adding this `access_token` to each of your request (JSON) for authentication.
 
 ### 2. Local Authentication System
-We also provide registering and login using backend's authentication system. To register, you will need to send a `POST` request to http://127.0.0.1:8000/registration/, together with your username, password1, password2(for confirmation) and email. Example is listed below:
+We also provide registering and login using backend's authentication system. To register, you will need to send a `POST` request to http://127.0.0.1:8000/registration/, together with your username, password1, password2(for confirmation) and email. Like this:
 ```http
 POST http://127.0.0.1:8000/registration/ HTTP/1.1
 Content-Type: application/json
@@ -49,7 +49,7 @@ Content-Type: application/json
     "email": "test-api-registration@test.com"
 }
 ```
-If successful, backend will reply with `access_token`, `refresh_token` and basic `user` info, where the `access_token` can be used for authentication in future requests just like using Google Auth method above. To login, simply send a `POST` request to http://127.0.0.1:8000/login/, with your `username` and `password` added in the payload (JSON). Examples is listed below:
+If successful, backend will reply with `access_token`, `refresh_token` and basic `user` info, where the `access_token` can be used for authentication in future requests just like using Google Auth method above. To login, simply send a `POST` request to http://127.0.0.1:8000/login/, with your `username` and `password` added in the payload (JSON). Like this:
 ```http
 POST http://127.0.0.1:8000/login/ HTTP/1.1
 Content-Type: application/json
@@ -62,14 +62,14 @@ Content-Type: application/json
 If successful, it will return the same thing as when registration (`access_token`, `refresh_token` and `user`).
 
 ## **Logout**
-Logout is used for when you want to switch account, because the backend will set cookies and you *won't* be able to change account even if you provide a different `access_token`. You can send a `POST` request to http://127.0.0.1:8000/logout/ without adding anything. Once you are logged out, you need to ask for new `access_code` to log back in! Example is listed below:
+Logout is used for when you want to switch account, because the backend will set cookies and you *won't* be able to change account even if you provide a different `access_token`. You can send a `POST` request to http://127.0.0.1:8000/logout/ without adding anything. Once you are logged out, you need to ask for new `access_code` to log back in! Like this:
 ```http
 POST http://127.0.0.1:8000/logout/ HTTP/1.1
 ```
 
 ## ***CRUD* User Profile**
 ### 1. As regular user
-As a regular user, you can only view/update your own profile. To view your own information, send a `GET` request to http://127.0.0.1:8000/user/profile/ with your `access_token` added. Example is listed below:
+As a regular user, you can only view/update your own profile. To view your own information, send a `GET` request to http://127.0.0.1:8000/user/profile/ with your `access_token` added. Like this:
 ```http
 GET http://127.0.0.1:8000/user/profile/ HTTP/1.1
 Content-Type: application/json
@@ -78,7 +78,7 @@ Content-Type: application/json
     "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjQ0NjQ3NDA2LCJpYXQiOjE2NDQ1NjEwMDYsImp0aSI6ImE4N2Q0ZjhmOGFiNDRmNzNhZDJkM2U4YzhlZGQ2NDc0IiwidXNlcl9pZCI6NH0._UfZD6JmlhY1Wkf-piz8Be727VTn6o50qtW2jRChuKA"
 }
 ```
-To update your own information, let's say you're user `id=4`, you can send a `PATCH` request to http://127.0.0.1:8000/user/update/4/. You can only update your own info, while admin is able to update every user's info. Example is listed below: (Because `age` is inside `profile`, we wrap `age` with `profile`)
+To update your own information, let's say you're user `id=4`, you can send a `PATCH` request to http://127.0.0.1:8000/user/update/4/. You can only update your own info, while admin is able to update every user's info. Like this: (Because `age` is inside `profile`, we wrap `age` with `profile`)
 ```http
 PATCH http://127.0.0.1:8000/user/update/4/ HTTP/1.1
 Content-Type: application/json
@@ -90,7 +90,7 @@ Content-Type: application/json
     "access_token": "<YOUR-OR-ADMIN-ACCESS-TOKEN>"
 }
 ```
-To delete your account, let's say you're user `id=4`, you can send a `DELETE` request to http://127.0.0.1:8000/user/delete/4/. You can only delete your own account, but if you are admin, you know what shit you can do. Example is listed below:
+To delete your account, let's say you're user `id=4`, you can send a `DELETE` request to http://127.0.0.1:8000/user/delete/4/. You can only delete your own account, but if you are admin, you know what shit you can do. Like this:
 ```http
 DELETE http://127.0.0.1:8000/user/delete/4/ HTTP/1.1
 Content-Type: application/json
@@ -101,7 +101,7 @@ Content-Type: application/json
 ```
 
 ### 2. As admin (superuser)
-As an admin, you can view information of each individual user (or together). To view all user info at once (might be large), Simply send a `GET` request to http://127.0.0.1:8000/user/ with your `access_token` added. Example is listed below:
+As an admin, you can view information of each individual user (or together). To view all user info at once (might be large), Simply send a `GET` request to http://127.0.0.1:8000/user/ with your `access_token` added. Like this:
 ```http
 GET http://127.0.0.1:8000/user/ HTTP/1.1
 Content-Type: application/json
@@ -110,7 +110,7 @@ Content-Type: application/json
     "access_token": "<ADMIN'S ACCESS TOKEN>"
 }
 ```
-As an admin, you can also retrieve each individual user's information with their user ID (`id`). Let's say you want to view user with `id=4`, you can send a `GET` request to http://127.0.0.1:8000/user/profile/4/, with your `access_token` added. Example is listed below:
+As an admin, you can also retrieve each individual user's information with their user ID (`id`). Let's say you want to view user with `id=4`, you can send a `GET` request to http://127.0.0.1:8000/user/profile/4/, with your `access_token` added. Like this:
 ```http
 GET http://127.0.0.1:8000/user/profile/4/ HTTP/1.1
 Content-Type: application/json
