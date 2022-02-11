@@ -29,10 +29,14 @@ class UserList(generics.ListAPIView):
     serializer_class = UserSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsAdmin]
 
-class UserDetail(generics.RetrieveAPIView):
+class UserDetailUpdate(generics.RetrieveUpdateAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsOwnerOrAdmin]
+
+    # support PATCH (update current user profile)
+    def patch(self, request, *args, **kwargs):
+        return self.partial_update(request, *args, **kwargs)
 
 class UserDelete(generics.DestroyAPIView):
     queryset = User.objects.all()
