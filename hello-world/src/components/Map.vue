@@ -10,7 +10,8 @@
       "
     >
       <div>
-        <h2>Your coordinates:</h2>
+        <div class="text-h4 mb-1" v-text="'Your coordinates:'"></div>
+
         <p>
           {{ userCoordinates.lat }} Latitude,
           {{ userCoordinates.lng }} Longtitude
@@ -18,7 +19,7 @@
       </div>
 
       <div>
-        <h2>Map coordinates:</h2>
+        <div class="text-h4 mb-1" v-text="'Map coordinates:'"></div>
         <p>
           {{ mapCoordinates.lat }} Latitude, {{ mapCoordinates.lng }} Longtitude
         </p>
@@ -29,7 +30,7 @@
       <GmapMap
         :center="userCoordinates"
         :zoom="zoom"
-        style="width: 100%; height: 400px; margin: 32px auto"
+        style="width: 80%; height: 300px; margin: 32px auto"
         ref="mapRef"
       >
       </GmapMap>
@@ -37,7 +38,13 @@
       <v-toolbar
         dense
         floating
-        style="position: absolute; top: 60px; left: 30%; z-index: 99"
+        style="
+          position: absolute;
+          top: 60px;
+          left: 50%;
+          transform: translateX(-50%);
+          z-index: 99;
+        "
       >
         <v-text-field
           hide-details

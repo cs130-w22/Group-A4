@@ -65,6 +65,7 @@
           <v-col cols="12" sm="10">
             <v-sheet min-height="70vh" rounded="lg">
               <Map />
+              <SlideShow> </SlideShow>
             </v-sheet>
           </v-col>
 
@@ -83,6 +84,8 @@ import axios from "axios";
 import Map from "./components/Map";
 import Stepper from "./components/Stepper";
 import UserPanel from "./components/UserPanel.vue";
+import SlideShow from "./components/SlideShow.vue";
+
 // import Form from "./components/Form";
 
 export default {
@@ -92,6 +95,7 @@ export default {
     Map,
     Stepper,
     UserPanel,
+    SlideShow,
   },
 
   data: () => ({
