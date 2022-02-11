@@ -2,7 +2,7 @@
   <!-- <div class="panel"> -->
   <!-- <div class="panel-header text-center"> -->
 
-  <v-avatar class="grey darken-3" size="50">
+  <v-avatar class="grey darken-3" size="60">
     <span class="white--text"> {{ user.username }} </span>
   </v-avatar>
   <!-- <v-avatar color="teal" size="40">} </v-avatar> -->

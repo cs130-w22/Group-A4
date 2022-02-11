@@ -10,7 +10,8 @@
       "
     >
       <div>
-        <h2>Your coordinates:</h2>
+        <div class="text-h4 mb-1" v-text="'Your coordinates:'"></div>
+
         <p>
           {{ userCoordinates.lat }} Latitude,
           {{ userCoordinates.lng }} Longtitude
@@ -18,20 +19,48 @@
       </div>
 
       <div>
-        <h2>Map coordinates:</h2>
+        <div class="text-h4 mb-1" v-text="'Map coordinates:'"></div>
         <p>
           {{ mapCoordinates.lat }} Latitude, {{ mapCoordinates.lng }} Longtitude
         </p>
       </div>
     </div>
 
-    <GmapMap
-      :center="userCoordinates"
-      :zoom="zoom"
-      style="width: 80%; height: 400px; margin: 32px auto"
-      ref="mapRef"
-    >
-    </GmapMap>
+    <v-card class="pa-4" flat style="position: relative">
+      <GmapMap
+        :center="userCoordinates"
+        :zoom="zoom"
+        style="width: 80%; height: 300px; margin: 32px auto"
+        ref="mapRef"
+      >
+      </GmapMap>
+
+      <v-toolbar
+        dense
+        floating
+        style="
+          position: absolute;
+          top: 60px;
+          left: 50%;
+          transform: translateX(-50%);
+          z-index: 99;
+        "
+      >
+        <v-text-field
+          hide-details
+          prepend-icon="mdi-magnify"
+          single-line
+        ></v-text-field>
+
+        <v-btn icon>
+          <v-icon>mdi-crosshairs-gps</v-icon>
+        </v-btn>
+
+        <v-btn icon>
+          <v-icon>mdi-dots-vertical</v-icon>
+        </v-btn>
+      </v-toolbar>
+    </v-card>
   </div>
 </template>
 
