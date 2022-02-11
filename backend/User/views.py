@@ -1,3 +1,4 @@
+from urllib import request
 from django.shortcuts import render
 from django.http import HttpResponse
 
@@ -31,6 +32,11 @@ class UserDetail(generics.RetrieveAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsOwnerOrAdmin]
+
+@api_view(['GET'])
+def current_user(request):
+    serializer = UserSerializer(request.user)
+    return Response(serializer.data)
 
 class UserUpdate(generics.GenericAPIView, mixins.UpdateModelMixin):
 # class UserUpdate(generics.RetrieveUpdateAPIView):
