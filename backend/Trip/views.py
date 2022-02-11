@@ -126,8 +126,20 @@ class ItineraryList(generics.ListAPIView):
     serializer_class = ItinerarySerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsOwnerOrAdmin]
 
-    def perform_create(self, serializer):
-        serializer.save(user=self.request.user)
+
+class ItineraryViewUpdate(generics.RetrieveUpdateAPIView):
+    """
+    View Itinerary Detail with id=/<int:pk>/
+    """
+    queryset = Itinerary.objects.all()
+    serializer_class = ItinerarySerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsOwnerOrAdmin]
+
+    # support PATCH (update current user profile)
+    def patch(self, request, *args, **kwargs):
+        return self.partial_update(request, *args, **kwargs)
+
+
 
     
 class ItineraryCRUD(generics.RetrieveUpdateDestroyAPIView):

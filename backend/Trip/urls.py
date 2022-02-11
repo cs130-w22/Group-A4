@@ -11,4 +11,5 @@ urlpatterns = [
     path('event/', views.TripEventCRUD.as_view(), name="tripevent_detail"),
     path('itinerary/create/', views.ItineraryCreate.as_view(), name="itinerary_create"),
     path('itinerary/', views.ItineraryList.as_view(), name="itinerary_list"),
+    path('itinerary/<int:pk>/', views.ItineraryViewUpdate.as_view(), name="itinerary_view_update"),
 ]

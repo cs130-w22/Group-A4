@@ -13,6 +13,8 @@
     - [1. As regular user](#1-as-regular-user)
     - [2. As admin (superuser)](#2-as-admin-superuser)
   - [TODO: ***CRUD* Itinerary**](#todo-crud-itinerary)
+    - [Create An Itinerary After Logged In](#create-an-itinerary-after-logged-in)
+    - [Retrieve Itinerary(s) Created by the Logged-in User](#retrieve-itinerarys-created-by-the-logged-in-user)
 
 
 ## **Project Setup**
@@ -78,9 +80,9 @@ Content-Type: application/json
     "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjQ0NjQ3NDA2LCJpYXQiOjE2NDQ1NjEwMDYsImp0aSI6ImE4N2Q0ZjhmOGFiNDRmNzNhZDJkM2U4YzhlZGQ2NDc0IiwidXNlcl9pZCI6NH0._UfZD6JmlhY1Wkf-piz8Be727VTn6o50qtW2jRChuKA"
 }
 ```
-To update your own information, let's say you're user `id=4`, you can send a `PATCH` request to http://127.0.0.1:8000/user/update/4/. You can only update your own info, while admin is able to update every user's info. Like this: (Because `age` is inside `profile`, we wrap `age` with `profile`)
+To update your own information, let's say you're user `id=4`, you can send a `PATCH` request to http://127.0.0.1:8000/user/profile/4/. You can only update your own info, while admin is able to update every user's info. Like this: (Because `age` is inside `profile`, we wrap `age` with `profile`)
 ```http
-PATCH http://127.0.0.1:8000/user/update/4/ HTTP/1.1
+PATCH http://127.0.0.1:8000/user/profile/4/ HTTP/1.1
 Content-Type: application/json
 
 {
@@ -121,6 +123,28 @@ Content-Type: application/json
 ```
 
 ## TODO: ***CRUD* Itinerary**
+### Create An Itinerary After Logged In
+To create a new itinerary asscociated with logged-in user, send `POST` to http://127.0.0.1:8000/trip/itinerary/create/ with your `access_token` added. Like this:
+```http
+POST http://127.0.0.1:8000/trip/itinerary/create/ HTTP/1.1
+Content-Type: application/json
+
+{
+    "title": "My First Itinerary!",
+    "access_token": "<YOUR-ACCESS-TOKEN>"
+}
+```
+
+### Retrieve Itinerary(s) Created by the Logged-in User
+As a regular user, you can retrieve all Itineraries created by you, simply send `GET` to http://127.0.0.1:8000/trip/itinerary/ with your token added. Like this:
+```http
+GET http://127.0.0.1:8000/trip/itinerary/ HTTP/1.1
+Content-Type: application/json
+
+{
+    "access_token": "<YOUR-ACCESS-TOKEN>"
+}
+```
 
 
 <!-- ```
