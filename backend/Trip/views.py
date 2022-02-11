@@ -4,7 +4,16 @@ import json
 from pprint import pprint
 
 from django.http import HttpResponse
+from .models import Itinerary, TripEvent
+from .serializers import ItinerarySerializer, TripEventSerializer
+from rest_framework.decorators import api_view
 from rest_framework.response import Response
+from rest_framework.views import APIView
+from rest_framework import generics, permissions, mixins
+from rest_framework import status
+
+from .permissions import IsOwnerOrReadOnly, IsAdmin, IsOwnerOrAdmin
+
 
 OPENTRIPMAP_APIKEY = "5ae2e3f221c38a28845f05b67692ad3e6018090b4af24d1fc0c6f08d"
 OPENTRIPMAP_API_ENDPOINT = "http://api.opentripmap.com/0.1/en/places"
@@ -25,7 +34,7 @@ def loc_API(lon, lat, radius=3000):
     return f"{OPENTRIPMAP_API_ENDPOINT}/radius?radius={radius}&lon={lon}&lat={lat}&{API_PREFIX}{OPENTRIPMAP_APIKEY}"
 
 """
-View functions
+search API Endpoints
 """
 def search_object(request):
     """
@@ -66,3 +75,83 @@ def search_loc(request):
 
 def search_suggest(request):
     pass
+
+
+"""
+TripEvent CRUD API Views
+"""
+class TripEventCRUD(APIView):
+    """
+    List all TripEvents in this itinerary, and/or create/update/delete TripEvent
+    """
+    def get(self, request, format=None):
+        TripEvents = Itinerary.tripevent_set.all()
+        serializer = TripEventSerializer(TripEvents, many=True)
+        print(TripEvents)
+        return Response(serializer.data)
+
+    def post(self, request, format=None):
+        print("\n\n\n\n\n[RCVD POST REQUEST PARAMS:!!!!]")
+        # ensure data validity
+
+        serializer = TripEventSerializer(data=request.data)
+        print(serializer)
+        if serializer.is_valid():
+            serializer.save()
+            print("\n\n\n\n\n[DATA RCVD BELOW]")
+            pprint(serializer.data)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+"""
+Itinerary CRUD API Views
+"""
+class ItineraryCreate(generics.CreateAPIView):
+    """
+    Create an Itinerary under logged in user
+    """
+    queryset = Itinerary.objects.all()
+    serializer_class = ItinerarySerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsOwnerOrAdmin]
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+
+class ItineraryList(generics.ListAPIView):
+    """
+    List all Itinerary of Logged In User
+    """
+    queryset = Itinerary.objects.all()
+    serializer_class = ItinerarySerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsOwnerOrAdmin]
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+
+    
+class ItineraryCRUD(generics.RetrieveUpdateDestroyAPIView):
+    """
+    List all TripEvents in a specific itinerary, and/or update/delete Itinerary
+    """
+    # def get(self, request, format=None):
+    #     print("\n\n\n\n\n[RCVD POST REQUEST DATA:!!!!]")
+    #     print(request.data)
+    #     print(request.user)
+    #     user = request.user
+    #     itinerary = Itinerary.objects.filter(user=user)
+    #     serializer = ItinerarySerializer(itinerary, many=True)
+    #     return Response(serializer.data)
+
+    # def post(self, request, format=None):
+    #     print("\n\n\n\n\n[RCVD POST REQUEST DATA:!!!!]")
+    #     print(request.data)
+    #     serializer = ItinerarySerializer(data=request.data)
+    #     print(request.user)
+    #     if serializer.is_valid():
+    #         serializer.save(user=request.user)
+    #         pprint(serializer.data)
+    #         return Response(serializer.data, status=status.HTTP_201_CREATED)
+    #     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+

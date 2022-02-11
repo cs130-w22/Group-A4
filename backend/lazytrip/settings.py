@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 """
 
 from pathlib import Path
+from datetime import timedelta
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -73,12 +74,19 @@ REST_FRAMEWORK = {
         # for Token authentication
         # 'rest_framework.authentication.TokenAuthentication',
         'dj_rest_auth.jwt_auth.JWTCookieAuthentication',
-    ]
+    ],
+    # 'DEFAULT_PERMISSION_CLASSES': [
+    #     'rest_framework.permissions.IsAdminUser',
+    # ],
 }
 # User JWT (JSON Web Token)
 REST_USE_JWT = True
 JWT_AUTH_COOKIE = 'LazyTrip-auth'
 JWT_AUTH_REFRESH_COOKIE = 'LazyTrip-refresh-token'
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(days=1),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
+}
 
 # Google Auth / Registration Settings
 LOGIN_REDIRECT_URL = "/"                            # the url that redirects after user logged in

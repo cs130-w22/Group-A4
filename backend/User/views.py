@@ -12,9 +12,11 @@ from dj_rest_auth.registration.views import SocialLoginView
 from django.shortcuts import redirect
 from django.urls import reverse
 
-from .serializers import UserProfileSerializer
+from .serializers import UserProfileSerializer, UserSerializer
 from .models import UserProfile
 from .permissions import IsOwnerOrReadOnly, IsAdmin, IsOwnerOrAdmin
+from django.contrib.auth.models import User
+
 
 # User CRUD (generic class based views)
 class UserList(generics.ListAPIView):
@@ -31,6 +33,7 @@ class UserDetail(generics.RetrieveAPIView):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsOwnerOrAdmin]
 
 class UserUpdate(generics.GenericAPIView, mixins.UpdateModelMixin):
+# class UserUpdate(generics.RetrieveUpdateAPIView):
     queryset = UserProfile.objects.all()
     serializer_class = UserProfileSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsOwnerOrAdmin]
@@ -46,6 +49,7 @@ class UserDelete(generics.DestroyAPIView):
     queryset = UserProfile.objects.all()
     serializer_class = UserProfileSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsOwnerOrAdmin]
+
 
 
 class GoogleLogin(SocialLoginView):

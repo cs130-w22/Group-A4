@@ -92,12 +92,45 @@ Authorization: Token 2416649de62a3db2ef3e4ad0dde44b747ef305bb
 ### REST API List All Users Test 1
 GET http://127.0.0.1:8000/user HTTP/1.1
 Content-Type: application/json
-Authorization: Token 43b6d7f9e6eb57f22c866503d44cc78c50b07e3b
 
-### REST API Check Profile Test 1
-GET http://127.0.0.1:8000/user/4 HTTP/1.1
+{
+    "access_token": "ya29.A0ARrdaM-5hKOgT9vEOgnEqQYsiakSp53yZLpQeuInAxAQ9pF_GD0STRUGyOTsGY0MIXNwMJ7Mp6F75gxioOnXdvQmMffUkvyZOv0BF-ArjktILE97rL7R8sPlDmnn6IY3BIoLQC27vtCSwTJJlsBLTtQ1Ou-u"
+}
+
+### REST API Create Itinerary from Logged In User
+POST http://127.0.0.1:8000/trip/itinerary/create/ HTTP/1.1
 Content-Type: application/json
-Authorization: Token 2416649de62a3db2ef3e4ad0dde44b747ef305bb
 
-###
-HEADER http://localhost:8000/auth/google/url/ HTTP/1.1
+{
+    "title": "My Second Itinerary!",
+    "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjQ0NjMzMDQ4LCJpYXQiOjE2NDQ1NDY2NDgsImp0aSI6IjU3MzYxZTM3NjUyNzQ1ZTM4ODdlMGFmYTU3YTMxYmU3IiwidXNlcl9pZCI6MX0.fT3_gJ-S_iU3g09fjeztrU-PePDYW1k2s0tJR0T7mpQ"
+}
+
+### REST API Retrieve Itinerary from Logged In User
+GET http://127.0.0.1:8000/trip/itinerary HTTP/1.1
+Content-Type: application/json
+
+{
+    "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjQ0NjMzMDQ4LCJpYXQiOjE2NDQ1NDY2NDgsImp0aSI6IjU3MzYxZTM3NjUyNzQ1ZTM4ODdlMGFmYTU3YTMxYmU3IiwidXNlcl9pZCI6MX0.fT3_gJ-S_iU3g09fjeztrU-PePDYW1k2s0tJR0T7mpQ"
+}
+
+### REST API Update Profile Test 1
+PATCH http://127.0.0.1:8000/user/update/1 HTTP/1.1
+Content-Type: application/json
+
+{
+    "user": {
+        "last_name": "I just want to update last name"
+    },
+    "bio": "Again, updated bio!",
+    "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjQ0NjMzMDQ4LCJpYXQiOjE2NDQ1NDY2NDgsImp0aSI6IjU3MzYxZTM3NjUyNzQ1ZTM4ODdlMGFmYTU3YTMxYmU3IiwidXNlcl9pZCI6MX0.fT3_gJ-S_iU3g09fjeztrU-PePDYW1k2s0tJR0T7mpQ"
+}
+
+### REST API List User Profile Test 1
+GET http://127.0.0.1:8000/user/ HTTP/1.1
+Content-Type: application/json
+
+{
+    "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjQ0NjMzMDQ4LCJpYXQiOjE2NDQ1NDY2NDgsImp0aSI6IjU3MzYxZTM3NjUyNzQ1ZTM4ODdlMGFmYTU3YTMxYmU3IiwidXNlcl9pZCI6MX0.fT3_gJ-S_iU3g09fjeztrU-PePDYW1k2s0tJR0T7mpQ"
+}
+
