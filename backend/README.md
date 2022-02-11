@@ -62,7 +62,7 @@ Content-Type: application/json
 If successful, it will return the same thing as when registration (`access_token`, `refresh_token` and `user`).
 
 ## **Logout**
-Logout is used for when you want to switch account, because the backend will set cookies and you *won't* be able to change account even if you provide a different `access_token`. You can send a `POST` request to http://127.0.0.1:8000/logout/ without adding anything. Once you are logged out, you need to ask for new `access_code` to log back in! Like this:
+Logout is used when you want to switch account, because the backend will set cookies and you *won't* be able to change account even if you provide a different `access_token`. You can send a `POST` request to http://127.0.0.1:8000/logout/ without adding anything. Once you are logged out, you need to ask for new `access_token` to log back in! Like this:
 ```http
 POST http://127.0.0.1:8000/logout/ HTTP/1.1
 ```
