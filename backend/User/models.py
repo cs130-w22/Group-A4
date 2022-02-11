@@ -9,7 +9,7 @@ UserProfile extends the functionality and stores extra information in addition t
     Django User Model.
 """
 class UserProfile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="profile")
     bio = models.TextField(max_length=500, blank=True, default="Edit this to be your bio.")
     location = models.CharField(max_length=30, blank=True)
     age = models.IntegerField(default=0)
@@ -20,11 +20,12 @@ class UserProfile(models.Model):
         """
         return str(self.user) + "-profile"
 
-@receiver(post_save, sender=User)
-def create_uesr_profile(sender, instance, created, **kwargs):
-    if created:
-        UserProfile.objects.create(user=instance)
+# # No longer used when using [WritableNestedModelSerializer]
+# @receiver(post_save, sender=User)
+# def create_uesr_profile(sender, instance, created, **kwargs):
+#     if created:
+#         UserProfile.objects.create(user=instance)
 
-@receiver(post_save, sender=User)
-def save_user_profile(sender, instance, **kwargs):
-    instance.userprofile.save()
+# @receiver(post_save, sender=User)
+# def save_user_profile(sender, instance, **kwargs):
+#     instance.userprofile.save()

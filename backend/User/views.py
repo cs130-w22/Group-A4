@@ -13,7 +13,7 @@ from django.shortcuts import redirect
 from django.urls import reverse
 
 from .serializers import UserProfileSerializer, UserSerializer
-from .models import UserProfile
+from .models import User
 from .permissions import IsOwnerOrReadOnly, IsAdmin, IsOwnerOrAdmin
 from django.contrib.auth.models import User
 
@@ -23,19 +23,19 @@ class UserList(generics.ListAPIView):
     """
     View list of all users
     """
-    queryset = UserProfile.objects.all()
-    serializer_class = UserProfileSerializer
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsAdmin]
 
 class UserDetail(generics.RetrieveAPIView):
-    queryset = UserProfile.objects.all()
-    serializer_class = UserProfileSerializer
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsOwnerOrAdmin]
 
 class UserUpdate(generics.GenericAPIView, mixins.UpdateModelMixin):
 # class UserUpdate(generics.RetrieveUpdateAPIView):
-    queryset = UserProfile.objects.all()
-    serializer_class = UserProfileSerializer
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsOwnerOrAdmin]
 
     def patch(self, request, *args, **kwargs):
@@ -46,8 +46,8 @@ class UserUpdate(generics.GenericAPIView, mixins.UpdateModelMixin):
 
 
 class UserDelete(generics.DestroyAPIView):
-    queryset = UserProfile.objects.all()
-    serializer_class = UserProfileSerializer
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsOwnerOrAdmin]
 
 
