@@ -9,12 +9,17 @@
     - [1. Google OAuth Examples](#1-google-oauth-examples)
     - [2. Local Authentication System](#2-local-authentication-system)
   - [**Logout**](#logout)
-  - [***CRUD* User Profile**](#crud-user-profile)
+  - [**User Profile** Read/Update/Delete](#user-profile-readupdatedelete)
     - [1. As regular user](#1-as-regular-user)
     - [2. As admin (superuser)](#2-as-admin-superuser)
-  - [TODO: ***CRUD* Itinerary**](#todo-crud-itinerary)
+  - [**Itinerary** CRUD](#itinerary-crud)
     - [Create An Itinerary After Logged In](#create-an-itinerary-after-logged-in)
     - [Retrieve Itinerary(s) Created by the Logged-in User](#retrieve-itinerarys-created-by-the-logged-in-user)
+    - [Update Itinerary by the ID](#update-itinerary-by-the-id)
+  - [**TripEvent** CRUD](#tripevent-crud)
+    - [Create an TripEvent Under an Itinerary](#create-an-tripevent-under-an-itinerary)
+    - [Retrieve an TripEvent by the ID](#retrieve-an-tripevent-by-the-id)
+    - [Update an TripEvent by the ID](#update-an-tripevent-by-the-id)
 
 
 ## **Project Setup**
@@ -69,7 +74,7 @@ Logout is used when you want to switch account, because the backend will set coo
 POST http://127.0.0.1:8000/logout/ HTTP/1.1
 ```
 
-## ***CRUD* User Profile**
+## **User Profile** Read/Update/Delete
 ### 1. As regular user
 As a regular user, you can only view/update your own profile. To view your own information, send a `GET` request to http://127.0.0.1:8000/user/profile/ with your `access_token` added. Like this:
 ```http
@@ -122,7 +127,7 @@ Content-Type: application/json
 }
 ```
 
-## TODO: ***CRUD* Itinerary**
+## **Itinerary** CRUD
 ### Create An Itinerary After Logged In
 To create a new itinerary asscociated with logged-in user, send `POST` to http://127.0.0.1:8000/trip/itinerary/create/ with your `access_token` added. Like this:
 ```http
@@ -143,6 +148,81 @@ Content-Type: application/json
 
 {
     "access_token": "<YOUR-ACCESS-TOKEN>"
+}
+```
+As an admin, you can retrieve all itineraries stored in the database by sending `GET` to http://127.0.0.1:8000/trip/itinerary/all/. Like this:
+```http
+GET http://127.0.0.1:8000/trip/itinerary/all/ HTTP/1.1
+Content-Type: application/json
+
+{
+    "access_token": "<ADMIN-ACCESS-TOKEN>"
+}
+```
+
+### Update Itinerary by the ID
+To update an itinerary, you need the `id` of this itinerary, simply send `PATCH` to http://127.0.0.1:8000/trip/itinerary/, with token added. As usual, user will have permission to update itinerary belongs to them, while admin can edit any itinerary given an `id`. Like this:
+```http
+PATCH http://127.0.0.1:8000/trip/itinerary/19/ HTTP/1.1
+Content-Type: application/json
+
+{
+    "title": "Crazy trip to your grandma's house",
+    "access_token": "<YOUR-OR-ADMIN-ACCESS-TOKEN>"
+}
+```
+
+## **TripEvent** CRUD
+<!-- `NOTE:` Since `TripEvent` does not have owner (user) field, you can only identify which user owns this `TripEvent` by looking at the ownership of this `TripEvent`'s `Itinerary`, `Itinerary` will have a field named `user` to identify which user this `Itinerary` belongs to.  -->
+
+### Create an TripEvent Under an Itinerary
+To create an TripEvent, you need to first know which Itinerary it belongs to, let's say you want to create a TripEvent that go to UCLA during `14:30` to `17:30`, under the Itinerary titled `"Crazy trip to your grandma's house"` (`id=19`). You can send a `POST` request to http://127.0.0.1:8000/trip/event/create/. It will be succefully created only if you are the owner of Itinerary (`id=19`) or you are the holy-moly admin. Like this:
+```http
+POST http://127.0.0.1:8000/trip/event/create/ HTTP/1.1
+Content-Type: application/json
+
+{
+    "xid": "<UCLA-xid>",
+    "itin": "19",
+    "start_time": "14:30",
+    "end_time": "17:30" ,
+    "access_token": "<YOUR-OR-ADMIN-ACCESS-TOKEN>"
+}
+```
+
+### Retrieve an TripEvent by the ID
+As a regular user, you probably don't need to retrieve single TripEvent by the ID, you can instead retrieve your Itineraries which will contain every TripEvent inside them. **But** as an admin, it's reasonable to do so. Just send `GET` request to http://127.0.0.1:8000/trip/event/10/ if you want to view specific TripEvent with `id=10`. Like this:
+```http
+GET http://127.0.0.1:8000/trip/event/10/ HTTP/1.1
+Content-Type: application/json
+
+{
+    "access_token": "<YOUR-OR-ADMIN-ACCESS-TOKEN>"
+}
+```
+
+
+### Update an TripEvent by the ID
+It's simple to update an TripEvent, let's say you want to update your UCLA trip to a USC trip and move to `1 hour` later, you'll need to know the `id` of the TripEvent (like `id=10`), and send a `PATCH` request to http://127.0.0.1:8000/trip/event/10/. Like this:
+```http
+PATCH http://127.0.0.1:8000/trip/event/10/ HTTP/1.1
+Content-Type: application/json
+
+{
+    "xid": "<USC-xid>",
+    "start_time": "15:30",
+    "end_time": "18:30" ,
+    "access_token": "<YOUR-OR-ADMIN-ACCESS-TOKEN>"
+}
+```
+You can also move this TripEvent under other Itinerary, but you can only move to those Itinerary that belongs to you (or you are admin). Like this:
+```http
+PATCH http://127.0.0.1:8000/trip/event/10/ HTTP/1.1
+Content-Type: application/json
+
+{
+    "itin": "20", # assume itin 20 belongs to you
+    "access_token": "<YOUR-OR-ADMIN-ACCESS-TOKEN>"
 }
 ```
 

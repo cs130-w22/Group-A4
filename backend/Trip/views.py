@@ -12,7 +12,7 @@ from rest_framework.views import APIView
 from rest_framework import generics, permissions, mixins
 from rest_framework import status
 
-from .permissions import IsOwnerOrReadOnly, IsAdmin, IsOwnerOrAdmin
+from .permissions import IsOwnerOrReadOnly, IsAdmin, IsOwnerOrAdmin, IsTripEventOwnerOrAdminCreate, IsTripEventOwnerOrAdminUpdate
 
 
 OPENTRIPMAP_APIKEY = "5ae2e3f221c38a28845f05b67692ad3e6018090b4af24d1fc0c6f08d"
@@ -103,6 +103,30 @@ class TripEventCRUD(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+"""
+TripEvent CRUD API Views
+"""
+class TripEventCreate(generics.CreateAPIView):
+    """
+    Create an Itinerary under logged in user
+    """
+    queryset = TripEvent.objects.all()
+    serializer_class = TripEventSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsTripEventOwnerOrAdminCreate]
+
+
+
+class TripEventUpdate(generics.UpdateAPIView):
+    """
+    Create an Itinerary under logged in user
+    """
+    queryset = TripEvent.objects.all()
+    serializer_class = TripEventSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsTripEventOwnerOrAdminUpdate]
+
+    # support PATCH (update current user profile)
+    def patch(self, request, *args, **kwargs):
+        return self.partial_update(request, *args, **kwargs)
 
 """
 Itinerary CRUD API Views
@@ -122,9 +146,21 @@ class ItineraryList(generics.ListAPIView):
     """
     List all Itinerary of Logged In User
     """
-    queryset = Itinerary.objects.all()
+    # queryset = Itinerary.objects.get(user=self.request.user)
     serializer_class = ItinerarySerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsOwnerOrAdmin]
+
+    def get_queryset(self):
+        return Itinerary.objects.filter(user=self.request.user)
+
+
+class ItineraryListAll(generics.ListAPIView):
+    """
+    List all Itinerary of Logged In User
+    """
+    queryset = Itinerary.objects.all()
+    serializer_class = ItinerarySerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsAdmin]
 
 
 class ItineraryViewUpdate(generics.RetrieveUpdateAPIView):

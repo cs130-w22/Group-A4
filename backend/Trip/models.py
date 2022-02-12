@@ -26,8 +26,10 @@ class Itinerary(models.Model):
 data model for a specific trip event (an attraction/restaurant/hotel...) that has start time and end time
 """
 class TripEvent(models.Model):
+    # object ID of OpenTripMap API (single attraction)
     xid = models.CharField(max_length=64)
-    itin = models.ForeignKey(Itinerary, on_delete=models.CASCADE)
+    # foreign key indicating which itinerary it belongs to
+    itin = models.ForeignKey(Itinerary, on_delete=models.CASCADE, related_name="trip_event")
     start_time = models.TimeField()
     end_time = models.TimeField()
 
