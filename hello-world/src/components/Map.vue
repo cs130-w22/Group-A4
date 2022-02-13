@@ -30,7 +30,15 @@
       <GmapMap
         :center="userCoordinates"
         :zoom="zoom"
-        style="width: 80%; height: 300px; margin: 32px auto"
+        :options="{
+          mapTypeControl: false,
+          scaleControl: false,
+          streetViewControl: false,
+          rotateControl: false,
+          fullscreenControl: false,
+          disableDefaultUi: false,
+        }"
+        style="width: 80%; height: 320px; margin: 32px auto"
         ref="mapRef"
       >
       </GmapMap>

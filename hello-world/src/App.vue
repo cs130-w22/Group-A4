@@ -58,17 +58,22 @@
     </v-app-bar>
 
     <v-main class="grey lighten-3">
-      <v-container>
+      <v-container fluid>
         <v-row>
-          <v-col cols="12" sm="2">
-            <v-sheet rounded="lg" min-height="268"> <Stepper /> </v-sheet>
+          <v-col v-if="activeTabIndex == 0" cols="12" sm="2">
+            <v-sheet rounded="lg" min-height="90vh">
+              <Stepper> </Stepper>
+            </v-sheet>
           </v-col>
+          <!-- <v-col v-else min-height="90vh" cols="12" sm="2">
+            <v-sheet rounded="lg" min-height="90vh"> placeHolder </v-sheet>
+          </v-col> -->
 
-          <v-col cols="12" sm="10">
-            <v-sheet min-height="70vh" rounded="lg">
+          <v-col cols="12" :sm="activeTabIndex == 0 ? 10 : 12">
+            <v-sheet min-height="90vh" rounded="lg">
               <Map v-if="activeTabIndex == 0"> </Map>
               <SlideShow v-if="activeTabIndex == 0"> </SlideShow>
-              <Schedule v-if="activeTabIndex == 1"></Schedule>
+              <Schedule v-if="activeTabIndex == 1"> </Schedule>
             </v-sheet>
           </v-col>
 
