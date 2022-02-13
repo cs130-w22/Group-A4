@@ -1,7 +1,7 @@
 <template>
-  <v-row justify="center">
-    <v-date-picker v-model="picker"></v-date-picker>
-  </v-row>
+  <!-- <v-row justify="center"> -->
+  <v-date-picker v-model="picker" range show-adjacent-months> </v-date-picker>
+  <!-- </v-row> -->
 </template>
 
 <script>

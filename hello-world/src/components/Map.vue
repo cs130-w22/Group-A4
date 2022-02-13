@@ -9,7 +9,7 @@
         justify-content: space-between;
       "
     >
-      <div>
+      <!-- <div>
         <div class="text-h4 mb-1" v-text="'Your coordinates:'"></div>
 
         <p>
@@ -23,7 +23,7 @@
         <p>
           {{ mapCoordinates.lat }} Latitude, {{ mapCoordinates.lng }} Longtitude
         </p>
-      </div>
+      </div> -->
     </div>
 
     <v-card class="pa-4" flat style="position: relative">
@@ -51,7 +51,7 @@
           top: 60px;
           left: 50%;
           transform: translateX(-50%);
-          z-index: 99;
+          z-index: 1;
         "
       >
         <v-text-field
