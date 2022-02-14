@@ -1,31 +1,5 @@
 <template>
   <div>
-    <div
-      style="
-        max-width: 800px;
-        margin: 0 auto;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-      "
-    >
-      <!-- <div>
-        <div class="text-h4 mb-1" v-text="'Your coordinates:'"></div>
-
-        <p>
-          {{ userCoordinates.lat }} Latitude,
-          {{ userCoordinates.lng }} Longtitude
-        </p>
-      </div>
-
-      <div>
-        <div class="text-h4 mb-1" v-text="'Map coordinates:'"></div>
-        <p>
-          {{ mapCoordinates.lat }} Latitude, {{ mapCoordinates.lng }} Longtitude
-        </p>
-      </div> -->
-    </div>
-
     <v-card class="pa-4" flat style="position: relative">
       <GmapMap
         :center="userCoordinates"
@@ -40,41 +14,14 @@
         }"
         style="width: 80%; height: 320px; margin: 32px auto"
         ref="mapRef"
-      >
-      </GmapMap>
-
-      <v-toolbar
-        dense
-        floating
-        style="
-          position: absolute;
-          top: 60px;
-          left: 50%;
-          transform: translateX(-50%);
-          z-index: 1;
-        "
-      >
-        <v-text-field
-          hide-details
-          prepend-icon="mdi-magnify"
-          single-line
-        ></v-text-field>
-
-        <v-btn icon>
-          <v-icon>mdi-crosshairs-gps</v-icon>
-        </v-btn>
-
-        <v-btn icon>
-          <v-icon>mdi-dots-vertical</v-icon>
-        </v-btn>
-      </v-toolbar>
+      ></GmapMap>
     </v-card>
   </div>
 </template>
 
 <script>
 export default {
-  name: "GoogleMap",
+  name: "DemoMap",
   data() {
     return {
       map: null,
@@ -82,10 +29,9 @@ export default {
         lat: 0,
         lng: 0,
       },
-      zoom: 8,
+      zoom: 4,
     };
   },
-
   created() {
     this.$getLocation({})
       .then((coordinates) => {

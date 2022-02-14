@@ -48,9 +48,8 @@ export default {
 </script>
 <style scoped>
 .v-btn {
-  top: 40px;
-  left: 10px;
-  position: absolute;
+  top: 120px;
+  left: 20px;
   margin: 0 0 16px 16px;
 }
 </style>

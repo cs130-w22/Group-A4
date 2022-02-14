@@ -24,7 +24,7 @@
         <user-panel v-else :user="user"></user-panel>
       </v-avatar>
     </v-app-bar>
-    <v-main class="grey lighten-3">
+    <v-main class="grey lighten-2">
       <v-container fluid>
         <v-row>
           <v-col v-if="activeTabIndex == 0" cols="12" sm="2">
@@ -37,11 +37,11 @@
           </v-col> -->
 
           <v-col cols="12" :sm="activeTabIndex == 0 ? 10 : 12">
-            <v-sheet rounded="lg" min-height="90vh">
-              <Map v-if="activeTabIndex == 0"> </Map>
-              <SlideShow v-if="activeTabIndex == 0"> </SlideShow>
-              <Schedule v-if="activeTabIndex == 1"> </Schedule>
+            <v-sheet v-if="activeTabIndex == 0" rounded="lg" min-height="90vh">
+              <DemoMap> </DemoMap>
+              <SlideShow> </SlideShow>
             </v-sheet>
+            <Schedule v-else-if="activeTabIndex == 1"> </Schedule>
           </v-col>
 
           <!-- <v-col cols="12" sm="2">
@@ -56,7 +56,7 @@
 <script>
 import axios from "axios";
 
-import Map from "./components/Map";
+import DemoMap from "./components/DemoMap";
 import Stepper from "./components/Stepper";
 import UserPanel from "./components/UserPanel.vue";
 import SlideShow from "./components/SlideShow.vue";
@@ -68,7 +68,7 @@ export default {
   name: "App",
 
   components: {
-    Map,
+    DemoMap,
     Stepper,
     UserPanel,
     SlideShow,
