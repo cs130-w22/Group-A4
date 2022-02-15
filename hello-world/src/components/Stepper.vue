@@ -1,5 +1,5 @@
 <template>
-  <v-stepper v-model="e6" vertical>
+  <v-stepper v-model="e6" vertical min-height="90vh" elevation="0">
     <v-stepper-step :complete="e6 > 1" step="1">
       Select an place
       <small>Summarize if needed</small>

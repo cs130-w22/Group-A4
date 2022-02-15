@@ -10,10 +10,17 @@ POST http://127.0.0.1:8000/registration/ HTTP/1.1
 Content-Type: application/json
 
 {
+<<<<<<< HEAD
     "username": "test-ppnk-api-4",
     "password1": "iamtestpwd123",
     "password2": "iamtestpwd123",
     "email": "test-api-registration-4@test.com"
+=======
+    "username": "test-ppnk-api-3",
+    "password1": "iamtestpwd123",
+    "password2": "iamtestpwd123",
+    "email": "test-api-registration-3@test.com"
+>>>>>>> frontend-dev
 }
 
 
