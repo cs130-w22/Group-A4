@@ -42,7 +42,7 @@
 
 <script>
 export default {
-  name: "Stepper",
+  name: "FrontPageStepper",
   data() {
     return {
       e6: 1,
