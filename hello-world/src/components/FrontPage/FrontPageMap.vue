@@ -21,7 +21,7 @@
 
 <script>
 export default {
-  name: "DemoMap",
+  name: "FrontPageMap",
   data() {
     return {
       map: null,

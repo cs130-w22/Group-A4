@@ -20,7 +20,7 @@ import ScheduleBar from "./ScheduleBar.vue";
 import ScheduleTimeline from "./ScheduleTimeline.vue";
 
 export default {
-  name: "Schedule",
+  name: "ScheduleRouter",
   components: {
     ScheduleMap,
     ScheduleTimeline,
