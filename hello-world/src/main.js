@@ -7,10 +7,6 @@ import * as VueGoogleMaps from 'vue2-google-maps'
 
 Vue.use(GSignInButton)
 
-
-import GSignInButton from 'vue-google-signin-button'
-Vue.use(GSignInButton)
-
 Vue.config.productionTip = false
 Vue.use(VueGeolocation)
 
@@ -21,8 +17,6 @@ Vue.use(VueGoogleMaps, {
   },
   installComponents: true
 })
-
-
 
 new Vue({
   vuetify,
