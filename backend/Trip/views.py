@@ -11,6 +11,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import generics, permissions, mixins
 from rest_framework import status
+from rest_framework.exceptions import ParseError
 
 from .permissions import IsOwnerOrReadOnly, IsAdmin, IsOwnerOrAdmin, IsTripEventOwnerOrAdminCreate, IsTripEventOwnerOrAdminUpdate
 
@@ -54,24 +55,49 @@ def search_object(request):
 def search_geoname(request):
     pass
 
-def search_loc(request):
+class SearchObject(APIView):
     """
     EXPECT:
-        GET Request coming with two header fields:
+        Get Request coming with a JSON entry in data:
+            xid: <string>
+    EXAMPLE: 
+        curl -X GET http://localhost:8000/trip/search/id/ -d "xid"="Q372040"
+    """
+    def get(self, request, format=None):
+        print("[Calling Search LOC API]: ", request.data)
+        data = request.data
+        try:
+            xid = data['xid']
+            resp = requests.get(object_API(xid))
+            
+            pprint(json.loads(resp.content))
+            return HttpResponse(resp, content_type='application/json')
+        except:
+            raise ParseError(detail="Expecting 'lon' and 'lat' field contained in request JSON.", code=None)
+
+class SearchLocation(APIView):
+    """
+    EXPECT:
+        GET Request coming with two JSON entries in data:
             lon: <float> (-180, 180)
             lat: <float> (-90, 90)
     EXAMPLE: 
-        curl http://localhost:8000/trip/search/loc -H "lon: -118.4464" -H "lat: 34.0651"
+        curl -X GET http://localhost:8000/trip/search/loc/ -d "lon"="-118.4085" -d "lat"="33.9416" 
     RETURN:
         JSON file containing all attractions within 3km around <lon> and <lat>
     """
-    headers = request.headers
-    lon = float(headers['lon'])
-    lat = float(headers['lat'])
-    resp = requests.get(loc_API(lon, lat))
-
-    pprint(json.loads(resp.content))
-    return HttpResponse(resp, content_type='application/json')
+    def get(self, request, format=None):
+        print("[Calling Search LOC API]: ", request.data)
+        data = request.data
+        try:
+            lon = float(data['lon'])
+            lat = float(data['lat'])
+            resp = requests.get(loc_API(lon, lat))
+            
+            pprint(json.loads(resp.content))
+            return HttpResponse(resp, content_type='application/json')
+        except:
+            raise ParseError(detail="Expecting 'lon' and 'lat' field contained in request JSON.", code=None)
 
 def search_suggest(request):
     pass
