@@ -1,22 +1,20 @@
 <template>
-  <div>
-    <v-card class="pa-4" flat style="position: relative">
-      <GmapMap
-        :center="userCoordinates"
-        :zoom="zoom"
-        :options="{
-          mapTypeControl: false,
-          scaleControl: false,
-          streetViewControl: false,
-          rotateControl: false,
-          fullscreenControl: false,
-          disableDefaultUi: false,
-        }"
-        style="width: 80%; height: 320px; margin: 32px auto"
-        ref="mapRef"
-      ></GmapMap>
-    </v-card>
-  </div>
+  <v-card class="pa-4" flat style="position: relative">
+    <GmapMap
+      :center="userCoordinates"
+      :zoom="zoom"
+      :options="{
+        mapTypeControl: false,
+        scaleControl: false,
+        streetViewControl: false,
+        rotateControl: false,
+        fullscreenControl: false,
+        disableDefaultUi: false,
+      }"
+      style="width: 80%; height: 320px; margin: 32px auto"
+      ref="mapRef"
+    ></GmapMap>
+  </v-card>
 </template>
 
 <script>

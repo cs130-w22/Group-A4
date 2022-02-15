@@ -21,7 +21,7 @@
 
 <script>
 export default {
-  name: "SlideShow",
+  name: "FrontPageSlideShow",
   data: () => ({
     model: null,
     places: [
