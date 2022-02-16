@@ -6,18 +6,17 @@
           {{ link.name }}
         </v-tab>
       </v-tabs>
-      <v-avatar size="45" rounded="lg" class="grey darken-3" right>
-        <g-signin-button
-          v-if="isEmpty(user)"
-          :params="googleSignInParams"
-          @success="onGoogleSignInSuccess"
-          @error="onGoogleSignInError"
-        >
-          <v-icon dark> mdi-account-circle </v-icon>
-          <!-- <span class="white--text text-button"> Sign in </span> -->
-        </g-signin-button>
-        <user-panel v-else :user="user"></user-panel>
-      </v-avatar>
+
+      <g-signin-button
+        v-if="isEmpty(user)"
+        :params="googleSignInParams"
+        @success="onGoogleSignInSuccess"
+        @error="onGoogleSignInError"
+        style="width: 40px; transform: translateX(-100%)"
+      >
+        <v-btn dark> Login </v-btn>
+      </g-signin-button>
+      <user-panel v-else :user="user"></user-panel>
     </v-app-bar>
     <v-main class="grey lighten-2">
       <v-container fluid>
@@ -36,11 +35,7 @@ export default {
   name: "App",
 
   components: {
-    // DemoMap,
-    // Stepper,
     UserPanel,
-    // SlideShow,
-    // Schedule,
   },
 
   data: () => ({
@@ -50,7 +45,6 @@ export default {
         "113665789634-ouu64vjjn7mnj0slrmtmm5e5gauu17o7.apps.googleusercontent.com",
     },
     user: {},
-    activeTabIndex: 0,
   }),
 
   methods: {
@@ -72,9 +66,6 @@ export default {
     },
     isEmpty(obj) {
       return Object.keys(obj).length === 0;
-    },
-    onTabChange(tabToChange) {
-      this.activeTabIndex = tabToChange;
     },
   },
 };

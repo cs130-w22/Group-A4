@@ -33,12 +33,6 @@
         z-index: 1;
       "
     >
-      <!-- <v-text-field
-          hide-details
-          prepend-icon="mdi-magnify"
-          single-line
-        ></v-text-field> -->
-
       <gmap-autocomplete v-on:place_changed="setPlace" class="introInput">
         <template v-slot:input="slotProps">
           <v-text-field
@@ -53,14 +47,6 @@
         </template>
       </gmap-autocomplete>
       <button class="btn" @click="addMarker">Add</button>
-      <!-- 
-        <v-btn icon>
-          <v-icon>mdi-crosshairs-gps</v-icon>
-        </v-btn> -->
-
-      <!-- <v-btn icon>
-          <v-icon>mdi-dots-vertical</v-icon>
-        </v-btn> -->
     </v-toolbar>
   </v-card>
 </template>
