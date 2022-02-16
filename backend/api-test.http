@@ -168,7 +168,7 @@ Content-Type: application/json
 }
 
 
-### REST API Search Attractions Based on Coordinates
+### REST API Search Attractions Based on Coordinates/Name
 GET http://127.0.0.1:8000/trip/search/loc HTTP/1.1
 Content-Type: application/json
 
@@ -176,6 +176,15 @@ Content-Type: application/json
     "lona": "-118.4085",
     "lat": "33.9416",
     "location": "Westwood",
+    "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjQ0OTk0MDM3LCJpYXQiOjE2NDQ5MDc2MzcsImp0aSI6IjczMTFlZTY1NDM1NDRlOTU4Yjg1ZWRiZmNhYWZmNWZmIiwidXNlcl9pZCI6MX0.n1t-Gd1vmdb3hTw105HU9CUmwgM4fvK5eGEp-Znr8II"
+}
+
+### REST API Search Attractions Based on XID
+GET http://127.0.0.1:8000/trip/search/xid HTTP/1.1
+Content-Type: application/json
+
+{
+    "xid": "Q372040", 
     "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjQ0OTk0MDM3LCJpYXQiOjE2NDQ5MDc2MzcsImp0aSI6IjczMTFlZTY1NDM1NDRlOTU4Yjg1ZWRiZmNhYWZmNWZmIiwidXNlcl9pZCI6MX0.n1t-Gd1vmdb3hTw105HU9CUmwgM4fvK5eGEp-Znr8II"
 }
 

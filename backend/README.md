@@ -20,6 +20,11 @@
     - [Create an TripEvent Under an Itinerary](#create-an-tripevent-under-an-itinerary)
     - [Retrieve an TripEvent by the ID](#retrieve-an-tripevent-by-the-id)
     - [Update an TripEvent by the ID](#update-an-tripevent-by-the-id)
+  - [**Getting Attractions Info**](#getting-attractions-info)
+    - [Getting Attraction Suggestions Based on Location Chosen](#getting-attraction-suggestions-based-on-location-chosen)
+      - [1. Using exact coordinate:](#1-using-exact-coordinate)
+      - [2. Using name of the location:](#2-using-name-of-the-location)
+    - [Getting Exact Attraction:](#getting-exact-attraction)
 
 
 ## **Project Setup**
@@ -226,6 +231,45 @@ Content-Type: application/json
 }
 ```
 
+
+## **Getting Attractions Info**
+### Getting Attraction Suggestions Based on Location Chosen
+Once user chooses a place, you can send the coordinate or the name of the place to backend, the backend will retrieve relevant attractions and get back to you. That said, there are 2 ways to give backend users' places of interests, both using `GET` request to http://127.0.0.1:8000/trip/search/loc/.
+#### 1. Using exact coordinate:
+Specify the longitude and latitude in the JSON data, both are `string` input (they will be converted to `float` in the backend), like this:
+```http
+GET http://127.0.0.1:8000/trip/search/loc/ HTTP/1.1
+Content-Type: application/json
+
+{
+    "lon": "-118.4085",
+    "lat": "33.9416",
+    "access_token": "<YOUR-ACCESS-TOKEN>"
+}
+```
+#### 2. Using name of the location:
+Specify the name of the location (don't have to be exact, but a bit more detail is good, such as using "`Westwood, Los Angeles`" instead of "`Westwood`", because there are westwoods in New York). It will be matched to the most similar places, and using that as the query location to return back to you suggested attractions. Like this:
+```http
+GET http://127.0.0.1:8000/trip/search/loc/ HTTP/1.1
+Content-Type: application/json
+
+{
+    "location": "Westwood, Los Angeles",
+    "access_token": "<YOUR-ACCESS-TOKEN>"
+}
+```
+
+### Getting Exact Attraction:
+Instead of getting suggestions around a place, you can also get the information of an exact attraction based on the `xid` (the unique object ID of OpenTripMap API for each attraction). It has MUCH MUCH MORE detailed information about that exact attraction, simply send a `GET` request to http://127.0.0.1:8000/trip/search/xid/.
+```http
+GET http://127.0.0.1:8000/trip/search/xid HTTP/1.1
+Content-Type: application/json
+
+{
+    "xid": "Q372040", 
+    "access_token": "<YOUR-ACCESS-TOKEN>"
+}
+```
 
 <!-- ```
 """
