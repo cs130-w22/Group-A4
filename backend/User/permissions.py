@@ -20,7 +20,7 @@ class IsOwnerOrReadOnly(permissions.BasePermission):
         # Write permissions are only allowed to the User itself
         print("Permission Check: ", obj.user == request.user)
         print("Admin Check: ", request.user.is_staff)
-        return obj.user == request.user
+        return obj == request.user
 
 class IsAdmin(permissions.BasePermission):
     """
@@ -29,6 +29,7 @@ class IsAdmin(permissions.BasePermission):
 
     def has_permission(self, request, view):
         # ONLY admin will have the permission to view/update
+        print(request.user)
         return request.user.is_staff
 
 
@@ -40,4 +41,4 @@ class IsOwnerOrAdmin(permissions.BasePermission):
 
     def has_object_permission(self, request, view, obj):
         # Write permissions are only allowed to the User itself
-        return obj.user == request.user or request.user.is_staff
+        return obj == request.user or request.user.is_staff

@@ -1,8 +1,10 @@
+from urllib import request
 from django.shortcuts import render
 from django.http import HttpResponse
 
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
+from rest_framework.views import APIView
 from rest_framework import generics, permissions, mixins
 
 import urllib.parse
@@ -12,40 +14,69 @@ from dj_rest_auth.registration.views import SocialLoginView
 from django.shortcuts import redirect
 from django.urls import reverse
 
-from .serializers import UserProfileSerializer
-from .models import UserProfile
+from .serializers import UserProfileSerializer, UserSerializer
+from .models import User
 from .permissions import IsOwnerOrReadOnly, IsAdmin, IsOwnerOrAdmin
+from django.contrib.auth.models import User
 
-# User CRUD (generic class based views)
+
+# admin user CRUD (all user available)
 class UserList(generics.ListAPIView):
     """
     View list of all users
     """
-    queryset = UserProfile.objects.all()
-    serializer_class = UserProfileSerializer
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsAdmin]
 
-class UserDetail(generics.RetrieveAPIView):
-    queryset = UserProfile.objects.all()
-    serializer_class = UserProfileSerializer
+class UserDetailUpdate(generics.RetrieveUpdateAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsOwnerOrAdmin]
 
-class UserUpdate(generics.GenericAPIView, mixins.UpdateModelMixin):
-    queryset = UserProfile.objects.all()
-    serializer_class = UserProfileSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsOwnerOrAdmin]
-
+    # support PATCH (update current user profile)
     def patch(self, request, *args, **kwargs):
         return self.partial_update(request, *args, **kwargs)
 
-    def get(self, request, *args, **kwargs):
+class UserDelete(generics.DestroyAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsOwnerOrAdmin]
+
+class UserUpdate(generics.GenericAPIView, mixins.UpdateModelMixin):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsOwnerOrAdmin]
+
+    # support PATCH (update current user profile)
+    def patch(self, request, *args, **kwargs):
         return self.partial_update(request, *args, **kwargs)
 
-
-class UserDelete(generics.DestroyAPIView):
-    queryset = UserProfile.objects.all()
-    serializer_class = UserProfileSerializer
+# regular user CRUD (current logged-in user available)
+class CurrentUserDetail(generics.GenericAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsOwnerOrAdmin]
+
+    # support GET (current user profile)
+    def get(self, request, format=None):
+        serializer = UserSerializer(request.user)
+        return Response(serializer.data)
+
+# TODO: make /user/profile/update/ work!
+class CurrentUserUpdate(generics.GenericAPIView, mixins.UpdateModelMixin):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsOwnerOrAdmin]
+
+    def perform_update(self, serializer):
+        print("[[[PERFORMING UPDATEING>>>>")
+        # queryset = User.objects.filter(user=self.request.user)
+        serializer.save(id=self.request.user)
+
+    # support PATCH (update current user profile)
+    def patch(self, request, *args, **kwargs):
+        return self.partial_update(request, *args, **kwargs)
 
 
 class GoogleLogin(SocialLoginView):
