@@ -33,6 +33,7 @@
         </v-item>
       </v-col>
     </v-row>
+    <button v-on:click="searchPlace">123</button>
   </v-item-group>
 </template>
 
@@ -40,6 +41,8 @@
 <script>
 // Todo: use google places api here
 // import axios from "axios";
+// import {gmapApi} from 'vue2-google-maps'
+
 
 export default {
   name: "SchedulePlacesCard",
@@ -59,6 +62,27 @@ export default {
       },
     ],
   }),
+
+  methods:{
+    searchPlace(){
+      this.$root.$emit('show-place-on-map', "The high line");
+
+      // console.log(gmapApi)
+      // console.log(this.$parent.$parent.$parent.$children[1].$children[0].$children[0].$children[0])
+      // let config = {
+      //   method: 'get',
+      //   url: 'https://maps.googleapis.com/maps/api/place/findplacefromtext/json?input=Museum%20of%20Contemporary%20Art%20Australia&inputtype=textquery&fields=formatted_address%2Cname%2Crating%2Copening_hours%2Cgeometry&key=YOUR_API_KEY',
+      //   headers: { }
+      // };
+      // axios(config)
+      //   .then(function (response) {
+      //     console.log(JSON.stringify(response.data));
+      //   })
+      //   .catch(function (error) {
+      //     console.log(error);
+      //   });
+    }
+  },
 
   mounted() {
     //   const apikey = "AIzaSyCrt7b1kPOg4J7ayO6IgIJfy6R_9vp5Rlw";
