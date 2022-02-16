@@ -2,7 +2,7 @@
   <v-item-group multiple>
     <div class="text-h4 mb-1 text-center" v-text="'Places to visit'"></div>
     <v-row dense>
-      <v-col v-for="(item, i) in items" :key="i" cols="12">
+      <v-col v-for="(place, i) in places" :key="i" cols="12">
         <v-item v-slot="{ active, toggle }">
           <v-card
             :color="active ? 'primary' : 'grey'"
@@ -10,94 +10,63 @@
             dark
             height="200"
             @click="toggle"
+            v-on:click="!active ? showPlace(place) : hidePlace(place)"
           >
             <div class="d-flex flex-no-wrap justify-space-between">
               <div>
                 <v-card-title
                   class="text-h5"
-                  v-text="item.title"
+                  v-text="place.name"
                 ></v-card-title>
-                <v-card-subtitle v-text="item.subtitle"></v-card-subtitle>
+                <v-card-subtitle v-text="place.subtitle"></v-card-subtitle>
               </div>
               <v-avatar class="ma-3" size="125" tile>
-                <v-img :src="item.src"></v-img>
+                <v-img :src="place.src"></v-img>
               </v-avatar>
             </div>
 
-            <v-scroll-y-transition>
-              <!-- <div v-if="active" class="text-h2 flex-grow-1 text-center">
+            <!-- <v-scroll-y-transition>
+              <div v-if="active" class="text-h2 flex-grow-1 text-center">
                 added
-              </div> -->
-            </v-scroll-y-transition>
+              </div>
+            </v-scroll-y-transition> -->
           </v-card>
         </v-item>
       </v-col>
     </v-row>
-    <button v-on:click="searchPlace">123</button>
   </v-item-group>
 </template>
 
 
 <script>
-// Todo: use google places api here
-// import axios from "axios";
-// import {gmapApi} from 'vue2-google-maps'
-
-
 export default {
   name: "SchedulePlacesCard",
   data: () => ({
-    items: [
+    places: [
       {
         src: "https://itin-dev.sfo2.cdn.digitaloceanspaces.com/freeImage/doG5bfmYNq6xrPLci3QZldd508cnd9uc",
-        title: "The High Line",
+        name: "The High Line",
         subtitle:
           "Popular park 30 feet above street level on an old rail line, with river & city views.",
+        place_id: "123",
       },
       {
         src: "https://itin-dev.sfo2.cdn.digitaloceanspaces.com/freeImage/IqF0JB0T0DeIdYVfUxhJEy5oM3QlZha6",
-        title: "Statue of Liberty National Monument",
+        name: "Statue of Liberty National Monument",
         subtitle:
           "Iconic National Monument opened in 1886, offering guided tours, a museum & city views.",
+        place_id: "234",
       },
     ],
   }),
 
-  methods:{
-    searchPlace(){
-      this.$root.$emit('show-place-on-map', "The high line");
-
-      // console.log(gmapApi)
-      // console.log(this.$parent.$parent.$parent.$children[1].$children[0].$children[0].$children[0])
-      // let config = {
-      //   method: 'get',
-      //   url: 'https://maps.googleapis.com/maps/api/place/findplacefromtext/json?input=Museum%20of%20Contemporary%20Art%20Australia&inputtype=textquery&fields=formatted_address%2Cname%2Crating%2Copening_hours%2Cgeometry&key=YOUR_API_KEY',
-      //   headers: { }
-      // };
-      // axios(config)
-      //   .then(function (response) {
-      //     console.log(JSON.stringify(response.data));
-      //   })
-      //   .catch(function (error) {
-      //     console.log(error);
-      //   });
-    }
-  },
-
-  mounted() {
-    //   const apikey = "AIzaSyCrt7b1kPOg4J7ayO6IgIJfy6R_9vp5Rlw";
-    //   const url = `https://maps.googleapis.com/maps/api/place/photo
-    // ?maxwidth=400
-    // &photo_reference=Aap_uEA7vb0DDYVJWEaX3O-AtYp77AaswQKSGtDaimt3gt7QCNpdjp1BkdM6acJ96xTec3tsV_ZJNL_JP-lqsVxydG3nh739RE_hepOOL05tfJh2_ranjMadb3VoBYFvF0ma6S24qZ6QJUuV6sSRrhCskSBP5C1myCzsebztMfGvm7ij3gZT
-    // &key=${apikey}`;
-    //   axios
-    //     .get(url)
-    //     .then((resp) => {
-    //       console.log(resp);
-    //     })
-    //     .catch((err) => {
-    //       console.log(err.response);
-    //     });
+  methods: {
+    showPlace(place) {
+      this.$root.$emit("show-place-on-map", place);
+    },
+    hidePlace(place) {
+      this.$root.$emit("hide-place-on-map", place);
+    },
   },
 };
 </script>

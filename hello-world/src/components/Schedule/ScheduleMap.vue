@@ -16,57 +16,45 @@
     >
       <GmapMarker
         :key="index"
-        v-for="(m, index) in markers"
-        :position="m.position"
-        @click="center = m.position"
+        v-for="(marker, index) in markers"
+        :position="marker.position"
+        @click="markerClicked(marker, index)"
       >
-      <GmapInfoWindow>
+        <GmapInfoWindow
+          :opened="marker.infoWindowShown"
+          @closeclick="marker.infoWindowShown = false"
+        >
+          <v-card max-width="250" flat>
+            <v-img
+              height="120"
+              src="https://cdn.vuetifyjs.com/images/cards/cooking.png"
+            ></v-img>
 
-<v-card
-    max-width="250"
-    flat
-  >
-    <v-img
-      height="120"
-      src="https://cdn.vuetifyjs.com/images/cards/cooking.png"
-    ></v-img>
+            <v-card-title>Cafe Badilico</v-card-title>
 
-    <v-card-title>Cafe Badilico</v-card-title>
+            <v-card-text>
+              <v-row align="center" class="mx-0">
+                <v-rating
+                  :value="4.5"
+                  color="amber"
+                  dense
+                  half-increments
+                  readonly
+                  size="14"
+                ></v-rating>
 
-    <v-card-text>
-      <v-row
-        align="center"
-        class="mx-0"
-      >
-        <v-rating
-          :value="4.5"
-          color="amber"
-          dense
-          half-increments
-          readonly
-          size="14"
-        ></v-rating>
+                <div class="grey--text ms-4">4.5 (413)</div>
+              </v-row>
 
-        <div class="grey--text ms-4">
-          4.5 (413)
-        </div>
-      </v-row>
+              <div class="my-4 text-subtitle-1">$ • Italian, Cafe</div>
 
-      <div class="my-4 text-subtitle-1">
-        $ • Italian, Cafe
-      </div>
-
-      <div>Small plates, salads & sandwiches - an intimate setting with 12 indoor seats plus patio seating.</div>
-    
-    </v-card-text>
-</v-card>
-
-        <!-- <div class="ui header">{{ m.name }}</div>
-         <p>{{ m.vicinity}} </p> -->
-
-      
-
-      </GmapInfoWindow>
+              <div>
+                Small plates, salads & sandwiches - an intimate setting with 12
+                indoor seats plus patio seating.
+              </div>
+            </v-card-text>
+          </v-card>
+        </GmapInfoWindow>
       </GmapMarker>
     </GmapMap>
 
@@ -99,7 +87,7 @@
 </template>
 
 <script>
-import {gmapApi} from 'vue2-google-maps'
+import { gmapApi } from "vue2-google-maps";
 
 export default {
   name: "ScheduleMap",
@@ -120,43 +108,66 @@ export default {
     setPlace(place) {
       this.currentPlace = place;
     },
-    addMarker() {
+    addMarker(place_id) {
       if (this.currentPlace) {
         const marker = {
           lat: this.currentPlace.geometry.location.lat(),
           lng: this.currentPlace.geometry.location.lng(),
         };
-        // console.log(this.currentPlace)
-        this.markers.push({ position: marker, });
+        this.markers.push({
+          position: marker,
+          infoWindowShown: false,
+          place_id: place_id,
+        });
         this.userCoordinates = marker;
         this.currentPlace = null;
       }
     },
 
-    showPlaceOnMap(place){
+    markerClicked(marker) {
+      this.markers.forEach((e) => (e.infoWindowShown = false)); // closed every other infowindow
 
-      this.$gmapApiPromiseLazy().then(() => {
-            const request = {
-              query: place,
-              fields: ["name", "geometry"],
-            };
-          const service = new this.google.maps.places.PlacesService(this.map);
-          service.findPlaceFromQuery(request, (results, status) => {
-            if (status === this.google.maps.places.PlacesServiceStatus.OK && results) {
-              for (let i = 0; i < results.length; i++) {
-                this.setPlace(results[i]);
-                this.addMarker();
-              }
-              this.map.setCenter(results[0].geometry.location);
-            }
-          });
-      })
-    }
+      this.center = marker.position; // open this window
+      marker.infoWindowShown = true;
+
+      // this.markers = [...this.markers]; // trigger v-model binding
+    },
+
+    showPlaceOnMap(place) {
+      const { name, place_id } = place;
+      if (this.markers.filter((e) => e.place_id == place_id).length > 0) return; // markers already contain this place
+
+      const request = {
+        query: name,
+        fields: ["name", "geometry"],
+      };
+      const service = new this.google.maps.places.PlacesService(this.map);
+      service.findPlaceFromQuery(request, (results, status) => {
+        if (
+          status === this.google.maps.places.PlacesServiceStatus.OK &&
+          results
+        ) {
+          // for (let i = 0; i < results.length; i++) {
+          this.setPlace(results[0]);
+          this.addMarker(place_id);
+          // }
+          this.map.setCenter(results[0].geometry.location);
+        }
+      });
+    },
+
+    hidePlaceOnMap(place) {
+      const { place_id } = place;
+
+      this.markers = this.markers.filter((e) => e.place_id != place_id);
+    },
   },
 
   created() {
-    this.$root.$on('show-place-on-map', this.showPlaceOnMap); // register hook for SchedulePlacesCard.vue
+    this.$root.$on("show-place-on-map", this.showPlaceOnMap); // register hook for SchedulePlacesCard.vue
+    this.$root.$on("hide-place-on-map", this.hidePlaceOnMap); // register hook for SchedulePlacesCard.vue
 
+    this.$gmapApiPromiseLazy(); // init google api
     this.$getLocation({})
       .then((coordinates) => {
         this.userCoordinates = coordinates;
