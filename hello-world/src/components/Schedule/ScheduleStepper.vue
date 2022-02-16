@@ -17,7 +17,7 @@
       <v-btn text> Cancel </v-btn>
     </v-stepper-content>
 
-    <v-stepper-step :complete="e6 > 2" step="2" editable edit-icon="$complete">
+    <v-stepper-step step="2" editable edit-icon="$complete">
       Select the length of your trip
     </v-stepper-step>
 
@@ -51,12 +51,12 @@
       </v-card>
     </v-stepper-content>
 
-    <v-stepper-step :complete="e6 > 3" step="3" editable edit-icon="$complete">
+    <v-stepper-step :complete="step3" step="3" editable edit-icon="$complete">
       Pick your places of interest
     </v-stepper-step>
 
     <v-stepper-content step="3">
-      <v-btn color="primary" @click="e6 = 4"> Continue </v-btn>
+      <v-btn color="primary" @click="(step3 = true), e6++"> Continue </v-btn>
       <v-btn text> Cancel </v-btn>
     </v-stepper-content>
 
@@ -90,7 +90,9 @@ export default {
     return {
       e6: 2,
       selection: 1,
+      step3: false,
     };
   },
 };
 </script>
+

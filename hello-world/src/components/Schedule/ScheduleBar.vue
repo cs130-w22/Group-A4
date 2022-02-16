@@ -3,7 +3,15 @@
     <v-btn fixed fab dark @click.stop="drawer = !drawer">
       <v-icon> mdi-pencil </v-icon>
     </v-btn>
-    <v-navigation-drawer v-model="drawer" bottom temporary width="360" app>
+    <v-navigation-drawer
+      v-model="drawer"
+      bottom
+      temporary
+      width="25vw"
+      app
+      hide-overlay
+      right
+    >
       <SchedulePlacesCard></SchedulePlacesCard>
     </v-navigation-drawer>
   </div>
