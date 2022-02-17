@@ -232,27 +232,15 @@ Content-Type: application/json
 
 ## **Query Place Info**
 #### Getting Place Recommendations Using Name of the Destination:
-Specify the name of the location (don't have to be exact, such as "`Westwood`"). It will be matched to the most similar places, and using that as the query location to return back to you suggested attractions. Like this:
+We use `URL parameters` as query method, you need to specify the name of the location (don't have to be exact, such as "`Westwood`"). It will be matched to the most similar places, and using that as the query location to return back to you suggested attractions. Like this:
 ```http
-GET http://127.0.0.1:8000/trip/search/loc/ HTTP/1.1
-Content-Type: application/json
-
-{
-    "location": "Westwood",
-    "access_token": "<YOUR-ACCESS-TOKEN>"
-}
+GET http://127.0.0.1:8000/trip/search/loc?location=Westwood HTTP/1.1
 ```
 
 #### Getting Details of Exact Attraction (`place_id`):
-Instead of getting suggestions around a place, you can also get the information of an exact attraction based on the `place_id` (the unique object ID of GoogleMap API for each place). It has MUCH MUCH MORE detailed information about that exact attraction, simply send a `GET` request to http://127.0.0.1:8000/trip/search/place-id/.
+Instead of getting suggestions around a place, you can also get the information of an exact attraction based on the `place_id` (the unique object ID of GoogleMap API for each place). It has MUCH MUCH MORE detailed information about that exact attraction. We use `URL parameters` as query method, simply send a `GET` request to http://127.0.0.1:8000/trip/search/place-id, with parameter `id=<place_id>`
 ```http
-GET http://127.0.0.1:8000/trip/search/place-id HTTP/1.1
-Content-Type: application/json
-
-{
-    "place_id": "ChIJD0eFf57DwoAR2VMsk3eVhn8", 
-    "access_token": "<YOUR-ACCESS-TOKEN>"
-}
+GET http://127.0.0.1:8000/trip/search/place_id?id=ChIJD0eFf57DwoAR2VMsk3eVhn8 HTTP/1.1
 ```
 
 <!-- ### Getting Attraction Suggestions Based on Location Chosen (Deprecated, but still usable :))

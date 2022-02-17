@@ -5,7 +5,7 @@ from . import views, opentripmap_api, googlemap_api
 
 urlpatterns = [
     # search API Endpoints
-    path('search/place-id/', googlemap_api.SearchObject.as_view(), name="trip_search"),
+    path('search/place_id/', googlemap_api.SearchObject.as_view(), name="trip_search"),
     path('search/loc/', googlemap_api.SearchLocation.as_view(), name="trip_search"),
     # TripEvent API Endpoints
     path('event/create/', views.TripEventCreate.as_view(), name="tripevent_create"),

@@ -99,7 +99,6 @@ class SearchLocation(APIView):
         return photo_url
 
     def get(self, request, format=None):
-
         # sanity checks
         if not 'location' in request.GET:
             raise ParseError(
@@ -171,12 +170,11 @@ class SearchObject(APIView):
 
     def get(self, request, format=None):
         # retrieving data
-        data = request.data
-        if not 'place_id' in data:
+        if not 'id' in request.GET:
             raise ParseError(
                 detail="Expecting a string field 'place_id'.", code=None)
 
-        place_id = data['place_id']
+        place_id = request.GET['id']
         resp = self.__get_place_detail(place_id)
 
         return HttpResponse(resp, content_type='application/json')
