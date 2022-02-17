@@ -1,12 +1,12 @@
 from django.contrib import admin
 from django.urls import path, include
 
-from . import views
+from . import views, opentripmap_api, googlemap_api
 
 urlpatterns = [
     # search API Endpoints
-    path('search/xid/', views.SearchObject.as_view(), name="trip_search"),
-    path('search/loc/', views.SearchLocation.as_view(), name="trip_search"),
+    path('search/place-id/', googlemap_api.SearchObject.as_view(), name="trip_search"),
+    path('search/loc/', googlemap_api.SearchLocation.as_view(), name="trip_search"),
     # TripEvent API Endpoints
     path('event/create/', views.TripEventCreate.as_view(), name="tripevent_create"),
     # path('event/', views.TripEventList.as_view(), name="tripevent_detail"),
