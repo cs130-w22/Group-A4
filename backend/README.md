@@ -20,8 +20,9 @@
     - [Create an TripEvent Under an Itinerary](#create-an-tripevent-under-an-itinerary)
     - [Retrieve an TripEvent by the ID](#retrieve-an-tripevent-by-the-id)
     - [Update an TripEvent by the ID](#update-an-tripevent-by-the-id)
-  - [**Getting Attractions Info**](#getting-attractions-info)
-      - [1. Using name of the location:](#1-using-name-of-the-location)
+  - [**Query Place Info**](#query-place-info)
+      - [Getting Place Recommendations Using Name of the Destination:](#getting-place-recommendations-using-name-of-the-destination)
+      - [Getting Details of Exact Attraction (`place_id`):](#getting-details-of-exact-attraction-place_id)
 
 
 ## **Project Setup**
@@ -229,8 +230,8 @@ Content-Type: application/json
 ```
 
 
-## **Getting Attractions Info**
-#### 1. Using name of the location:
+## **Query Place Info**
+#### Getting Place Recommendations Using Name of the Destination:
 Specify the name of the location (don't have to be exact, such as "`Westwood`"). It will be matched to the most similar places, and using that as the query location to return back to you suggested attractions. Like this:
 ```http
 GET http://127.0.0.1:8000/trip/search/loc/ HTTP/1.1
@@ -238,6 +239,18 @@ Content-Type: application/json
 
 {
     "location": "Westwood",
+    "access_token": "<YOUR-ACCESS-TOKEN>"
+}
+```
+
+#### Getting Details of Exact Attraction (`place_id`):
+Instead of getting suggestions around a place, you can also get the information of an exact attraction based on the `place_id` (the unique object ID of GoogleMap API for each place). It has MUCH MUCH MORE detailed information about that exact attraction, simply send a `GET` request to http://127.0.0.1:8000/trip/search/place-id/.
+```http
+GET http://127.0.0.1:8000/trip/search/place-id HTTP/1.1
+Content-Type: application/json
+
+{
+    "place_id": "ChIJD0eFf57DwoAR2VMsk3eVhn8", 
     "access_token": "<YOUR-ACCESS-TOKEN>"
 }
 ```
@@ -267,18 +280,6 @@ Content-Type: application/json
     "access_token": "<YOUR-ACCESS-TOKEN>"
 }
 ``` -->
-
-### Getting Exact Attraction:
-Instead of getting suggestions around a place, you can also get the information of an exact attraction based on the `place_id` (the unique object ID of GoogleMap API for each place). It has MUCH MUCH MORE detailed information about that exact attraction, simply send a `GET` request to http://127.0.0.1:8000/trip/search/place-id/.
-```http
-GET http://127.0.0.1:8000/trip/search/place-id HTTP/1.1
-Content-Type: application/json
-
-{
-    "place_id": "ChIJD0eFf57DwoAR2VMsk3eVhn8", 
-    "access_token": "<YOUR-ACCESS-TOKEN>"
-}
-```
 
 <!-- ```
 """
