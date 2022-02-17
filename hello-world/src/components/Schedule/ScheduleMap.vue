@@ -136,29 +136,31 @@ export default {
     },
 
     showPlaceOnMap(place) {
-      const { name } = place;
+      if (this.markers.filter((e) => e.place_id === place.place_id).length > 0)
+        return; // markers already contain this place
 
-      const request = {
-        query: name,
-        fields: ["name", "geometry", "place_id", "photo"],
-      };
-      const service = this.getGooglePlacesService();
-      service.findPlaceFromQuery(request, (results, status) => {
-        if (
-          status === this.google.maps.places.PlacesServiceStatus.OK &&
-          results
-        ) {
-          const { place_id } = results[0];
+      // const { name } = place;
 
-          if (this.markers.filter((e) => e.place_id === place_id).length > 0)
-            return; // markers already contain this place
+      console.log(place);
 
-          this.setPlace(results[0]);
-          this.addMarker(results[0]);
+      // const request = {
+      //   query: name,
+      //   fields: ["name", "geometry", "place_id", "photo"],
+      // };
+      // const service = this.getGooglePlacesService();
+      // service.findPlaceFromQuery(request, (results, status) => {
+      //   if (
+      //     status === this.google.maps.places.PlacesServiceStatus.OK &&
+      //     results
+      //   ) {
+      //     const { place_id } = results[0];
 
-          this.map.setCenter(results[0].geometry.location);
-        }
-      });
+      //     this.setPlace(results[0]);
+      //     this.addMarker(results[0]);
+
+      //     this.map.setCenter(results[0].geometry.location);
+      //   }
+      // });
 
       // service.getDetails(request, (results, status) => {
       //   if (
@@ -175,23 +177,8 @@ export default {
     },
 
     hidePlaceOnMap(place) {
-      const { name } = place;
-
-      const request = {
-        query: name,
-        fields: ["name", "place_id"],
-      };
-
-      const service = this.getGooglePlacesService();
-      service.findPlaceFromQuery(request, (results, status) => {
-        if (
-          status === this.google.maps.places.PlacesServiceStatus.OK &&
-          results
-        ) {
-          const { place_id } = results[0];
-          this.markers = this.markers.filter((e) => e.place_id !== place_id);
-        }
-      });
+      const { place_id } = place;
+      this.markers = this.markers.filter((e) => e.place_id !== place_id);
     },
 
     getGooglePlacesService() {

@@ -53,8 +53,8 @@ export default {
         headers: { "Content-Type": "application/json" },
         params: { location: "NYC" },
       })
-      .then((json) => {
-        this.places = json.data;
+      .then((resp) => {
+        this.places = resp.data;
       })
       .catch((err) => {
         console.log(err.response);
