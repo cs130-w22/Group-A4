@@ -18,19 +18,16 @@
         :key="index"
         v-for="(marker, index) in markers"
         :position="marker.position"
-        @click="markerClicked(marker, index)"
+        @click="markerClicked(marker)"
       >
         <GmapInfoWindow
           :opened="marker.infoWindowShown"
           @closeclick="marker.infoWindowShown = false"
         >
           <v-card max-width="250" flat>
-            <v-img
-              height="120"
-              src="https://cdn.vuetifyjs.com/images/cards/cooking.png"
-            ></v-img>
+            <v-img height="120" :src="marker.url"></v-img>
 
-            <v-card-title>Cafe Badilico</v-card-title>
+            <v-card-title>{{ marker.name }}</v-card-title>
 
             <v-card-text>
               <v-row align="center" class="mx-0">
@@ -101,6 +98,7 @@ export default {
       zoom: 8,
       currentPlace: null,
       markers: [],
+      googlePlacesService: null,
     };
   },
 
@@ -108,18 +106,24 @@ export default {
     setPlace(place) {
       this.currentPlace = place;
     },
-    addMarker(place_id) {
+    addMarker(place) {
       if (this.currentPlace) {
+        const { place_id } = place;
+
+        console.log(place);
+
         const marker = {
           lat: this.currentPlace.geometry.location.lat(),
           lng: this.currentPlace.geometry.location.lng(),
         };
+        this.userCoordinates = marker;
         this.markers.push({
           position: marker,
           infoWindowShown: false,
           place_id: place_id,
+          url: place.photos[0].getUrl(),
+          name: place.name,
         });
-        this.userCoordinates = marker;
         this.currentPlace = null;
       }
     },
@@ -134,37 +138,73 @@ export default {
     },
 
     showPlaceOnMap(place) {
-      const { name, place_id } = place;
-      if (this.markers.filter((e) => e.place_id == place_id).length > 0) return; // markers already contain this place
+      const { name } = place;
 
       const request = {
         query: name,
-        fields: ["name", "geometry"],
+        fields: ["name", "geometry", "place_id", "photo"],
       };
-      const service = new this.google.maps.places.PlacesService(this.map);
+      const service = this.getGooglePlacesService();
       service.findPlaceFromQuery(request, (results, status) => {
         if (
           status === this.google.maps.places.PlacesServiceStatus.OK &&
           results
         ) {
-          // for (let i = 0; i < results.length; i++) {
+          const { place_id } = results[0];
+
+          if (this.markers.filter((e) => e.place_id === place_id).length > 0)
+            return; // markers already contain this place
+
           this.setPlace(results[0]);
-          this.addMarker(place_id);
-          // }
+          this.addMarker(results[0]);
+
           this.map.setCenter(results[0].geometry.location);
+        }
+      });
+
+      // service.getDetails(request, (results, status) => {
+      //   if (
+      //     status === this.google.maps.places.PlacesServiceStatus.OK &&
+      //     results
+      //   ) {
+      //     // for (let i = 0; i < results.length; i++) {
+      //     this.setPlace(results[0]);
+      //     this.addMarker(place_id);
+      //     // }
+      //     this.map.setCenter(results[0].geometry.location);
+      //   }
+      // });
+    },
+
+    hidePlaceOnMap(place) {
+      const { name } = place;
+
+      const request = {
+        query: name,
+        fields: ["name", "place_id"],
+      };
+
+      const service = this.getGooglePlacesService();
+      service.findPlaceFromQuery(request, (results, status) => {
+        if (
+          status === this.google.maps.places.PlacesServiceStatus.OK &&
+          results
+        ) {
+          const { place_id } = results[0];
+          this.markers = this.markers.filter((e) => e.place_id !== place_id);
         }
       });
     },
 
-    hidePlaceOnMap(place) {
-      const { place_id } = place;
+    getGooglePlacesService() {
+      if (this.googlePlacesService !== null) return this.googlePlacesService;
 
-      this.markers = this.markers.filter((e) => e.place_id != place_id);
+      return new this.google.maps.places.PlacesService(this.map);
     },
   },
 
   created() {
-    this.$root.$on("show-place-on-map", this.showPlaceOnMap); // register hook for SchedulePlacesCard.vue
+    this.$root.$on("show-place-on-map", this.showPlaceOnMap); // register hook for SchedulePlacesCard.vueow
     this.$root.$on("hide-place-on-map", this.hidePlaceOnMap); // register hook for SchedulePlacesCard.vue
 
     this.$gmapApiPromiseLazy(); // init google api
