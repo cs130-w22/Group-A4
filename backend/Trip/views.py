@@ -13,12 +13,19 @@ from rest_framework import generics, permissions, mixins
 from rest_framework import status
 from rest_framework.exceptions import ParseError
 
+import googlemaps
+from datetime import datetime
+
 from .permissions import IsOwnerOrReadOnly, IsAdmin, IsOwnerOrAdmin, IsTripEventOwnerOrAdminCreate, IsTripEventOwnerOrAdminUpdate
 
 
 OPENTRIPMAP_APIKEY = "5ae2e3f221c38a28845f05b67692ad3e6018090b4af24d1fc0c6f08d"
 OPENTRIPMAP_API_ENDPOINT = "http://api.opentripmap.com/0.1/en/places"
 API_PREFIX = "apikey="
+
+GOOGLEMAP_APIKEY = "AIzaSyDrg_oL7B5OjeAVSc92Nye5UqaO2iSBP8k"
+gmaps = googlemaps.Client(key=GOOGLEMAP_APIKEY)
+
 """
 API Helper functions
 """
