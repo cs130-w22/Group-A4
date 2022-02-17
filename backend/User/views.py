@@ -1,3 +1,6 @@
+from cmath import log
+import requests
+from pprint import pprint
 from urllib import request
 from django.shortcuts import render
 from django.http import HttpResponse
@@ -78,11 +81,37 @@ class CurrentUserUpdate(generics.GenericAPIView, mixins.UpdateModelMixin):
     def patch(self, request, *args, **kwargs):
         return self.partial_update(request, *args, **kwargs)
 
+"""
+Google OAuth Related
+"""
+class CustomGoogleOAuth2Adapter(GoogleOAuth2Adapter):
+
+    access_token_url = "https://accounts.google.com/o/oauth2/token"
+    authorize_url = "https://accounts.google.com/o/oauth2/auth"
+    profile_url = "https://www.googleapis.com/oauth2/v1/userinfo"
+
+    def complete_login(self, request, app, token, **kwargs):
+        resp = requests.get(
+            self.profile_url,
+            params={"access_token": token.token, "alt": "json"},
+        )
+        resp.raise_for_status()
+        extra_data = resp.json()
+        pprint(extra_data)
+        login = self.get_provider().sociallogin_from_response(request, extra_data)
+        return login
 
 class GoogleLogin(SocialLoginView):
-    adapter_class = GoogleOAuth2Adapter
-    # callback_url = "http://localhost:8000/allauth/google/login/callback/"
+    adapter_class = CustomGoogleOAuth2Adapter
+    # callback_url = "http://localhost:8080/"
     client_class = OAuth2Client
+
+class GoogleCallBack(APIView):
+    def get(self, request):
+        resp = {
+            "Login": "Successful!"
+        }
+        return HttpResponse(resp, content_type='application/json')
 
 """
 Types of generic class based views: 
