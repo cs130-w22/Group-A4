@@ -110,8 +110,6 @@ export default {
       if (this.currentPlace) {
         const { place_id } = place;
 
-        console.log(place);
-
         const marker = {
           lat: this.currentPlace.geometry.location.lat(),
           lng: this.currentPlace.geometry.location.lng(),
@@ -131,8 +129,8 @@ export default {
     markerClicked(marker) {
       this.markers.forEach((e) => (e.infoWindowShown = false)); // closed every other infowindow
 
-      this.center = marker.position; // open this window
-      marker.infoWindowShown = true;
+      this.center = marker.position;
+      marker.infoWindowShown = true; // open this window
 
       // this.markers = [...this.markers]; // trigger v-model binding
     },
