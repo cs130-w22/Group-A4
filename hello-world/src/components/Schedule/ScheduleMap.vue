@@ -117,7 +117,7 @@ export default {
         this.userCoordinates = marker;
         this.markers.push({
           position: marker,
-          infoWindowShown: false,
+          infoWindowShown: true,
           place_id: place_id,
           url: place.photos[0].getUrl(),
           name: place.name,

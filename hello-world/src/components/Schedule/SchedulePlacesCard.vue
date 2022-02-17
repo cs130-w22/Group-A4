@@ -18,10 +18,10 @@
                   class="text-h5"
                   v-text="place.name"
                 ></v-card-title>
-                <v-card-subtitle v-text="place.subtitle"></v-card-subtitle>
+                <!-- <v-card-subtitle v-text="place.subtitle"></v-card-subtitle> -->
               </div>
               <v-avatar class="ma-3" size="125" tile>
-                <v-img :src="place.src"></v-img>
+                <v-img :src="place.photo_url"></v-img>
               </v-avatar>
             </div>
 
@@ -39,26 +39,27 @@
 
 
 <script>
+import axios from "axios";
+
 export default {
   name: "SchedulePlacesCard",
   data: () => ({
-    places: [
-      {
-        src: "https://itin-dev.sfo2.cdn.digitaloceanspaces.com/freeImage/doG5bfmYNq6xrPLci3QZldd508cnd9uc",
-        name: "The High Line",
-        subtitle:
-          "Popular park 30 feet above street level on an old rail line, with river & city views.",
-        place_id: "123",
-      },
-      {
-        src: "https://itin-dev.sfo2.cdn.digitaloceanspaces.com/freeImage/IqF0JB0T0DeIdYVfUxhJEy5oM3QlZha6",
-        name: "Statue of Liberty National Monument",
-        subtitle:
-          "Iconic National Monument opened in 1886, offering guided tours, a museum & city views.",
-        place_id: "234",
-      },
-    ],
+    places: null,
   }),
+
+  created() {
+    axios
+      .get("http://127.0.0.1:8000/trip/search/loc/", {
+        headers: { "Content-Type": "application/json" },
+        params: { location: "NYC" },
+      })
+      .then((json) => {
+        this.places = json.data;
+      })
+      .catch((err) => {
+        console.log(err.response);
+      });
+  },
 
   methods: {
     showPlace(place) {

@@ -5,8 +5,9 @@ from datetime import datetime
 from rest_framework.exceptions import ParseError
 from rest_framework.views import APIView
 from django.http import HttpResponse
+import json
 
-# API GUIDE: 
+# API GUIDE:
 # https://github.com/googlemaps/google-maps-services-python
 # https://github.com/googlemaps/google-maps-services-python/blob/4dd8db6b53049869cf98f2fed3ba8e56676d1709/googlemaps/places.py
 
@@ -33,11 +34,12 @@ ATTRACTION_TYPES = [
     # "shopping_mall",
     # "stadium",
     # "synagogue",
-    "tourist_attraction", # actually includes lots of other types
+    "tourist_attraction",  # actually includes lots of other types
     # "university",
     # "zoo"
 ]
 RADIUS = 100000
+
 
 class SearchLocation(APIView):
     """
@@ -54,9 +56,10 @@ class SearchLocation(APIView):
     RETURN:
         JSON file containing all attractions within 3km around <lon> and <lat>
     """
-    def __get_coord_by_name(self, name:str):
+
+    def __get_coord_by_name(self, name: str):
         print(f"Getting coordinates of queried place: {name}")
-        resp =  gmaps.find_place(
+        resp = gmaps.find_place(
             name,
             "textquery",
             fields=["place_id", "name", "geometry/location"],
@@ -65,12 +68,13 @@ class SearchLocation(APIView):
         try:
             candidate = resp['candidates'][0]
             # coord in (lat, lng)
-            coord = (candidate['geometry']['location']['lat'], candidate['geometry']['location']['lng'])
+            coord = (candidate['geometry']['location']['lat'],
+                     candidate['geometry']['location']['lng'])
             return coord
         except:
             ParseError(detail=f"Cannot find places named [{name}]", code=None)
 
-    def __find_places_in_radius(self, coord: tuple[float, float], radius:int=10000, min_price=None, max_price=None, rank_by=None, type=None):
+    def __find_places_in_radius(self, coord: tuple[float, float], radius: int = 10000, min_price=None, max_price=None, rank_by=None, type=None):
         """
         find places within [radius] (in meters) from [coord]
         """
@@ -87,7 +91,7 @@ class SearchLocation(APIView):
 
         return resp['results']
 
-    def __get_photo_url(self, ref:str, max_width:int=300):
+    def __get_photo_url(self, ref: str, max_width: int = 300):
         """
         get a url to photo using photo reference (got from place or place detail)
         """
@@ -95,13 +99,13 @@ class SearchLocation(APIView):
         return photo_url
 
     def get(self, request, format=None):
-        # retrieving data
-        data = request.data
-        # sanity checks
-        if not 'location' in data:
-            raise ParseError(detail="Expecting a string field 'location' indicating the destination for recommendation.", code=None)
 
-        location = data['location']
+        # sanity checks
+        if not 'location' in request.GET:
+            raise ParseError(
+                detail="Expecting a string field 'location' indicating the destination for recommendation.", code=None)
+
+        location = request.GET['location']
         # get coordinates based on name of the places (lat, lng)
         coord = self.__get_coord_by_name(location)
 
@@ -111,7 +115,8 @@ class SearchLocation(APIView):
         for TYPE in ATTRACTION_TYPES:
             print(f"Searching for TYPE = {TYPE}...")
             # use the coordinates to retrieve nearby places of interests
-            nearby_places.extend(self.__find_places_in_radius(coord, radius=RADIUS, type=TYPE))
+            nearby_places.extend(self.__find_places_in_radius(
+                coord, radius=RADIUS, type=TYPE))
 
         # pprint(nearby_places)
         print(f"Found {len(nearby_places)} places {RADIUS}m around {location}")
@@ -119,7 +124,7 @@ class SearchLocation(APIView):
         filtered_places = []
         # pprint(nearby_places[:])
         # filter information for all places queried
-        
+
         for place in nearby_places:
             place_json = {}
             # place id
@@ -145,7 +150,7 @@ class SearchLocation(APIView):
             # break
 
         pprint(filtered_places)
-        return HttpResponse(filtered_places, content_type='application/json')
+        return HttpResponse(json.dumps(filtered_places), content_type='application/json')
 
 
 class SearchObject(APIView):
@@ -158,7 +163,8 @@ class SearchObject(APIView):
     RETURN:
         JSON containing all details of the place
     """
-    def __get_place_detail(self, place_id:str):
+
+    def __get_place_detail(self, place_id: str):
         resp = gmaps.place(place_id)
         pprint(resp)
         return resp
@@ -167,7 +173,8 @@ class SearchObject(APIView):
         # retrieving data
         data = request.data
         if not 'place_id' in data:
-            raise ParseError(detail="Expecting a string field 'place_id'.", code=None)
+            raise ParseError(
+                detail="Expecting a string field 'place_id'.", code=None)
 
         place_id = data['place_id']
         resp = self.__get_place_detail(place_id)

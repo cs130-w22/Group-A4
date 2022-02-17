@@ -18,7 +18,7 @@
             {{ user.email }}
           </p>
           <v-divider class="my-3"></v-divider>
-          <v-btn depressed rounded text> Disconnect </v-btn>
+          <v-btn depressed rounded text v-on:click="signOut"> Sign out </v-btn>
         </div>
       </v-list-item-content>
     </v-card>
@@ -36,5 +36,11 @@ export default {
       email: "john.doe@doe.com",
     },
   }),
+
+  methods: {
+    signOut() {
+      this.$emit("sign-out");
+    },
+  },
 };
 </script>
