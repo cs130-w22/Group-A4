@@ -16,10 +16,43 @@
     >
       <GmapMarker
         :key="index"
-        v-for="(m, index) in markers"
-        :position="m.position"
-        @click="center = m.position"
-      />
+        v-for="(marker, index) in markers"
+        :position="marker.position"
+        @click="markerClicked(marker)"
+      >
+        <GmapInfoWindow
+          :opened="marker.infoWindowShown"
+          @closeclick="marker.infoWindowShown = false"
+        >
+          <v-card max-width="250" flat>
+            <v-img height="120" :src="marker.url"></v-img>
+
+            <v-card-title>{{ marker.name }}</v-card-title>
+
+            <v-card-text>
+              <v-row align="center" class="mx-0">
+                <v-rating
+                  :value="4.5"
+                  color="amber"
+                  dense
+                  half-increments
+                  readonly
+                  size="14"
+                ></v-rating>
+
+                <div class="grey--text ms-4">4.5 (413)</div>
+              </v-row>
+
+              <div class="my-4 text-subtitle-1">$ • Italian, Cafe</div>
+
+              <div>
+                Small plates, salads & sandwiches - an intimate setting with 12
+                indoor seats plus patio seating.
+              </div>
+            </v-card-text>
+          </v-card>
+        </GmapInfoWindow>
+      </GmapMarker>
     </GmapMap>
 
     <v-toolbar
@@ -27,7 +60,7 @@
       floating
       style="
         position: absolute;
-        top: 60px;
+        top: 20px;
         left: 50%;
         transform: translateX(-50%);
         z-index: 1;
@@ -41,7 +74,6 @@
             placeholder="Location Of Event"
             ref="input"
             v-on:listeners="slotProps.listeners"
-            v-on:attrs="slotProps.attrs"
           >
           </v-text-field>
         </template>
@@ -52,6 +84,8 @@
 </template>
 
 <script>
+import { gmapApi } from "vue2-google-maps";
+
 export default {
   name: "ScheduleMap",
   data() {
@@ -64,6 +98,7 @@ export default {
       zoom: 8,
       currentPlace: null,
       markers: [],
+      googlePlacesService: null,
     };
   },
 
@@ -71,20 +106,106 @@ export default {
     setPlace(place) {
       this.currentPlace = place;
     },
-    addMarker() {
+    addMarker(place) {
       if (this.currentPlace) {
+        const { place_id } = place;
+
         const marker = {
           lat: this.currentPlace.geometry.location.lat(),
           lng: this.currentPlace.geometry.location.lng(),
         };
-        this.markers.push({ position: marker });
         this.userCoordinates = marker;
+        this.markers.push({
+          position: marker,
+          infoWindowShown: true,
+          place_id: place_id,
+          url: place.photos[0].getUrl(),
+          name: place.name,
+        });
         this.currentPlace = null;
       }
+    },
+
+    markerClicked(marker) {
+      this.markers.forEach((e) => (e.infoWindowShown = false)); // closed every other infowindow
+
+      this.center = marker.position;
+      marker.infoWindowShown = true; // open this window
+
+      // this.markers = [...this.markers]; // trigger v-model binding
+    },
+
+    showPlaceOnMap(place) {
+      const { name } = place;
+
+      const request = {
+        query: name,
+        fields: ["name", "geometry", "place_id", "photo"],
+      };
+      const service = this.getGooglePlacesService();
+      service.findPlaceFromQuery(request, (results, status) => {
+        if (
+          status === this.google.maps.places.PlacesServiceStatus.OK &&
+          results
+        ) {
+          const { place_id } = results[0];
+
+          if (this.markers.filter((e) => e.place_id === place_id).length > 0)
+            return; // markers already contain this place
+
+          this.setPlace(results[0]);
+          this.addMarker(results[0]);
+
+          this.map.setCenter(results[0].geometry.location);
+        }
+      });
+
+      // service.getDetails(request, (results, status) => {
+      //   if (
+      //     status === this.google.maps.places.PlacesServiceStatus.OK &&
+      //     results
+      //   ) {
+      //     // for (let i = 0; i < results.length; i++) {
+      //     this.setPlace(results[0]);
+      //     this.addMarker(place_id);
+      //     // }
+      //     this.map.setCenter(results[0].geometry.location);
+      //   }
+      // });
+    },
+
+    hidePlaceOnMap(place) {
+      const { name } = place;
+
+      const request = {
+        query: name,
+        fields: ["name", "place_id"],
+      };
+
+      const service = this.getGooglePlacesService();
+      service.findPlaceFromQuery(request, (results, status) => {
+        if (
+          status === this.google.maps.places.PlacesServiceStatus.OK &&
+          results
+        ) {
+          const { place_id } = results[0];
+          this.markers = this.markers.filter((e) => e.place_id !== place_id);
+        }
+      });
+    },
+
+    getGooglePlacesService() {
+      if (this.googlePlacesService !== null) return this.googlePlacesService;
+
+      return new this.google.maps.places.PlacesService(this.map);
     },
   },
 
   created() {
+    this.$root.$on("show-place-on-map", this.showPlaceOnMap); // register hook for SchedulePlacesCard.vueow
+    this.$root.$on("hide-place-on-map", this.hidePlaceOnMap); // register hook for SchedulePlacesCard.vue
+
+    this.$gmapApiPromiseLazy(); // init google api
     this.$getLocation({})
       .then((coordinates) => {
         this.userCoordinates = coordinates;
@@ -97,6 +218,7 @@ export default {
   },
 
   computed: {
+    google: gmapApi,
     mapCoordinates() {
       if (!this.map) {
         // google map not inited

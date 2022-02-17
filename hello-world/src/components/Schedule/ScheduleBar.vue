@@ -11,6 +11,7 @@
       app
       hide-overlay
       right
+      stateless
     >
       <SchedulePlacesCard></SchedulePlacesCard>
     </v-navigation-drawer>
@@ -25,7 +26,7 @@ export default {
     SchedulePlacesCard,
   },
   data: () => ({
-    drawer: false,
+    drawer: true,
   }),
 };
 </script>

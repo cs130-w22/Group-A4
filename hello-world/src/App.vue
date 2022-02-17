@@ -7,16 +7,31 @@
         </v-tab>
       </v-tabs>
 
-      <g-signin-button
+      <!-- <g-signin-button
         v-if="isEmpty(user)"
         :params="googleSignInParams"
         @success="onGoogleSignInSuccess"
         @error="onGoogleSignInError"
         style="width: 40px; transform: translateX(-100%)"
-      >
-        <v-btn dark> Login </v-btn>
-      </g-signin-button>
-      <user-panel v-else :user="user"></user-panel>
+        </g-signin-button> 
+      > -->
+      <div style="width: 48px">
+        <v-btn
+          v-if="!isSignIn"
+          dark
+          @click="handleClickSignIn"
+          style="transform: translateX(-50%)"
+          :style="{ display: isInit ? '' : 'none' }"
+        >
+          Login
+        </v-btn>
+        <user-panel
+          :user="user"
+          v-else
+          v-on:sign-out="handleClickSignOut"
+          :style="{ display: isInit ? '' : 'none' }"
+        ></user-panel>
+      </div>
     </v-app-bar>
     <v-main class="grey lighten-2">
       <v-container fluid>
@@ -27,7 +42,7 @@
 </template>
 
 <script>
-import axios from "axios";
+// import axios from "axios";
 
 import UserPanel from "./components/UserPanel.vue";
 
@@ -40,32 +55,46 @@ export default {
 
   data: () => ({
     links: [{ name: "Map" }, { name: "Schedule" }],
-    googleSignInParams: {
-      client_id:
-        "113665789634-ouu64vjjn7mnj0slrmtmm5e5gauu17o7.apps.googleusercontent.com",
-    },
-    user: {},
+    isSignIn: false,
+    isInit: false,
+    access_token: null,
   }),
-
+  created() {
+    let that = this;
+    let checkGauthLoad = setInterval(function () {
+      that.isInit = that.$gAuth.isInit;
+      that.isSignIn = that.$gAuth.isAuthorized;
+      if (that.isInit) clearInterval(checkGauthLoad);
+    }, 1000);
+  },
   methods: {
-    onGoogleSignInSuccess(resp) {
-      const token = resp.wc.access_token;
-      axios
-        .post("http://localhost:8000/auth/google/", {
-          access_token: token,
-        })
-        .then((resp) => {
-          this.user = resp.data.user;
-        })
-        .catch((err) => {
-          console.log(err.response);
-        });
+    async handleClickSignIn() {
+      try {
+        const googleUser = await this.$gAuth.signIn();
+        if (!googleUser) return;
+        console.log("googleUser", googleUser);
+        console.log("getId", googleUser.getId());
+        console.log("getBasicProfile", googleUser.getBasicProfile());
+        console.log("getAuthResponse", googleUser.getAuthResponse());
+        console.log(
+          "getAuthResponse",
+          this.$gAuth.GoogleAuth.currentUser.get().getAuthResponse()
+        );
+        this.isSignIn = this.$gAuth.isAuthorized;
+      } catch (error) {
+        //on fail do something
+        console.error(error);
+      }
     },
-    onGoogleSignInError(error) {
-      console.log("OH NOES", error);
-    },
-    isEmpty(obj) {
-      return Object.keys(obj).length === 0;
+
+    async handleClickSignOut() {
+      try {
+        await this.$gAuth.signOut();
+        this.isSignIn = this.$gAuth.isAuthorized;
+        console.log("isSignIn", this.$gAuth.isAuthorized);
+      } catch (error) {
+        console.error(error);
+      }
     },
   },
 };
