@@ -98,6 +98,10 @@ class SearchLocation(APIView):
         photo_url = f"{GOOGLEMAP_PHOTO_API}maxwidth={max_width}&photoreference={ref}&key={GOOGLEMAP_APIKEY}"
         return photo_url
 
+    def __get_place_detail(self, place_id: str):
+        resp = gmaps.place(place_id)
+        return resp['result']
+
     def get(self, request, format=None):
 
         # sanity checks
@@ -131,11 +135,11 @@ class SearchLocation(APIView):
             # place_json['place_id'] = place['place_id']
             # # place name
             # place_json['name'] = place['name']
-            # # photo url
-            # if 'photos' in place:
-            #     photo_ref = place['photos'][0]['photo_reference']
-            #     photo_url = self.__get_photo_url(photo_ref)
-            #     place_json['photo_url'] = photo_url
+            # photo url
+            if 'photos' in place:
+                photo_ref = place['photos'][0]['photo_reference']
+                photo_url = self.__get_photo_url(photo_ref)
+                place['photo_url'] = photo_url
             # # rating
             # if 'rating' in place:
             #     place_json['rating'] = place['rating']
@@ -145,9 +149,15 @@ class SearchLocation(APIView):
 
             # place_json['lng'] = lng
             # place_json['lat'] = lat
-
+            
+            # Retrieve review from detail
+            detail = self.__get_place_detail(place['place_id'])
+            reviews = detail['reviews']
+            review = "No Reviews :("
+            if len(reviews) > 0:
+                review = reviews[0]['text']
+            place['review'] = review
             filtered_places.append(place)
-            # break
 
         pprint(filtered_places)
         return HttpResponse(json.dumps(filtered_places), content_type='application/json')
@@ -167,7 +177,7 @@ class SearchObject(APIView):
     def __get_place_detail(self, place_id: str):
         resp = gmaps.place(place_id)
         pprint(resp)
-        return resp
+        return resp['result']
 
     def get(self, request, format=None):
         # retrieving data
