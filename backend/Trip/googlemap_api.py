@@ -126,27 +126,27 @@ class SearchLocation(APIView):
         # filter information for all places queried
 
         for place in nearby_places:
-            place_json = {}
-            # place id
-            place_json['place_id'] = place['place_id']
-            # place name
-            place_json['name'] = place['name']
-            # photo url
-            if 'photos' in place:
-                photo_ref = place['photos'][0]['photo_reference']
-                photo_url = self.__get_photo_url(photo_ref)
-                place_json['photo_url'] = photo_url
-            # rating
-            if 'rating' in place:
-                place_json['rating'] = place['rating']
-            # longitude/latitude
-            lng = place['geometry']['location']['lng']
-            lat = place['geometry']['location']['lat']
+            # place_json = {}
+            # # place id
+            # place_json['place_id'] = place['place_id']
+            # # place name
+            # place_json['name'] = place['name']
+            # # photo url
+            # if 'photos' in place:
+            #     photo_ref = place['photos'][0]['photo_reference']
+            #     photo_url = self.__get_photo_url(photo_ref)
+            #     place_json['photo_url'] = photo_url
+            # # rating
+            # if 'rating' in place:
+            #     place_json['rating'] = place['rating']
+            # # longitude/latitude
+            # lng = place['geometry']['location']['lng']
+            # lat = place['geometry']['location']['lat']
 
-            place_json['lng'] = lng
-            place_json['lat'] = lat
+            # place_json['lng'] = lng
+            # place_json['lat'] = lat
 
-            filtered_places.append(place_json)
+            filtered_places.append(place)
             # break
 
         pprint(filtered_places)

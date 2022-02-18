@@ -9,19 +9,21 @@
         streetViewControl: false,
         rotateControl: false,
         fullscreenControl: false,
-        disableDefaultUi: false,
+        disableDefaultUi: true,
       }"
       style="width: 100%; height: 100%"
       ref="mapRef"
     >
       <GmapMarker
-        :key="index"
         v-for="(marker, index) in markers"
+        :key="marker.place_id"
         :position="marker.position"
+        :label="(index + 1).toString()"
         @click="markerClicked(marker)"
       >
         <GmapInfoWindow
           :opened="marker.infoWindowShown"
+          :zIndex="marker.zIndex"
           @closeclick="marker.infoWindowShown = false"
         >
           <v-card max-width="250" flat>
@@ -32,7 +34,7 @@
             <v-card-text>
               <v-row align="center" class="mx-0">
                 <v-rating
-                  :value="4.5"
+                  :value="marker.rating"
                   color="amber"
                   dense
                   half-increments
@@ -40,10 +42,15 @@
                   size="14"
                 ></v-rating>
 
-                <div class="grey--text ms-4">4.5 (413)</div>
+                <div class="grey--text ms-4">
+                  {{ marker.rating }} ({{ marker.user_ratings_total }})
+                </div>
               </v-row>
 
-              <div class="my-4 text-subtitle-1">$ • Italian, Cafe</div>
+              <div class="my-4 text-subtitle-1">
+                <span v-for="i in marker.price_level" :key="i">$</span>
+                • {{ marker.types[0] }}, {{ marker.types[1] }}
+              </div>
 
               <div>
                 Small plates, salads & sandwiches - an intimate setting with 12
@@ -78,7 +85,7 @@
           </v-text-field>
         </template>
       </gmap-autocomplete>
-      <button class="btn" @click="addMarker">Add</button>
+      <button class="btn" @click="addMarker(currentPlace)">Add</button>
     </v-toolbar>
   </v-card>
 </template>
@@ -95,10 +102,11 @@ export default {
         lat: 0,
         lng: 0,
       },
-      zoom: 8,
+      zoom: 10,
       currentPlace: null,
       markers: [],
       googlePlacesService: null,
+      curZIndex: 0,
     };
   },
 
@@ -107,41 +115,59 @@ export default {
       this.currentPlace = place;
     },
     addMarker(place) {
-      if (this.currentPlace) {
-        const { place_id } = place;
+      if (this.markers.some((e) => e.place_id === place.place_id)) return; // markers already contain this place
 
+      if (place) {
         const marker = {
-          lat: this.currentPlace.geometry.location.lat(),
-          lng: this.currentPlace.geometry.location.lng(),
+          lat: place.geometry.location.lat(),
+          lng: place.geometry.location.lng(),
         };
         this.userCoordinates = marker;
-        this.markers.push({
-          position: marker,
-          infoWindowShown: true,
-          place_id: place_id,
-          url: place.photos[0].getUrl(),
-          name: place.name,
-        });
-        this.currentPlace = null;
+
+        const placeObj = place;
+        placeObj.position = marker;
+        placeObj.infoWindowShown = true;
+        placeObj.zIndex = ++this.curZIndex;
+
+        // this.markers.push({
+        //   position: marker,
+        //   infoWindowShown: true,
+        //   place_id: place_id,
+        //   // url: place.photos[0].getUrl(),
+        //   name: place.name,
+        //   rating: place.rating,
+        //   price_level: place.price_level,
+        //   zIndex: ++this.curZIndex,
+        // });
+
+        this.markers.push(placeObj);
+
+        // this.currentPlace = null;
       }
     },
 
     markerClicked(marker) {
-      this.markers.forEach((e) => (e.infoWindowShown = false)); // closed every other infowindow
-
       this.center = marker.position;
-      marker.infoWindowShown = true; // open this window
-
+      marker.infoWindowShown = !marker.infoWindowShown; // open this window
       // this.markers = [...this.markers]; // trigger v-model binding
     },
 
     showPlaceOnMap(place) {
-      if (this.markers.filter((e) => e.place_id === place.place_id).length > 0)
-        return; // markers already contain this place
+      if (typeof place.geometry.location.lat === "number") {
+        const { lat, lng } = place.geometry.location;
+        place.geometry.location.lat = function () {
+          return lat;
+        };
 
-      // const { name } = place;
+        place.geometry.location.lng = function () {
+          return lng;
+        };
+      }
 
       console.log(place);
+
+      this.setPlace(place);
+      this.addMarker(place);
 
       // const request = {
       //   query: name,
