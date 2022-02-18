@@ -23,7 +23,6 @@
       >
         <GmapInfoWindow
           :opened="marker.infoWindowShown"
-          :zIndex="marker.zIndex"
           @closeclick="marker.infoWindowShown = false"
         >
           <v-card max-width="300" max-height="360" flat>
@@ -106,7 +105,6 @@ export default {
       currentPlace: null,
       markers: [],
       googlePlacesService: null,
-      curZIndex: 0,
     };
   },
 
@@ -129,7 +127,11 @@ export default {
         placeObj.infoWindowShown = true;
         const detail = await this.getPlaceDetails(place);
 
-        placeObj.review = detail.reviews[0].text;
+        try {
+          placeObj.review = detail.reviews[0].text;
+        } catch (err) {
+          placeObj.review = "No review"; // google api fails to return anything useful
+        }
         // placeObj.zIndex = ++this.curZIndex;
 
         // this.markers.push({
@@ -150,9 +152,10 @@ export default {
     },
 
     markerClicked(marker) {
+      const nextInfoWindowState = !marker.infoWindowShown;
       this.center = marker.position;
       this.markers.forEach((e) => (e.infoWindowShown = false));
-      marker.infoWindowShown = true; // open this window
+      marker.infoWindowShown = nextInfoWindowState;
 
       this.markers = [...this.markers]; // trigger v-model binding
     },
