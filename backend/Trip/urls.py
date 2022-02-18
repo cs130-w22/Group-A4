@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.urls import path, include
 
-from . import views, opentripmap_api, googlemap_api
+from . import views, opentripmap_api, googlemap_api, scheduling
 
 urlpatterns = [
     # search API Endpoints
@@ -16,4 +16,7 @@ urlpatterns = [
     path('itinerary/', views.ItineraryList.as_view(), name="itinerary_list"),
     path('itinerary/<int:pk>/', views.ItineraryViewUpdate.as_view(), name="itinerary_view_update"),
     path('itinerary/all/', views.ItineraryListAll.as_view(), name="itinerary_list_all"),
+    # Scheduling API Endpoints
+    path('schedule/', scheduling.SchedulingAPI.as_view(), name="scheduling"),
+    path('schedule/test/', scheduling.SchedulingTEST.as_view(), name="scheduling_test"),
 ]

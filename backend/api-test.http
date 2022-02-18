@@ -176,3 +176,6 @@ GET http://127.0.0.1:8000/trip/search/place_id?id=ChIJD0eFf57DwoAR2VMsk3eVhn8 HT
 
 ### REST API Search Attractions Based on place_id (URL Query Param)
 GET http://127.0.0.1:8000/user/profile/ HTTP/1.1
+
+### REST API Search Attractions Based on place_id (URL Query Param)
+GET http://127.0.0.1:8000/trip/schedule/test?location=Westwood HTTP/1.1
