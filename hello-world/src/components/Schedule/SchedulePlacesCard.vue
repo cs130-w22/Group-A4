@@ -28,7 +28,7 @@
 
         <v-item v-slot="{ active, toggle }">
           <v-card
-            :color="active ? 'purple lighten-2' : 'grey'"
+            :color="active ? 'green darken-1' : 'grey'"
             class="d-flex align-center ma-1"
             dark
             height="150"
@@ -39,7 +39,7 @@
               :src="place.photo_url"
               class="white--text align-end"
               gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.5)"
-              height="90%"
+              height="95%"
             >
               <v-card-title v-text="place.name"></v-card-title>
             </v-img>
@@ -92,6 +92,15 @@ export default {
       this.currentPlace = place;
     },
     addMarker(place) {
+      const placeObj = place;
+      if (!("photos" in placeObj)) {
+        placeObj.photo_url =
+          "https://lahousing.lacity.org/AAHR/Images/No_Image_Available.jpg";
+      } else {
+        placeObj.photo_url = place.photos[0].getUrl();
+      }
+
+      this.places.unshift(placeObj);
       this.$root.$emit("show-place-on-map", place);
     },
   },

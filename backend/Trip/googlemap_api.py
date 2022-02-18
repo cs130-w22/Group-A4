@@ -152,7 +152,7 @@ class SearchLocation(APIView):
 
             # place_json['lng'] = lng
             # place_json['lat'] = lat
-            
+
             # Retrieve review from detail
             # detail = self.__get_place_detail(place['place_id'])
             # reviews = detail['reviews']
