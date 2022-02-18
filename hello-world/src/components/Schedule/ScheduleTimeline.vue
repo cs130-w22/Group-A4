@@ -1,5 +1,4 @@
 <template>
-  <!-- <v-container style="max-width: 600px"> -->
   <v-timeline dense clipped class="mr-8">
     <!-- <v-timeline-item fill-dot class="white--text mb-12" color="orange" large>
         <v-text-field
@@ -101,7 +100,6 @@
       </v-row>
     </v-timeline-item>
   </v-timeline>
-  <!-- </v-container> -->
 </template>
 <script>
 export default {

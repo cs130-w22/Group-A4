@@ -1,7 +1,5 @@
 <template>
   <v-row>
-    <ScheduleBar></ScheduleBar>
-
     <v-col cols="12" sm="9">
       <v-sheet rounded="lg" min-height="90vh">
         <ScheduleMap> </ScheduleMap>
@@ -12,6 +10,7 @@
         <ScheduleStepper> </ScheduleStepper>
       </v-sheet>
     </v-col>
+    <ScheduleBar></ScheduleBar>
   </v-row>
 </template>
 <script>

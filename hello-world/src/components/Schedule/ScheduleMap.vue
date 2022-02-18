@@ -27,7 +27,7 @@
           @closeclick="marker.infoWindowShown = false"
         >
           <v-card max-width="250" flat>
-            <v-img height="120" :src="marker.url"></v-img>
+            <v-img height="120" :src="marker.photo_url"></v-img>
 
             <v-card-title>{{ marker.name }}</v-card-title>
 
@@ -62,7 +62,7 @@
       </GmapMarker>
     </GmapMap>
 
-    <v-toolbar
+    <!-- <v-toolbar
       dense
       floating
       style="
@@ -81,12 +81,13 @@
             placeholder="Location Of Event"
             ref="input"
             v-on:listeners="slotProps.listeners"
+                        v-on:attrs="slotProps.attrs"
           >
           </v-text-field>
         </template>
       </gmap-autocomplete>
       <button class="btn" @click="addMarker(currentPlace)">Add</button>
-    </v-toolbar>
+    </v-toolbar> -->
   </v-card>
 </template>
 
@@ -102,7 +103,7 @@ export default {
         lat: 0,
         lng: 0,
       },
-      zoom: 10,
+      zoom: 12,
       currentPlace: null,
       markers: [],
       googlePlacesService: null,
@@ -126,8 +127,8 @@ export default {
 
         const placeObj = place;
         placeObj.position = marker;
-        placeObj.infoWindowShown = true;
-        placeObj.zIndex = ++this.curZIndex;
+        placeObj.infoWindowShown = false;
+        // placeObj.zIndex = ++this.curZIndex;
 
         // this.markers.push({
         //   position: marker,
@@ -149,7 +150,8 @@ export default {
     markerClicked(marker) {
       this.center = marker.position;
       marker.infoWindowShown = !marker.infoWindowShown; // open this window
-      // this.markers = [...this.markers]; // trigger v-model binding
+
+      this.markers = [...this.markers]; // trigger v-model binding
     },
 
     showPlaceOnMap(place) {
