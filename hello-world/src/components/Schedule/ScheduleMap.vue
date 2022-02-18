@@ -26,7 +26,7 @@
           :zIndex="marker.zIndex"
           @closeclick="marker.infoWindowShown = false"
         >
-          <v-card max-width="250" flat>
+          <v-card max-width="300" max-height="360" flat>
             <v-img height="120" :src="marker.photo_url"></v-img>
 
             <v-card-title>{{ marker.name }}</v-card-title>
@@ -53,8 +53,7 @@
               </div>
 
               <div>
-                Small plates, salads & sandwiches - an intimate setting with 12
-                indoor seats plus patio seating.
+                {{ marker.review }}
               </div>
             </v-card-text>
           </v-card>
@@ -115,7 +114,7 @@ export default {
     setPlace(place) {
       this.currentPlace = place;
     },
-    addMarker(place) {
+    async addMarker(place) {
       if (this.markers.some((e) => e.place_id === place.place_id)) return; // markers already contain this place
 
       if (place) {
@@ -127,7 +126,10 @@ export default {
 
         const placeObj = place;
         placeObj.position = marker;
-        placeObj.infoWindowShown = false;
+        placeObj.infoWindowShown = true;
+        const detail = await this.getPlaceDetails(place);
+
+        placeObj.review = detail.reviews[0].text;
         // placeObj.zIndex = ++this.curZIndex;
 
         // this.markers.push({
@@ -141,15 +143,16 @@ export default {
         //   zIndex: ++this.curZIndex,
         // });
 
+        this.markers.forEach((e) => (e.infoWindowShown = false));
         this.markers.push(placeObj);
-
         // this.currentPlace = null;
       }
     },
 
     markerClicked(marker) {
       this.center = marker.position;
-      marker.infoWindowShown = !marker.infoWindowShown; // open this window
+      this.markers.forEach((e) => (e.infoWindowShown = false));
+      marker.infoWindowShown = true; // open this window
 
       this.markers = [...this.markers]; // trigger v-model binding
     },
@@ -166,10 +169,10 @@ export default {
         };
       }
 
-      console.log(place);
-
       this.setPlace(place);
       this.addMarker(place);
+
+      // this.getPlaceDetails(place);
 
       // const request = {
       //   query: name,
@@ -189,19 +192,58 @@ export default {
       //     this.map.setCenter(results[0].geometry.location);
       //   }
       // });
+    },
 
-      // service.getDetails(request, (results, status) => {
+    async getPlaceDetails(place) {
+      const { place_id } = place;
+      const service = this.getGooglePlacesService();
+
+      const request = {
+        placeId: place_id,
+      };
+
+      const { results, status } = await new Promise((resolve) =>
+        service.getDetails(
+          request,
+          // pass a callback to getDetails that resolves the promise
+          (results, status) => resolve({ results, status })
+        )
+      );
+      if (
+        status === this.google.maps.places.PlacesServiceStatus.OK &&
+        results
+      ) {
+        return Promise.resolve(results);
+      } else {
+        return Promise.reject(results);
+      }
+
+      //     // this.markers.filter((e) => e.place_id === place_id)[0]["review"] =
+
+      // return results;
+      // console.log(results);
+      // console.log(status);
+
+      // let review;
+      // await service.getDetails(request, async (result, status) => {
       //   if (
       //     status === this.google.maps.places.PlacesServiceStatus.OK &&
-      //     results
+      //     result
       //   ) {
+      //     review = await result.reviews[0];
+
+      //     //   await review.text;
+
+      //     // console.log(this.markers);
+      //     // console.log(results);
       //     // for (let i = 0; i < results.length; i++) {
-      //     this.setPlace(results[0]);
-      //     this.addMarker(place_id);
+      //     // this.setPlace(results[0]);
+      //     // this.addMarker(place_id);
       //     // }
-      //     this.map.setCenter(results[0].geometry.location);
+      //     // this.map.setCenter(results[0].geometry.location);
       //   }
       // });
+      // return await review;
     },
 
     hidePlaceOnMap(place) {
