@@ -150,12 +150,12 @@ class SearchLocation(APIView):
             # place_json['lat'] = lat
             
             # Retrieve review from detail
-            detail = self.__get_place_detail(place['place_id'])
-            reviews = detail['reviews']
-            review = "No Reviews :("
-            if len(reviews) > 0:
-                review = reviews[0]['text']
-            place['review'] = review
+            # detail = self.__get_place_detail(place['place_id'])
+            # reviews = detail['reviews']
+            # review = "No Reviews :("
+            # if len(reviews) > 0:
+            #     review = reviews[0]['text']
+            # place['review'] = review
             filtered_places.append(place)
 
         pprint(filtered_places)
