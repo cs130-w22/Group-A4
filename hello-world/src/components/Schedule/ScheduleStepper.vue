@@ -46,8 +46,7 @@
             <v-chip>9:00AM</v-chip>
           </v-chip-group>
         </v-card-text>
-        <v-btn color="primary" @click="e6 = 3"> Continue </v-btn>
-        <v-btn text> Cancel </v-btn>
+        <v-btn color="primary" @click="e6 = 3"> Confirm </v-btn>
       </v-card>
     </v-stepper-content>
 
@@ -56,8 +55,7 @@
     </v-stepper-step>
 
     <v-stepper-content step="3">
-      <v-btn color="primary" @click="(step3 = true), e6++"> Continue </v-btn>
-      <v-btn text> Cancel </v-btn>
+      <v-btn color="primary" @click="(step3 = true), e6++"> Confirm </v-btn>
     </v-stepper-content>
 
     <v-stepper-step :complete="e6 > 4" step="4" editable edit-icon="$complete">
@@ -65,8 +63,7 @@
     </v-stepper-step>
 
     <v-stepper-content step="4">
-      <v-btn color="primary" @click="e6 = 5"> Continue </v-btn>
-      <v-btn text> Cancel </v-btn>
+      <v-btn color="primary" @click="e6 = 5"> Generate itinerary </v-btn>
     </v-stepper-content>
 
     <!-- <v-stepper-step :complete="e6 > 4" step="4" editable>

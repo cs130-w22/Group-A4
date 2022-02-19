@@ -103,7 +103,7 @@
 </template>
 <script>
 export default {
-  name: "ScheduleTimeline",
+  name: "ItineraryTimeline",
   data: () => ({
     events: [],
     input: null,

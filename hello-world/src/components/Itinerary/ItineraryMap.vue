@@ -66,7 +66,7 @@
 import { gmapApi } from "vue2-google-maps";
 
 export default {
-  name: "ScheduleMap",
+  name: "ItineraryMap",
   data() {
     return {
       map: null,

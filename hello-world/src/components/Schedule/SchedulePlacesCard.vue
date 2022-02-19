@@ -4,7 +4,6 @@
       class="text-h5 my-4 text-center font-weight-bold"
       v-text="'Places to visit'"
     ></div>
-
     <v-row dense justify="center">
       <v-toolbar dense flat>
         <gmap-autocomplete v-on:place_changed="setPlace" class="introInput">
@@ -39,7 +38,7 @@
               :src="place.photo_url"
               class="white--text align-end"
               gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.5)"
-              height="95%"
+              height="90%"
             >
               <v-card-title v-text="place.name"></v-card-title>
             </v-img>
@@ -74,6 +73,8 @@ export default {
       .catch((err) => {
         console.log(err.response);
       });
+
+    this.selected = [0, 1, 2]; // preselect the places for the users
   },
 
   methods: {
@@ -92,6 +93,7 @@ export default {
       this.currentPlace = place;
     },
     addMarker(place) {
+      if (this.places.some((e) => e.place_id === place.place_id)) return; // places already contain this place
       const placeObj = place;
       if (!("photos" in placeObj)) {
         placeObj.photo_url =
