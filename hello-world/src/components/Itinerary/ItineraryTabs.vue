@@ -1,36 +1,32 @@
 <template>
   <div>
-    <v-toolbar dense>
-      <v-tabs v-model="tab" align-with-title>
+    <v-toolbar dense flat>
+      <v-tabs v-model="tab" centered center-active show-arrows>
         <v-tab v-for="(item, index) in items" :key="item">
           <v-badge v-if="index === 0" color="pink" dot>
-            <v-tooltip bottom open-delay="10000" close-dalay="10000">
-              <template v-slot:activator="{ on, attrs }">
-                <span v-bind="attrs" v-on="on">
-                  {{ item.length > 8 ? item.substring(0, 8) + ".." : item }}
-                </span>
-              </template>
-              <span>{{ item }}</span>
-            </v-tooltip>
+            <span>
+              {{ item.length > 8 ? item.substring(0, 8) + ".." : item }}
+            </span>
           </v-badge>
-          <v-tooltip v-else bottom>
-            <template v-slot:activator="{ on, attrs }">
-              <span v-bind="attrs" v-on="on">
-                {{ item.length > 8 ? item.substring(0, 8) + ".." : item }}
-              </span>
-            </template>
-            <span>{{ item }}</span>
-          </v-tooltip>
+          <span v-else>
+            {{ item.length > 8 ? item.substring(0, 8) + ".." : item }}
+          </span>
         </v-tab>
       </v-tabs>
     </v-toolbar>
 
     <v-tabs-items v-model="tab">
       <v-tab-item v-for="item in items" :key="item">
-        <v-card flat>
-          <ItineraryTimeline> </ItineraryTimeline>
-          <!-- <v-card-text v-text="text"></v-card-text> -->
-        </v-card>
+        <!-- <v-card flat> -->
+        <div
+          class="text-h6 my-4 text-center"
+          v-text="item"
+          style="word-break: break-word"
+        ></div>
+
+        <ItineraryTimeline> </ItineraryTimeline>
+        <!-- <v-card-text v-text="text"></v-card-text> -->
+        <!-- </v-card> -->
       </v-tab-item>
     </v-tabs-items>
   </div>
@@ -49,7 +45,7 @@ export default {
       tab: null,
       items: [
         "my trip to nyc",
-        "shopping11111111111111111111111111111111111",
+        "shopping11111111111111111111111111",
         "videos",
         "images",
         "news",

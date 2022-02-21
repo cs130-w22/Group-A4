@@ -1,11 +1,11 @@
 <template>
   <v-row>
-    <v-col cols="12" sm="9">
+    <v-col cols="9">
       <v-sheet rounded="lg" min-height="90vh">
         <ScheduleMap> </ScheduleMap>
       </v-sheet>
     </v-col>
-    <v-col cols="12" sm="3">
+    <v-col cols="3">
       <v-sheet rounded="lg" min-height="90vh">
         <ScheduleStepper> </ScheduleStepper>
       </v-sheet>

@@ -1,22 +1,27 @@
 <template>
-  <v-sheet class="mx-auto" elevation="1" width="80%">
-    <div class="text-h3 mb-1 text-center" v-text="'Plan your next trip'"></div>
-
-    <v-slide-group
-      v-model="model"
-      class="pa-4"
-      active-class="success"
-      show-arrows
-    >
-      <v-slide-item v-for="place in places" :key="place.id">
-        <v-card class="ma-4" max-width="320" height="200">
-          <v-img class="white--text align-end" height="200px" :src="place.img">
-            <v-card-title>{{ place.name }}</v-card-title>
-          </v-img>
-        </v-card>
-      </v-slide-item>
-    </v-slide-group>
-  </v-sheet>
+  <v-row justify="center" style="margin: 0">
+    <v-col cols="11" style="height: 90vh">
+      <v-chip-group>
+        <div
+          class="text-h6 mb-1"
+          v-text="'Try some popular destinations'"
+        ></div>
+        <v-spacer></v-spacer>
+        <v-chip v-for="place in places" :key="place.name">
+          {{ place.name }}
+        </v-chip>
+      </v-chip-group>
+      <v-carousel v-model="model" cycle height="45vh">
+        <v-carousel-item
+          v-for="place in places"
+          :key="place.name"
+          :src="place.img"
+        >
+          <v-card-title>{{ place.name }}</v-card-title>
+        </v-carousel-item>
+      </v-carousel>
+    </v-col>
+  </v-row>
 </template>
 
 <script>

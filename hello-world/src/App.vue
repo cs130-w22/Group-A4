@@ -54,7 +54,7 @@ export default {
   },
 
   data: () => ({
-    links: [{ name: "map" }, { name: "schedule" }, { name: "itinerary" }],
+    links: [{ name: "home" }, { name: "schedule" }, { name: "itinerary" }],
     isSignIn: false,
     isInit: false,
     access_token: null,

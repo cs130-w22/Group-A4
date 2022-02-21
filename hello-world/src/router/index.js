@@ -11,12 +11,7 @@ export default new Router({
         {
             path: '/',
             name: 'frontpage',
-            component: FrontPageRouter
-        },
-
-        {
-            path: '/map',
-            name: 'map',
+            alias: ["/home"],
             component: FrontPageRouter
         },
 
