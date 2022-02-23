@@ -1,25 +1,34 @@
 <template>
   <v-item-group multiple v-model="selected">
     <div
-      class="text-h5 my-4 text-center font-weight-bold"
-      v-text="'Places to visit'"
+      class="text-h5 mt-4 text-center font-weight-bold"
+      v-text="'Select the places you are interested in'"
     ></div>
+
     <v-row dense justify="center">
-      <v-toolbar dense flat>
-        <gmap-autocomplete v-on:place_changed="setPlace" class="introInput">
-          <template v-slot:input="slotProps">
-            <v-text-field
-              prepend-inner-icon="place"
-              placeholder="Location Of Event"
-              ref="input"
-              v-on:listeners="slotProps.listeners"
-              v-on:attrs="slotProps.attrs"
-            >
-            </v-text-field>
-          </template>
-        </gmap-autocomplete>
-        <v-btn dark small @click="addMarker(currentPlace)">Add my own</v-btn>
-      </v-toolbar>
+      <v-col cols="11">
+        <v-toolbar dense flat>
+          <gmap-autocomplete v-on:place_changed="setPlace" class="introInput">
+            <template v-slot:input="slotProps">
+              <v-text-field
+                prepend-inner-icon="place"
+                placeholder="Location Of Event"
+                ref="input"
+                v-on:listeners="slotProps.listeners"
+                v-on:attrs="slotProps.attrs"
+              >
+              </v-text-field>
+            </template>
+          </gmap-autocomplete>
+          <v-btn dark small @click="addMarker(currentPlace)">Add my own</v-btn>
+        </v-toolbar>
+      </v-col>
+      <v-progress-linear
+        reverse
+        query
+        :indeterminate="loading"
+      ></v-progress-linear>
+
       <v-col v-for="place in places" :key="place.place_id" cols="11">
         <v-icon class="float-right" @click="removeCard(place)" color="error">
           mdi-close
@@ -56,28 +65,51 @@ import axios from "axios";
 export default {
   name: "SchedulePlacesCard",
   data: () => ({
-    places: null,
+    places: [],
     selected: [],
     currentPlace: null,
+    loading: true,
   }),
 
-  created() {
-    axios
-      .get("http://127.0.0.1:8000/trip/search/loc/", {
-        headers: { "Content-Type": "application/json" },
-        params: { location: "NYC" },
-      })
-      .then((resp) => {
-        this.places = resp.data;
-      })
-      .catch((err) => {
-        console.log(err.response);
-      });
+  computed: {
+    location() {
+      return this.$route.params.location;
+    },
+  },
+  watch: {
+    location(newLocation) {
+      if (newLocation === undefined) return;
 
-    this.selected = [0, 1, 2]; // preselect the places for the users
+      // users enter new location
+      this.getPlaceInfo();
+
+      this.selected = [];
+      for (const place of this.places) {
+        this.removeCard(place); // remove all current cards
+      }
+    },
+  },
+
+  created() {
+    this.getPlaceInfo();
   },
 
   methods: {
+    getPlaceInfo() {
+      this.loading = true;
+      axios
+        .get("http://127.0.0.1:8000/trip/search/loc/", {
+          headers: { "Content-Type": "application/json" },
+          params: { location: this.location },
+        })
+        .then((resp) => {
+          this.loading = false;
+          this.places = resp.data;
+        })
+        .catch((err) => {
+          console.log(err.response);
+        });
+    },
     showPlace(place) {
       this.$root.$emit("show-place-on-map", place);
     },

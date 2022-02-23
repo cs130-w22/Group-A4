@@ -12,7 +12,7 @@
         disableDefaultUi: true,
       }"
       style="width: 100%; height: 100%"
-      ref="mapRef"
+      ref="itineraryMap"
     >
       <GmapMarker
         v-for="(marker, index) in markers"
@@ -220,7 +220,7 @@ export default {
   },
 
   mounted() {
-    this.$refs.mapRef.$mapPromise.then((map) => (this.map = map));
+    this.$refs.itineraryMap.$mapPromise.then((map) => (this.map = map));
   },
 
   computed: {

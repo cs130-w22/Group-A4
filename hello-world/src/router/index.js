@@ -6,19 +6,28 @@ import ItineraryRouter from '@/components/Itinerary/Itinerary-router'
 
 Vue.use(Router)
 
+let firstVisit = true;
 export default new Router({
     routes: [
         {
             path: '/',
             name: 'frontpage',
             alias: ["/home"],
-            component: FrontPageRouter
+            component: FrontPageRouter,
         },
 
         {
             path: '/schedule',
             name: 'schedule',
-            component: ScheduleRouter
+            component: ScheduleRouter,
+            beforeEnter: (to, from, next) => {
+                if (firstVisit && to.params.location === undefined) { // users do not provide any location on the first visit
+                    next("/home");
+                } else {
+                    firstVisit = false;
+                    next();
+                }
+            }
         },
 
         {

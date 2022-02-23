@@ -12,6 +12,8 @@
       v-text="'Explore the world without the hassles'"
     ></div>
     <v-text-field
+      v-model="query"
+      v-on:keyup.enter="onEnter"
       label="Begin your next trip"
       prepend-inner-icon="mdi-magnify"
       solo
@@ -25,5 +27,14 @@
 <script>
 export default {
   name: "FrontPageBackground",
+  data: () => ({
+    query: null,
+  }),
+
+  methods: {
+    onEnter() {
+      this.$router.push({ name: "schedule", params: { location: this.query } });
+    },
+  },
 };
 </script>

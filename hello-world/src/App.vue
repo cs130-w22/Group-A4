@@ -2,7 +2,7 @@
   <v-app id="inspire">
     <v-app-bar app color="white" flat>
       <v-tabs centered class="ml-n9" color="grey darken-1">
-        <v-tab v-for="link in links" :key="link.name" :to="link.name">
+        <v-tab v-for="link in links" :key="link.route" :to="link.route">
           {{ link.name }}
         </v-tab>
       </v-tabs>
@@ -35,7 +35,9 @@
     </v-app-bar>
     <v-main class="grey lighten-2">
       <v-container fluid>
-        <router-view />
+        <keep-alive>
+          <router-view />
+        </keep-alive>
       </v-container>
     </v-main>
   </v-app>
@@ -54,7 +56,11 @@ export default {
   },
 
   data: () => ({
-    links: [{ name: "home" }, { name: "schedule" }, { name: "itinerary" }],
+    links: [
+      { name: "New trip", route: "home" },
+      { name: "schedule", route: "schedule" },
+      { name: "itinerary", route: "itinerary" },
+    ],
     isSignIn: false,
     isInit: false,
     access_token: null,

@@ -80,6 +80,34 @@ export default {
       googlePlacesService: null,
     };
   },
+  created() {
+    this.$root.$on("show-place-on-map", this.showPlaceOnMap); // register hook for SchedulePlacesCard.vueow
+    this.$root.$on("hide-place-on-map", this.hidePlaceOnMap); // register hook for SchedulePlacesCard.vue
+
+    this.$gmapApiPromiseLazy(); // init google api
+    // this.$getLocation({})
+    //   .then((coordinates) => {
+    //     this.userCoordinates = coordinates;
+    //     console.log(this.userCoordinates);
+    //   })
+    //   .catch((error) => console.log(error)); // users do not grant permission of the location
+  },
+  mounted() {
+    this.$refs.mapRef.$mapPromise.then((map) => (this.map = map));
+  },
+  watch: {
+    location(newLocation) {
+      if (newLocation === undefined) return; // user leaving the tab
+
+      this.getCityCoordiante();
+    },
+  },
+  computed: {
+    google: gmapApi,
+    location() {
+      return this.$route.params.location;
+    },
+  },
 
   methods: {
     setPlace(place) {
@@ -169,6 +197,25 @@ export default {
       //   }
       // });
     },
+    async getCityCoordiante() {
+      // const request = {
+      //   query: this.location,
+      //   fields: ["name", "geometry", "place_id", "photo"],
+      // };
+      // const service = this.getGooglePlacesService();
+      // service.findPlaceFromQuery(request, (results, status) => {
+      //   if (
+      //     status === this.google.maps.places.PlacesServiceStatus.OK &&
+      //     results
+      //   ) {
+      //     console.log(results[0]);
+      //     // const { place_id } = results[0];
+      //     this.setPlace(results[0]);
+      //     // this.addMarker(results[0]);
+      //     // this.map.setCenter(results[0].geometry.location);
+      //   }
+      // });
+    },
 
     async getPlaceDetails(place) {
       const { place_id } = place;
@@ -204,39 +251,6 @@ export default {
       if (this.googlePlacesService !== null) return this.googlePlacesService;
 
       return new this.google.maps.places.PlacesService(this.map);
-    },
-  },
-
-  created() {
-    this.$root.$on("show-place-on-map", this.showPlaceOnMap); // register hook for SchedulePlacesCard.vueow
-    this.$root.$on("hide-place-on-map", this.hidePlaceOnMap); // register hook for SchedulePlacesCard.vue
-
-    this.$gmapApiPromiseLazy(); // init google api
-    this.$getLocation({})
-      .then((coordinates) => {
-        this.userCoordinates = coordinates;
-      })
-      .catch((error) => console.log(error)); // users do not grant permission of the location
-  },
-
-  mounted() {
-    this.$refs.mapRef.$mapPromise.then((map) => (this.map = map));
-  },
-
-  computed: {
-    google: gmapApi,
-    mapCoordinates() {
-      if (!this.map) {
-        // google map not inited
-        return {
-          lat: 0,
-          lnt: 0,
-        };
-      }
-      return {
-        lat: this.map.getCenter().lat(),
-        lng: this.map.getCenter().lng(),
-      };
     },
   },
 };
