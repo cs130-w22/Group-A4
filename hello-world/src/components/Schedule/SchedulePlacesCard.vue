@@ -77,16 +77,21 @@ export default {
     },
   },
   watch: {
-    location(newLocation) {
-      if (newLocation === undefined) return;
+    location: {
+      // do not need immediate here because the search is done via created() and populated by the backend
 
-      // users enter new location
-      this.getPlaceInfo();
+      handler(newLocation) {
+        if (newLocation === undefined) return;
 
-      this.selected = [];
-      for (const place of this.places) {
-        this.removeCard(place); // remove all current cards
-      }
+        // users enter new location
+        this.getPlaceInfo();
+
+        this.selected = [];
+        this.currentPlace = null;
+        for (const place of this.places) {
+          this.removeCard(place); // remove all current cards
+        }
+      },
     },
   },
 
