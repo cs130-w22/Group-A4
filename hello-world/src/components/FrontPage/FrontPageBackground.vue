@@ -14,8 +14,11 @@
     <v-text-field
       v-model="query"
       v-on:keyup.enter="onEnter"
-      label="Begin your next trip"
-      prepend-inner-icon="mdi-magnify"
+      @click:append="onEnter"
+      :error-messages="errorMessages"
+      :error="errorMessages !== null"
+      prefix="Plan a trip to"
+      append-icon="mdi-magnify"
       solo
       shaped
       style="max-width: 30%"
@@ -29,12 +32,26 @@ export default {
   name: "FrontPageBackground",
   data: () => ({
     query: null,
+    errorMessages: null,
   }),
 
   methods: {
     onEnter() {
       this.$router.push({ name: "schedule", params: { location: this.query } });
     },
+
+    showErrorMessage() {
+      this.errorMessages = "Enter the destination first";
+      setTimeout(() => {
+        this.errorMessages = null;
+      }, 3000);
+    },
   },
 };
 </script>
+
+<style>
+.error--text {
+  animation: v-shake 0.6s cubic-bezier(0.25, 0.8, 0.5, 1);
+}
+</style>

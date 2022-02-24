@@ -1,7 +1,7 @@
 <template>
   <v-row>
     <v-col cols="12">
-      <FrontPageBackground></FrontPageBackground>
+      <FrontPageBackground ref="textField"></FrontPageBackground>
     </v-col>
   </v-row>
 </template>

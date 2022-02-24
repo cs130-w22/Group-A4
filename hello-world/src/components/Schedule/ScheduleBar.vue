@@ -13,7 +13,7 @@
       right
       stateless
     >
-      <SchedulePlacesCard></SchedulePlacesCard>
+      <SchedulePlaceCards ref="placeCards"></SchedulePlaceCards>
     </v-navigation-drawer>
     <v-snackbar
       v-model="snackbar"
@@ -28,11 +28,11 @@
 </template>
 
 <script>
-import SchedulePlacesCard from "./SchedulePlacesCard.vue";
+import SchedulePlaceCards from "./SchedulePlaceCards.vue";
 export default {
   name: "ScheduleBar",
   components: {
-    SchedulePlacesCard,
+    SchedulePlaceCards,
   },
   data: () => ({
     drawer: true,
@@ -41,7 +41,7 @@ export default {
 
   methods: {
     btnClicked() {
-      const selectedPlaces = this.$children[1].$children[0]._data.selected;
+      const selectedPlaces = this.$refs.placeCards.selected;
       if (selectedPlaces.length === 0) {
         this.snackbar = true;
         return;

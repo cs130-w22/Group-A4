@@ -63,7 +63,7 @@
 import axios from "axios";
 
 export default {
-  name: "SchedulePlacesCard",
+  name: "SchedulePlaceCards",
   data: () => ({
     places: [],
     selected: [],
@@ -112,6 +112,7 @@ export default {
           this.places = resp.data;
         })
         .catch((err) => {
+          this.loading = false;
           console.log(err.response);
         });
     },

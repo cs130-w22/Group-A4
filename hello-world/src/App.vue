@@ -75,17 +75,6 @@ export default {
   },
   methods: {
     async handleClickSignIn() {
-      // axios
-      //   .post("http://localhost:8000/auth/google/", {
-      //     access_token: token,
-      //   })
-      //   .then((resp) => {
-      //     this.user = resp.data.user;
-      //   })
-      //   .catch((err) => {
-      //     console.log(err.response);
-      //   });
-
       try {
         const googleUser = await this.$gAuth.signIn();
         if (!googleUser) return;
@@ -102,6 +91,18 @@ export default {
         //on fail do something
         console.error(error);
       }
+
+      // axios
+      //   .post("http://localhost:8000/auth/google/", {
+      //     access_token: googleUser.getAuthResponse(),
+      //   })
+      //   .then((resp) => {
+      //     this.user = resp.data.user;
+      //     this.$cookies("access_token",resp.data.access_token)
+      //   })
+      //   .catch((err) => {
+      //     console.log(err.response);
+      //   });
     },
 
     async handleClickSignOut() {
@@ -112,6 +113,17 @@ export default {
       } catch (error) {
         console.error(error);
       }
+
+      // axios
+      //   .post("http://localhost:8000/auth/logout/", {
+      //     access_token: googleUser.getAuthResponse(),
+      //   })
+      //   .then((resp) => {
+      //     this.delete_cookies(access_token)
+      //   })
+      //   .catch((err) => {
+      //     console.log(err.response);
+      //   });
     },
   },
 };
