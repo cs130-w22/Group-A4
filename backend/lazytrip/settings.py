@@ -58,6 +58,9 @@ INSTALLED_APPS = [
     'Trip',
 ]
 
+# allow frontend to see all headers
+CORS_ORIGIN_ALLOW_ALL = True
+
 # for Google OAuth (django-allauth)
 SITE_ID = 1
 # redirect confirmation email to CONSOLE, could've set up a email service provider to sent to user

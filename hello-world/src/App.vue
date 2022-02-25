@@ -75,48 +75,48 @@ export default {
     }, 1000);
   },
   methods: {
-    async handleClickSignIn() {
-      try {
-        const googleUser = await this.$gAuth.signIn();
-        if (!googleUser) return;
-        console.log("googleUser", googleUser);
-        console.log("getId", googleUser.getId());
-        console.log("getBasicProfile", googleUser.getBasicProfile());
-        console.log("getAuthResponse", googleUser.getAuthResponse());
-        console.log(
-          "getAuthResponse",
-          this.$gAuth.GoogleAuth.currentUser.get().getAuthResponse()
-        );
-        this.isSignIn = this.$gAuth.isAuthorized;
+    handleClickSignIn() {
+      this.$gAuth
+        .signIn()
+        .then((googleUser) => {
+          if (!googleUser) return;
+          // console.log("getAuthResponse", googleUser.getAuthResponse());
+          // console.log(
+          // "getAuthResponse",
+          // this.$gAuth.GoogleAuth.currentUser.get().getAuthResponse()
+          // );
+          this.isSignIn = this.$gAuth.isAuthorized;
 
-        axios
-          .post("http://localhost:8000/auth/google/", {
-            access_token: googleUser.getAuthResponse().access_token,
-          })
-          .then((resp) => {
-            console.log(resp);
-            this.user = resp.data.user;
-            // this.$cookies("access_token",resp.data.access_token)
-          })
-          .catch((err) => {
-            console.log(err.response);
-          });
-      } catch (error) {
-        //on fail do something
-        console.error(error);
-      }
+          axios
+            .post("http://localhost:8000/auth/google/", {
+              access_token: googleUser.getAuthResponse().access_token,
+            })
+            .then((resp) => {
+              console.log(resp);
+              this.user = resp.data.user;
+              // this.$cookies("access_token",resp.data.access_token)
+            })
+            .catch((err) => {
+              console.log(err.response);
+            });
+        })
+        .catch((err) => {
+          console.log(err.response);
+        });
     },
 
-    async handleClickSignOut() {
-      try {
-        await this.$gAuth.signOut();
-        this.isSignIn = this.$gAuth.isAuthorized;
-        console.log("isSignIn", this.$gAuth.isAuthorized);
+    handleClickSignOut() {
+      this.$gAuth
+        .signOut()
+        .then(() => {
+          this.isSignIn = this.$gAuth.isAuthorized;
+          console.log("isSignIn", this.$gAuth.isAuthorized);
 
-        this.user = null;
-      } catch (error) {
-        console.error(error);
-      }
+          this.user = null;
+        })
+        .catch((err) => {
+          console.log(err.response);
+        });
 
       // axios
       //   .post("http://localhost:8000/auth/logout/", {
