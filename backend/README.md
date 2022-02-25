@@ -14,7 +14,9 @@
     - [2. As admin (superuser)](#2-as-admin-superuser)
   - [**Itinerary** CRUD](#itinerary-crud)
     - [Create An Itinerary After Logged In](#create-an-itinerary-after-logged-in)
-    - [Retrieve Itinerary(s) Created by the Logged-in User](#retrieve-itinerarys-created-by-the-logged-in-user)
+    - [Retrieve All Itineraries Created by the Logged-in User [SIMPLIFIED VERSION]](#retrieve-all-itineraries-created-by-the-logged-in-user-simplified-version)
+    - [Retrieve All Itineraries Created by the Logged-in User [DETAILED VERSION]](#retrieve-all-itineraries-created-by-the-logged-in-user-detailed-version)
+    - [Retrieve Itinerary by ID [DETAILED VERSION]](#retrieve-itinerary-by-id-detailed-version)
     - [Update Itinerary by the ID](#update-itinerary-by-the-id)
   - [**TripEvent** CRUD](#tripevent-crud)
     - [Create an TripEvent Under an Itinerary](#create-an-tripevent-under-an-itinerary)
@@ -96,7 +98,7 @@ Authorization: Bearer <YOUR-ACCESS-TOKEN>
 
 {
     "field1": "something you are posting",
-    "field2": "otherthings you are posting"
+    "field2": "other things..."
 }
 ```
 
@@ -548,8 +550,8 @@ Authorization: Bearer <YOUR-OR-ADMIN-ACCESS-TOKEN>
 }
 ```
 
-### Retrieve Itinerary(s) Created by the Logged-in User
-As a regular user, you can retrieve all Itineraries created by you, they would be presented in simplified format (only `id`, `title`, `last_modified` is returned, you can use `id` to query a more detailed information), simply send `GET` to http://127.0.0.1:8000/trip/itinerary/ with your token added. Like this:
+### Retrieve All Itineraries Created by the Logged-in User [SIMPLIFIED VERSION]
+As a regular user, you can retrieve all Itineraries created by you, they would be presented in simplified format (only `id`, `title`, `last_modified` is returned, you can use `id` to query a more detailed information). Send `GET` to http://127.0.0.1:8000/trip/itinerary/ with your token added. Like this:
 ```http
 GET http://127.0.0.1:8000/trip/itinerary/ HTTP/1.1
 Content-Type: application/json
@@ -593,6 +595,7 @@ Cross-Origin-Opener-Policy: same-origin
 </details>
 <br></br>
 
+### Retrieve All Itineraries Created by the Logged-in User [DETAILED VERSION]
 As an user, you can also retrieve all itineraries along with every bit of detail by sending `GET` to http://127.0.0.1:8000/trip/itinerary/all/. Like this:
 ```http
 GET http://127.0.0.1:8000/trip/itinerary/all/ HTTP/1.1
@@ -666,6 +669,64 @@ Cross-Origin-Opener-Policy: same-origin
 
 </details>
 <br></br>
+
+### Retrieve Itinerary by ID [DETAILED VERSION]
+To retrieve itinerary by id, you can send a `GET` request to http://127.0.0.1:8000/trip/itinerary/#(id)/, with your token added, like this:
+```http
+GET http://127.0.0.1:8000/trip/itinerary/2/ HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer <YOUR-OR-ADMIN-ACCESS-TOKEN>
+```
+<details>
+<summary> Response Example</summary>
+
+```http
+HTTP/1.1 200 OK
+Date: Fri, 25 Feb 2022 02:23:56 GMT
+Server: WSGIServer/0.2 CPython/3.10.2
+Content-Type: application/json
+Vary: Accept, Origin
+Allow: GET, PUT, PATCH, HEAD, OPTIONS
+X-Frame-Options: DENY
+Content-Length: 623
+X-Content-Type-Options: nosniff
+Referrer-Policy: same-origin
+Cross-Origin-Opener-Policy: same-origin
+
+{
+  "id": 2,
+  "title": "My Itinerary Title",
+  "desc": "Edit this to be the description of your travel plan!",
+  "created_at": "2022-02-24T00:58:45.244661Z",
+  "last_modified": "2022-02-24T01:46:23.369164Z",
+  "user": 1,
+  "trip_event": [
+    {
+      "id": 3,
+      "place_id": "<UCLA-place_id-PLACEHOLDER>",
+      "place_name": "default_place_name",
+      "start_time": "2022-02-22T14:30:00Z",
+      "end_time": "2022-02-22T17:30:00Z",
+      "itin": 2,
+      "place_json": "<place_json-PLACEHOLDER>"
+    },
+    {
+      "id": 4,
+      "place_id": "<UCLA-place_id-PLACEHOLDER>",
+      "place_name": "default_place_name",
+      "start_time": "2022-02-22T14:30:00Z",
+      "end_time": "2022-02-22T17:30:00Z",
+      "itin": 2,
+      "place_json": "<place_json-PLACEHOLDER>"
+    }
+  ]
+}
+
+```
+
+</details>
+<br></br>
+
 
 ### Update Itinerary by the ID
 To update an itinerary, you need the `id` of this itinerary, simply send `PATCH` to http://127.0.0.1:8000/trip/itinerary/#(id)/, with token added. As usual, user will have permission to update itinerary belongs to them, while admin can edit any itinerary given an `id`. Like this:
@@ -803,22 +864,22 @@ GET http://127.0.0.1:8000/trip/search/place_id?id=ChIJD0eFf57DwoAR2VMsk3eVhn8 HT
 ```
 
 ## **Scheduling API**
-To request a itinerary schedule, you need to prepare some data entered by user:
-```json
+To request a itinerary schedule, you need to prepare some data entered by user, and send a POST request to http://127.0.0.1:8000/trip/schedule/:
+```http
+POST http://127.0.0.1:8000/trip/schedule/ HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer <YOUR-OR-ADMIN-ACCESS-TOKEN>
+
 {
-"userOptions":{
-            "places": [
-                {},
-                {},
-                ...
-            ],
-            "wakeUpTime": “<WAKE-UP-TIME-FORMAT>”,
-            "dates": ["<DATE-1>", "<DATE-2>", "<DATE-3>"],
-            "hotel": {} # this field optional
-        }
+    "places": [
+        {}, {}, {}, ...
+    ],
+    "wakeUpTime": "%HH:%MM",
+    "dates": ["%YYYY-%MM-%DD", "%YYYY-%MM-%DD", "%YYYY-%MM-%DD"],
+    "hotel": {} // optional
 }
 ```
-Simply send a POST request to http://127.0.0.1:8000/trip/schedule/, with above data body. It will return the newly generated `id`, you can use that to query the detail of that specific itinerary.
+The response will be the newly generated `id`, you can use that to query the detail of that specific itinerary.
 
 <!-- ### Getting Attraction Suggestions Based on Location Chosen (Deprecated, but still usable :))
 Once user chooses a place, you can send the coordinate or the name of the place to backend, the backend will retrieve relevant attractions and get back to you. That said, there are 2 ways to give backend users' places of interests, both using `GET` request to http://127.0.0.1:8000/trip/search/loc/.

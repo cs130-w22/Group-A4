@@ -123,6 +123,11 @@ Content-Type: application/json
     "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjQ0NjMzMDQ4LCJpYXQiOjE2NDQ1NDY2NDgsImp0aSI6IjU3MzYxZTM3NjUyNzQ1ZTM4ODdlMGFmYTU3YTMxYmU3IiwidXNlcl9pZCI6MX0.fT3_gJ-S_iU3g09fjeztrU-PePDYW1k2s0tJR0T7mpQ"
 }
 
+### REST API GET Single Detailed Itinerary based on id
+GET http://127.0.0.1:8000/trip/itinerary/2/ HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjQ1NzU3ODk2LCJpYXQiOjE2NDU2NzE0OTYsImp0aSI6ImI1OWZhZDQwZjQwNzQzMmI4MjhlMTc2MmVmNDhiZDk1IiwidXNlcl9pZCI6MX0.IabsdL3Ht3RqOF5QL8OMAC3A_b6kzeXb5BGZJSpH24k
+
 ### REST API Update Profile Test 1
 PATCH http://127.0.0.1:8000/user/update/1 HTTP/1.1
 Content-Type: application/json
