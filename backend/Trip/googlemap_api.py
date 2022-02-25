@@ -56,7 +56,6 @@ class SearchLocation(APIView):
     RETURN:
         JSON file containing all attractions within 3km around <lon> and <lat>
     """
-
     @staticmethod
     def __get_coord_by_name(name: str):
         print(f"Getting coordinates of queried place: {name}")

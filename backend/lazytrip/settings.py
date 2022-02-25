@@ -28,6 +28,8 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+# suppress naive timezone warning
+USE_TZ = False
 
 # Application definition
 
@@ -87,6 +89,7 @@ SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(days=1),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
 }
+
 
 # Google Auth / Registration Settings
 LOGIN_REDIRECT_URL = "/"                            # the url that redirects after user logged in

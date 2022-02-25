@@ -1,4 +1,8 @@
+import json
 from pprint import pprint
+
+from django.http import HttpResponse
+from django.core.serializers.json import DjangoJSONEncoder
 
 from .models import Itinerary, TripEvent
 from .serializers import ItinerarySerializer, TripEventSerializer
@@ -83,6 +87,19 @@ class ItineraryList(generics.ListAPIView):
     serializer_class = ItinerarySerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsOwnerOrAdmin]
 
+    def get(self, request):
+        all_itineraries = Itinerary.objects.filter(user=self.request.user)
+        simplified_itinerary_info = []
+        for itinerary in all_itineraries:
+            print(itinerary.id)
+            info = {}
+            info['id'] = itinerary.id
+            info['title'] = itinerary.title
+            info['last_modified'] = itinerary.last_modified
+            simplified_itinerary_info.append(info)
+
+        return HttpResponse(json.dumps(simplified_itinerary_info, cls=DjangoJSONEncoder), content_type='application/json')
+
     def get_queryset(self):
         return Itinerary.objects.filter(user=self.request.user)
 
@@ -91,9 +108,11 @@ class ItineraryListAll(generics.ListAPIView):
     """
     List all Itinerary of Logged In User
     """
-    queryset = Itinerary.objects.all()
     serializer_class = ItinerarySerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsAdmin]
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsOwnerOrAdmin]
+
+    def get_queryset(self):
+        return Itinerary.objects.filter(user=self.request.user)
 
 
 class ItineraryViewUpdate(generics.RetrieveUpdateAPIView):
