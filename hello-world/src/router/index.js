@@ -4,7 +4,7 @@ import ScheduleRouter from '@/components/Schedule/Schedule-router'
 import FrontPageRouter from '@/components/FrontPage/FrontPage-router'
 import ItineraryRouter from '@/components/Itinerary/Itinerary-router'
 import PageNotFoundRouter from '@/components/Utils/PageNotFound-router'
-
+import ItineraryTabItem from '@/components/Itinerary/ItineraryTabItem'
 
 let firstVisit = true;
 
@@ -48,13 +48,12 @@ export default new Router({
             component: ItineraryRouter,
             children: [
                 {
-                    path: '/itinerary/:id',
-                    component: FrontPageRouter,
+                    path: ':id',
+                    component: ItineraryTabItem,
+                    props: true
                 },
             ]
         },
-
-
 
         {
             path: '/404',

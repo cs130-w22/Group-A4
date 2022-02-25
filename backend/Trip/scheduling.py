@@ -153,7 +153,7 @@ class Scheduler:
         #           it only works with k_means_constrained package
         kwargs = {}
         if CONSTRAINED_KMEANS:
-            kwargs['max_size'] = max_places_per_day
+            kwargs['size_max'] = max_places_per_day
         model = KMeans(n_clusters=days, n_init=30, **kwargs)
         cluster = model.fit_predict(places_array)
 
@@ -380,7 +380,6 @@ class SchedulingAPI(APIView):
         return place_list[:MAX_PLACES_PER_DAY * days]
 
     def post(self, request, format=None):
-        # print(request.data)
         data = request.data
         places = data['places']
         dates = data['dates']

@@ -57,9 +57,9 @@ export default {
 
   data: () => ({
     links: [
-      { name: "New trip", route: "home" },
-      { name: "schedule", route: "schedule" },
-      { name: "itinerary", route: "itinerary" },
+      { name: "New trip", route: "/home" },
+      { name: "schedule", route: "/schedule" },
+      { name: "itinerary", route: "/itinerary" },
     ],
     isSignIn: false,
     isInit: false,

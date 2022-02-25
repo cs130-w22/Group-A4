@@ -6,9 +6,7 @@
       </v-sheet>
     </v-col>
     <v-col cols="6">
-      <v-sheet rounded="lg" min-height="90vh">
-        <ItineraryTabs></ItineraryTabs>
-      </v-sheet>
+      <ItineraryTabs></ItineraryTabs>
     </v-col>
   </v-row>
 </template>

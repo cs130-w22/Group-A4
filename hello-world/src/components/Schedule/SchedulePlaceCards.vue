@@ -147,7 +147,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .introInput {
   width: 18vw;
 }
