@@ -20,23 +20,26 @@ class Itinerary(models.Model):
         """
         return title[itin_id] of the trip itinerary
         """
-        return str(self.title) + "[" + str(self.user) + "]"
+        return "["+str(self.id)+"] " + str(self.title) + " - created by [" + str(self.user) + "]"
 
 """
 data model for a specific trip event (an attraction/restaurant/hotel...) that has start time and end time
 """
 class TripEvent(models.Model):
     # object ID of OpenTripMap API (single attraction)
-    xid = models.CharField(max_length=64)
+    place_id = models.CharField(max_length=64)
+    place_name = models.CharField(max_length=64)
     # foreign key indicating which itinerary it belongs to
     itin = models.ForeignKey(Itinerary, on_delete=models.CASCADE, related_name="trip_event")
-    start_time = models.TimeField()
-    end_time = models.TimeField()
+    start_time = models.DateTimeField()
+    end_time = models.DateTimeField()
+    # use for storing json data for this place
+    place_json = models.TextField()
 
 
     def __str__(self):
         """
         return xid (object_ID) of the trip event
         """
-        return str(self.xid)
+        return "["+str(self.id)+"] " + str(self.place_name[:9]) + "... -> " + str(self.place_id)
 

@@ -56,8 +56,8 @@ class SearchLocation(APIView):
     RETURN:
         JSON file containing all attractions within 3km around <lon> and <lat>
     """
-
-    def __get_coord_by_name(self, name: str):
+    @staticmethod
+    def __get_coord_by_name(name: str):
         print(f"Getting coordinates of queried place: {name}")
         resp = gmaps.find_place(
             name,
@@ -74,13 +74,14 @@ class SearchLocation(APIView):
         except:
             ParseError(detail=f"Cannot find places named [{name}]", code=None)
 
-    def __find_places_in_radius(self, coord: tuple[float, float], radius: int = 10000, min_price=None, max_price=None, rank_by=None, type=None):
+    @staticmethod
+    def __find_places_in_radius(coord: tuple[float, float], radius: int = 10000, min_price=None, max_price=None, rank_by=None, type=None):
         """
         find places within [radius] (in meters) from [coord]
         """
         resp = gmaps.places_nearby(
             # "textquery",
-            location=coord,
+            location=coord, # (lat, lng)
             radius=radius,
             min_price=min_price,
             max_price=max_price,
@@ -91,19 +92,20 @@ class SearchLocation(APIView):
 
         return resp['results']
 
-    def __get_photo_url(self, ref: str, max_width: int = 300):
+    @staticmethod
+    def __get_photo_url(ref: str, max_width: int = 300):
         """
         get a url to photo using photo reference (got from place or place detail)
         """
         photo_url = f"{GOOGLEMAP_PHOTO_API}maxwidth={max_width}&photoreference={ref}&key={GOOGLEMAP_APIKEY}"
         return photo_url
 
-    def __get_place_detail(self, place_id: str):
+    @staticmethod
+    def __get_place_detail(place_id: str):
         resp = gmaps.place(place_id)
         return resp['result']
 
     def get(self, request, format=None):
-
         # sanity checks
         if not 'location' in request.GET:
             raise ParseError(
@@ -181,12 +183,11 @@ class SearchObject(APIView):
 
     def get(self, request, format=None):
         # retrieving data
-        data = request.data
-        if not 'place_id' in data:
+        if not 'id' in request.GET:
             raise ParseError(
                 detail="Expecting a string field 'place_id'.", code=None)
 
-        place_id = data['place_id']
+        place_id = request.GET['id']
         resp = self.__get_place_detail(place_id)
 
         return HttpResponse(resp, content_type='application/json')

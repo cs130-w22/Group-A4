@@ -23,6 +23,7 @@
   - [**Query Place Info**](#query-place-info)
       - [Getting Place Recommendations Using Name of the Destination:](#getting-place-recommendations-using-name-of-the-destination)
       - [Getting Details of Exact Attraction (`place_id`):](#getting-details-of-exact-attraction-place_id)
+  - [**Scheduling API**](#scheduling-api)
 
 
 ## **Project Setup**
@@ -44,7 +45,60 @@ python manage.py runserver
 Our backend support both local authentication and google authentication, here we will list short examples for each method.
 
 ### 1. Google OAuth Examples
-The necessary configuration is already setup on [Google Developer Console](https://console.developers.google.com/apis/credentials/oauthclient/113665789634-ouu64vjjn7mnj0slrmtmm5e5gauu17o7.apps.googleusercontent.com?project=core-song-339901). We provide a url link for [google login window](https://accounts.google.com/o/oauth2/auth/oauthchooseaccount?client_id=113665789634-ouu64vjjn7mnj0slrmtmm5e5gauu17o7.apps.googleusercontent.com&redirect_uri=http%3A%2F%2Flocalhost%3A8000%2Fauth%2Fgoogle%2Fcallback%2F&scope=profile&response_type=code&state=Uvpq2v78tkM&flowName=GeneralOAuthFlow), after confirming and choosing your google account at that window, it will redirect to `<front-end-url>` and reply to you with an `access_token`, that can be used in our backend token system. Simply adding this `access_token` to each of your request (JSON) for authentication.
+The necessary configuration is already setup on [Google Developer Console](https://console.developers.google.com/apis/credentials/oauthclient/113665789634-ouu64vjjn7mnj0slrmtmm5e5gauu17o7.apps.googleusercontent.com?project=core-song-339901). We provide a url link for [google login window](https://accounts.google.com/o/oauth2/auth/oauthchooseaccount?client_id=113665789634-ouu64vjjn7mnj0slrmtmm5e5gauu17o7.apps.googleusercontent.com&redirect_uri=http%3A%2F%2Flocalhost%3A8000%2Fauth%2Fgoogle%2Fcallback%2F&scope=profile&response_type=code&state=Uvpq2v78tkM&flowName=GeneralOAuthFlow), after confirming and choosing your google account at that window, it will redirect to `<front-end-url>` and reply to you with an `access_token`, that can be request a JWT Token from our backend token system. Simply adding this `access_token` got from google your login `POST` request, response will come with an `access_token` that can be used with our backend.
+```http
+POST http://127.0.0.1:8000/auth/google/ HTTP/1.1
+Content-Type: application/json
+
+{
+    "access_token": "<ACCESS-TOKEN-YOU-GET-FROM-GOOGLE>"
+}
+```
+
+<details>
+<summary> Response Example</summary>
+
+```http
+HTTP/1.1 200 OK
+Date: Thu, 24 Feb 2022 01:29:18 GMT
+Server: WSGIServer/0.2 CPython/3.10.2
+Content-Type: application/json
+Vary: Accept, Cookie, Origin
+Allow: POST, OPTIONS
+X-Frame-Options: DENY
+Content-Length: 605
+X-Content-Type-Options: nosniff
+Referrer-Policy: same-origin
+Cross-Origin-Opener-Policy: same-origin
+Set-Cookie: LazyTrip-auth=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjQ1NzUyNTU4LCJpYXQiOjE2NDU2NjYxNTgsImp0aSI6IjE0NjJlNTQyZDY1YTRmNzg5NmM2NzU5MWEzYzAyZWYyIiwidXNlcl9pZCI6MX0.ETHaOxtIa94OBN_HHXd6oSaxwgb0SFElU_AViRZx3ec; expires=Fri, 25 Feb 2022 01:29:18 GMT; HttpOnly; Max-Age=86400; Path=/; SameSite=Lax,LazyTrip-refresh-token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTY0NjI3MDk1OCwiaWF0IjoxNjQ1NjY2MTU4LCJqdGkiOiIxNjVkYWRmNjljZjE0N2FjYjU2NTA0MTA3ODcxZWQyZCIsInVzZXJfaWQiOjF9.pvybM7dfkdNlCQrTqMnA6IiAZhDb1u6c5HR5C1Q7JJk; expires=Thu, 03 Mar 2022 01:29:18 GMT; HttpOnly; Max-Age=604800; Path=/; SameSite=Lax,csrftoken=gHFeK8GgtanhnoQ1ycSD83zfJFsz9uGw4oxBaZ1XgRFjlQFj1e2hP1grii6VR84T; expires=Thu, 23 Feb 2023 01:29:18 GMT; Max-Age=31449600; Path=/; SameSite=Lax,sessionid=j070bseea1yizkox9hk0eauepxgptivz; expires=Thu, 10 Mar 2022 01:29:18 GMT; HttpOnly; Max-Age=1209600; Path=/; SameSite=Lax
+
+{
+  "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjQ1NzUyNTU4LCJpYXQiOjE2NDU2NjYxNTgsImp0aSI6IjE0NjJlNTQyZDY1YTRmNzg5NmM2NzU5MWEzYzAyZWYyIiwidXNlcl9pZCI6MX0.ETHaOxtIa94OBN_HHXd6oSaxwgb0SFElU_AViRZx3ec",
+  "refresh_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTY0NjI3MDk1OCwiaWF0IjoxNjQ1NjY2MTU4LCJqdGkiOiIxNjVkYWRmNjljZjE0N2FjYjU2NTA0MTA3ODcxZWQyZCIsInVzZXJfaWQiOjF9.pvybM7dfkdNlCQrTqMnA6IiAZhDb1u6c5HR5C1Q7JJk",
+  "user": {
+    "pk": 1,
+    "username": "admin",
+    "email": "admin@nimda.com",
+    "first_name": "admin's first name",
+    "last_name": ""
+  }
+}
+```
+
+</details>
+<br></br>
+
+Once you got the `access_token` (from our backend, not Google), you can add that as an header in each of your request representing the user identity. Like this:
+```http
+POST http://128.0.0.1:8000/any/api/request/that/needs/authentication/ HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer <YOUR-ACCESS-TOKEN>
+
+{
+    "field1": "something you are posting",
+    "field2": "otherthings you are posting"
+}
+```
 
 ### 2. Local Authentication System
 We also provide registering and login using backend's authentication system. To register, you will need to send a `POST` request to http://127.0.0.1:8000/registration/, together with your username, password1, password2(for confirmation) and email. Like this:
@@ -76,6 +130,31 @@ Logout is used when you want to switch account, because the backend will set coo
 ```http
 POST http://127.0.0.1:8000/logout/ HTTP/1.1
 ```
+<details>
+<summary> Response Example</summary>
+
+```http
+HTTP/1.1 200 OK
+Date: Thu, 24 Feb 2022 01:31:57 GMT
+Server: WSGIServer/0.2 CPython/3.10.2
+Content-Type: application/json
+Vary: Accept, Origin, Cookie
+Allow: GET, POST, HEAD, OPTIONS
+X-Frame-Options: DENY
+Content-Length: 37
+X-Content-Type-Options: nosniff
+Referrer-Policy: same-origin
+Cross-Origin-Opener-Policy: same-origin
+Set-Cookie: LazyTrip-auth=""; expires=Thu, 01 Jan 1970 00:00:00 GMT; Max-Age=0; Path=/,LazyTrip-refresh-token=""; expires=Thu, 01 Jan 1970 00:00:00 GMT; Max-Age=0; Path=/,sessionid=""; expires=Thu, 01 Jan 1970 00:00:00 GMT; Max-Age=0; Path=/; SameSite=Lax
+
+{
+  "detail": "Successfully logged out."
+}
+```
+
+</details>
+<br></br>
+
 
 ## **User Profile** Read/Update/Delete
 ### 1. As regular user
@@ -83,31 +162,144 @@ As a regular user, you can only view/update your own profile. To view your own i
 ```http
 GET http://127.0.0.1:8000/user/profile/ HTTP/1.1
 Content-Type: application/json
+Authorization: Bearer <YOUR-ACCESS-TOKEN>
+```
+<details>
+<summary> Response Example</summary>
+
+```http
+HTTP/1.1 200 OK
+Date: Thu, 24 Feb 2022 01:34:16 GMT
+Server: WSGIServer/0.2 CPython/3.10.2
+Content-Type: application/json
+Vary: Accept, Origin
+Allow: GET, HEAD, OPTIONS
+X-Frame-Options: DENY
+Content-Length: 1228
+X-Content-Type-Options: nosniff
+Referrer-Policy: same-origin
+Cross-Origin-Opener-Policy: same-origin
 
 {
-    "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjQ0NjQ3NDA2LCJpYXQiOjE2NDQ1NjEwMDYsImp0aSI6ImE4N2Q0ZjhmOGFiNDRmNzNhZDJkM2U4YzhlZGQ2NDc0IiwidXNlcl9pZCI6NH0._UfZD6JmlhY1Wkf-piz8Be727VTn6o50qtW2jRChuKA"
+  "id": 1,
+  "username": "admin",
+  "first_name": "admin's first name",
+  "last_name": "",
+  "email": "admin@nimda.com",
+  "date_joined": "2022-01-31T02:07:51.283530Z",
+  "last_login": "2022-02-24T01:34:13.123777Z",
+  "profile": {
+    "age": 12,
+    "bio": "",
+    "location": ""
+  },
+  "itinerary": [
+    {
+      "id": 1,
+      "title": "My First Itinerary!!!",
+      "desc": "Edit this to be the description of your travel plan!",
+      "created_at": "2022-02-24T00:08:42.950862Z",
+      "last_modified": "2022-02-24T00:58:59.473301Z",
+      "user": 1,
+      "trip_event": [
+        {
+          "id": 1,
+          "place_id": "<place_id-PLACEHOLDER>",
+          "start_time": "2022-02-23T14:30:00Z",
+          "end_time": "2022-02-23T17:30:00Z",
+          "itin": 1,
+          "place_json": "<place_json-PLACEHOLDER>"
+        },
+        {
+          "id": 2,
+          "place_id": "<place_id-PLACEHOLDER>",
+          "start_time": "2022-02-23T14:30:00Z",
+          "end_time": "2022-02-23T17:30:00Z",
+          "itin": 1,
+          "place_json": "<place_json-PLACEHOLDER-2>"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "title": "My Second Itinerary!!!",
+      "desc": "Edit this to be the description of your travel plan!",
+      "created_at": "2022-02-24T00:58:45.244661Z",
+      "last_modified": "2022-02-24T00:59:42.399455Z",
+      "user": 1,
+      "trip_event": []
+    },
+    {
+      "id": 3,
+      "title": "My's Third Itinerary!",
+      "desc": "Edit this to be the description of your travel plan!",
+      "created_at": "2022-02-24T00:58:51.610574Z",
+      "last_modified": "2022-02-24T00:58:51.610622Z",
+      "user": 1,
+      "trip_event": []
+    }
+  ]
 }
+
 ```
+
+</details>
+<br></br>
+
 To update your own information, let's say you're user `id=4`, you can send a `PATCH` request to http://127.0.0.1:8000/user/profile/4/. You can only update your own info, while admin is able to update every user's info. Like this: (Because `age` is inside `profile`, we wrap `age` with `profile`)
 ```http
 PATCH http://127.0.0.1:8000/user/profile/4/ HTTP/1.1
 Content-Type: application/json
+Authorization: Bearer <YOUR-ACCESS-TOKEN>
 
 {
     "profile":{
         "age":"20"
-    },
-    "access_token": "<YOUR-OR-ADMIN-ACCESS-TOKEN>"
+    }
 }
 ```
+<details>
+<summary> Response Example</summary>
+
+```http
+HTTP/1.1 200 OK
+Date: Thu, 24 Feb 2022 01:36:05 GMT
+Server: WSGIServer/0.2 CPython/3.10.2
+Content-Type: application/json
+Vary: Accept, Origin
+Allow: GET, PUT, PATCH, HEAD, OPTIONS
+X-Frame-Options: DENY
+Content-Length: 270
+X-Content-Type-Options: nosniff
+Referrer-Policy: same-origin
+Cross-Origin-Opener-Policy: same-origin
+
+{
+  "id": 4,
+  "username": "test-ppnk1",
+  "first_name": "test_firstname",
+  "last_name": "test_lastname",
+  "email": "",
+  "date_joined": "2022-01-31T02:11:34.292524Z",
+  "last_login": "2022-02-24T01:33:37.391987Z",
+  "profile": {
+    "age": 20,
+    "bio": "I'm PPNK",
+    "location": "Los Angeles, CA"
+  },
+  "itinerary": []
+}
+
+```
+
+</details>
+<br></br>
+
 To delete your account, let's say you're user `id=4`, you can send a `DELETE` request to http://127.0.0.1:8000/user/delete/4/. You can only delete your own account, but if you are admin, you know what shit you can do. Like this:
 ```http
 DELETE http://127.0.0.1:8000/user/delete/4/ HTTP/1.1
 Content-Type: application/json
-
-{
-    "access_token": "<YOUR-OR-ADMIN-ACCESS-TOKEN>"
-}
+Authorization: Bearer <YOUR-OR-ADMIN-ACCESS-TOKEN>
 ```
 
 ### 2. As admin (superuser)
@@ -115,19 +307,232 @@ As an admin, you can view information of each individual user (or together). To 
 ```http
 GET http://127.0.0.1:8000/user/ HTTP/1.1
 Content-Type: application/json
-
-{
-    "access_token": "<ADMIN'S ACCESS TOKEN>"
-}
+Authorization: Bearer <YOUR-OR-ADMIN-ACCESS-TOKEN>
 ```
+<details>
+<summary> Response Example</summary>
+
+```http
+HTTP/1.1 200 OK
+Date: Thu, 24 Feb 2022 01:37:22 GMT
+Server: WSGIServer/0.2 CPython/3.10.2
+Content-Type: application/json
+Vary: Accept, Origin
+Allow: GET, HEAD, OPTIONS
+X-Frame-Options: DENY
+Content-Length: 3635
+X-Content-Type-Options: nosniff
+Referrer-Policy: same-origin
+Cross-Origin-Opener-Policy: same-origin
+
+[
+  {
+    "id": 1,
+    "username": "admin",
+    "first_name": "admin's first name",
+    "last_name": "",
+    "email": "admin@nimda.com",
+    "date_joined": "2022-01-31T02:07:51.283530Z",
+    "last_login": "2022-02-24T01:34:13.123777Z",
+    "profile": {
+      "age": 12,
+      "bio": "",
+      "location": ""
+    },
+    "itinerary": [
+      {
+        "id": 1,
+        "title": "My First Itinerary!!!",
+        "desc": "Edit this to be the description of your travel plan!",
+        "created_at": "2022-02-24T00:08:42.950862Z",
+        "last_modified": "2022-02-24T00:58:59.473301Z",
+        "user": 1,
+        "trip_event": [
+          {
+            "id": 1,
+            "place_id": "<place_id-PLACEHOLDER>",
+            "start_time": "2022-02-23T14:30:00Z",
+            "end_time": "2022-02-23T17:30:00Z",
+            "itin": 1,
+            "place_json": "<place_json-PLACEHOLDER>"
+          },
+          {
+            "id": 2,
+            "place_id": "<place_id-PLACEHOLDER>",
+            "start_time": "2022-02-23T14:30:00Z",
+            "end_time": "2022-02-23T17:30:00Z",
+            "itin": 1,
+            "place_json": "<place_json-PLACEHOLDER-2>"
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "title": "My Second Itinerary!!!",
+        "desc": "Edit this to be the description of your travel plan!",
+        "created_at": "2022-02-24T00:58:45.244661Z",
+        "last_modified": "2022-02-24T00:59:42.399455Z",
+        "user": 1,
+        "trip_event": []
+      },
+      {
+        "id": 3,
+        "title": "My's Third Itinerary!",
+        "desc": "Edit this to be the description of your travel plan!",
+        "created_at": "2022-02-24T00:58:51.610574Z",
+        "last_modified": "2022-02-24T00:58:51.610622Z",
+        "user": 1,
+        "trip_event": []
+      }
+    ]
+  },
+  {
+    "id": 2,
+    "username": "test-ppnk1",
+    "first_name": "test_firstname",
+    "last_name": "test_lastname",
+    "email": "",
+    "date_joined": "2022-01-31T02:11:34.292524Z",
+    "last_login": "2022-02-24T01:33:37.391987Z",
+    "profile": {
+      "age": 23,
+      "bio": "I'm PPNK",
+      "location": "Los Angeles, CA"
+    },
+    "itinerary": []
+  },
+  {
+    "id": 3,
+    "username": "test-ppnk-api",
+    "first_name": "",
+    "last_name": "",
+    "email": "test-api-registration@test.com",
+    "date_joined": "2022-01-31T09:54:16.142804Z",
+    "last_login": null,
+    "profile": {
+      "age": 0,
+      "bio": "Edit this to be your bio.",
+      "location": ""
+    },
+    "itinerary": []
+  },
+  {
+    "id": 4,
+    "username": "test-ppnk-api-2",
+    "first_name": "",
+    "last_name": "",
+    "email": "test-api-registration-2@test.com",
+    "date_joined": "2022-01-31T09:58:08.859386Z",
+    "last_login": "2022-02-23T23:20:36.502192Z",
+    "profile": {
+      "age": 0,
+      "bio": "Edit this to be your bio.",
+      "location": ""
+    },
+    "itinerary": []
+  },
+  {
+    "id": 5,
+    "username": "test-ppnk-api-3",
+    "first_name": "",
+    "last_name": "",
+    "email": "test-api-registration-3@test.com",
+    "date_joined": "2022-01-31T10:11:53.796783Z",
+    "last_login": "2022-01-31T10:12:26.780984Z",
+    "profile": {
+      "age": 0,
+      "bio": "Edit this to be your bio.",
+      "location": ""
+    },
+    "itinerary": []
+  },
+  {
+    "id": 6,
+    "username": "zongnan",
+    "first_name": "Zongnan",
+    "last_name": "Bao",
+    "email": "zb3@g.ucla.edu",
+    "date_joined": "2022-02-08T22:18:50Z",
+    "last_login": "2022-02-17T20:34:50.461959Z",
+    "profile": {
+      "age": 0,
+      "bio": "Edit this to be your bio.",
+      "location": ""
+    },
+    "itinerary": []
+  },
+  {
+    "id": 7,
+    "username": "zongnan3",
+    "first_name": "Zongnan",
+    "last_name": "Bao",
+    "email": "zb3@illinois.edu",
+    "date_joined": "2022-02-08T23:32:32Z",
+    "last_login": "2022-02-10T01:28:03Z",
+    "profile": {
+      "age": 0,
+      "bio": "Edit this to be your bio.",
+      "location": ""
+    },
+    "itinerary": []
+  },
+  {
+    "id": 8,
+    "username": "zongnan8",
+    "first_name": "Zongnan",
+    "last_name": "Bao",
+    "email": "zongnan.bao@gmail.com",
+    "date_joined": "2022-02-08T23:32:50Z",
+    "last_login": "2022-02-10T01:27:41Z",
+    "profile": {
+      "age": 0,
+      "bio": "Edit this to be your bio.",
+      "location": ""
+    },
+    "itinerary": []
+  },
+  {
+    "id": 9,
+    "username": "zongnan60",
+    "first_name": "Zongnan",
+    "last_name": "Bao",
+    "email": "nick19981122@gmail.com",
+    "date_joined": "2022-02-10T01:32:23.933580Z",
+    "last_login": "2022-02-10T01:32:23.962981Z",
+    "profile": {
+      "age": 0,
+      "bio": "Edit this to be your bio.",
+      "location": ""
+    },
+    "itinerary": []
+  },
+  {
+    "id": 10,
+    "username": "dyyfk",
+    "first_name": "dyyfk",
+    "last_name": "dyyfk",
+    "email": "879608095@qq.com",
+    "date_joined": "2022-02-10T02:19:06.766937Z",
+    "last_login": "2022-02-10T02:49:18.634829Z",
+    "profile": {
+      "age": 0,
+      "bio": "Edit this to be your bio.",
+      "location": ""
+    },
+    "itinerary": []
+  }
+]
+
+```
+
+</details>
+<br></br>
+
 As an admin, you can also retrieve each individual user's information with their user ID (`id`). Let's say you want to view user with `id=4`, you can send a `GET` request to http://127.0.0.1:8000/user/profile/4/, with your `access_token` added. Like this:
 ```http
 GET http://127.0.0.1:8000/user/profile/4/ HTTP/1.1
 Content-Type: application/json
-
-{
-    "access_token": "<ADMIN'S ACCESS TOKEN>"
-}
+Authorization: Bearer <YOUR-OR-ADMIN-ACCESS-TOKEN>
 ```
 
 ## **Itinerary** CRUD
@@ -136,72 +541,226 @@ To create a new itinerary asscociated with logged-in user, send `POST` to http:/
 ```http
 POST http://127.0.0.1:8000/trip/itinerary/create/ HTTP/1.1
 Content-Type: application/json
+Authorization: Bearer <YOUR-OR-ADMIN-ACCESS-TOKEN>
 
 {
-    "title": "My First Itinerary!",
-    "access_token": "<YOUR-ACCESS-TOKEN>"
+    "title": "My First Itinerary!"
 }
 ```
 
 ### Retrieve Itinerary(s) Created by the Logged-in User
-As a regular user, you can retrieve all Itineraries created by you, simply send `GET` to http://127.0.0.1:8000/trip/itinerary/ with your token added. Like this:
+As a regular user, you can retrieve all Itineraries created by you, they would be presented in simplified format (only `id`, `title`, `last_modified` is returned, you can use `id` to query a more detailed information), simply send `GET` to http://127.0.0.1:8000/trip/itinerary/ with your token added. Like this:
 ```http
 GET http://127.0.0.1:8000/trip/itinerary/ HTTP/1.1
 Content-Type: application/json
-
-{
-    "access_token": "<YOUR-ACCESS-TOKEN>"
-}
+Authorization: Bearer <YOUR-OR-ADMIN-ACCESS-TOKEN>
 ```
-As an admin, you can retrieve all itineraries stored in the database by sending `GET` to http://127.0.0.1:8000/trip/itinerary/all/. Like this:
+<details>
+<summary> Response Example</summary>
+
+```http
+HTTP/1.1 200 OK
+Date: Thu, 24 Feb 2022 01:38:18 GMT
+Server: WSGIServer/0.2 CPython/3.10.2
+Content-Type: application/json
+Vary: Accept, Origin
+Allow: GET, HEAD, OPTIONS
+X-Frame-Options: DENY
+Content-Length: 271
+X-Content-Type-Options: nosniff
+Referrer-Policy: same-origin
+Cross-Origin-Opener-Policy: same-origin
+
+[
+  {
+    "id": 1,
+    "title": "My First Itinerary!!!",
+    "last_modified": "2022-02-24T00:58:59.473Z"
+  },
+  {
+    "id": 2,
+    "title": "My Second Itinerary!!!",
+    "last_modified": "2022-02-24T00:59:42.399Z"
+  },
+  {
+    "id": 3,
+    "title": "My's Third Itinerary!",
+    "last_modified": "2022-02-24T00:58:51.610Z"
+  }
+]
+```
+
+</details>
+<br></br>
+
+As an user, you can also retrieve all itineraries along with every bit of detail by sending `GET` to http://127.0.0.1:8000/trip/itinerary/all/. Like this:
 ```http
 GET http://127.0.0.1:8000/trip/itinerary/all/ HTTP/1.1
 Content-Type: application/json
-
-{
-    "access_token": "<ADMIN-ACCESS-TOKEN>"
-}
+Authorization: Bearer <YOUR-OR-ADMIN-ACCESS-TOKEN>
 ```
+<details>
+<summary> Response Example</summary>
+
+```http
+HTTP/1.1 200 OK
+Date: Thu, 24 Feb 2022 01:40:44 GMT
+Server: WSGIServer/0.2 CPython/3.10.2
+Content-Type: application/json
+Vary: Accept, Origin
+Allow: GET, HEAD, OPTIONS
+X-Frame-Options: DENY
+Content-Length: 982
+X-Content-Type-Options: nosniff
+Referrer-Policy: same-origin
+Cross-Origin-Opener-Policy: same-origin
+
+[
+  {
+    "id": 1,
+    "title": "My First Itinerary!!!",
+    "desc": "Edit this to be the description of your travel plan!",
+    "created_at": "2022-02-24T00:08:42.950862Z",
+    "last_modified": "2022-02-24T00:58:59.473301Z",
+    "user": 1,
+    "trip_event": [
+      {
+        "id": 1,
+        "place_id": "<place_id-PLACEHOLDER>",
+        "start_time": "2022-02-23T14:30:00Z",
+        "end_time": "2022-02-23T17:30:00Z",
+        "itin": 1,
+        "place_json": "<place_json-PLACEHOLDER>"
+      },
+      {
+        "id": 2,
+        "place_id": "<place_id-PLACEHOLDER>",
+        "start_time": "2022-02-23T14:30:00Z",
+        "end_time": "2022-02-23T17:30:00Z",
+        "itin": 1,
+        "place_json": "<place_json-PLACEHOLDER-2>"
+      }
+    ]
+  },
+  {
+    "id": 2,
+    "title": "My Second Itinerary!!!",
+    "desc": "Edit this to be the description of your travel plan!",
+    "created_at": "2022-02-24T00:58:45.244661Z",
+    "last_modified": "2022-02-24T00:59:42.399455Z",
+    "user": 1,
+    "trip_event": []
+  },
+  {
+    "id": 3,
+    "title": "My's Third Itinerary!",
+    "desc": "Edit this to be the description of your travel plan!",
+    "created_at": "2022-02-24T00:58:51.610574Z",
+    "last_modified": "2022-02-24T00:58:51.610622Z",
+    "user": 1,
+    "trip_event": []
+  }
+]
+
+```
+
+</details>
+<br></br>
 
 ### Update Itinerary by the ID
-To update an itinerary, you need the `id` of this itinerary, simply send `PATCH` to http://127.0.0.1:8000/trip/itinerary/, with token added. As usual, user will have permission to update itinerary belongs to them, while admin can edit any itinerary given an `id`. Like this:
+To update an itinerary, you need the `id` of this itinerary, simply send `PATCH` to http://127.0.0.1:8000/trip/itinerary/#(id)/, with token added. As usual, user will have permission to update itinerary belongs to them, while admin can edit any itinerary given an `id`. Like this:
 ```http
-PATCH http://127.0.0.1:8000/trip/itinerary/19/ HTTP/1.1
+PATCH http://127.0.0.1:8000/trip/itinerary/2/ HTTP/1.1
 Content-Type: application/json
+Authorization: Bearer <YOUR-OR-ADMIN-ACCESS-TOKEN>
 
 {
-    "title": "Crazy trip to your grandma's house",
-    "access_token": "<YOUR-OR-ADMIN-ACCESS-TOKEN>"
+    "title": "Updated Itinerary Title"
 }
 ```
+<details>
+<summary> Response Example</summary>
+
+```http
+HTTP/1.1 200 OK
+Date: Thu, 24 Feb 2022 01:46:23 GMT
+Server: WSGIServer/0.2 CPython/3.10.2
+Content-Type: application/json
+Vary: Accept, Origin
+Allow: GET, PUT, PATCH, HEAD, OPTIONS
+X-Frame-Options: DENY
+Content-Length: 218
+X-Content-Type-Options: nosniff
+Referrer-Policy: same-origin
+Cross-Origin-Opener-Policy: same-origin
+
+{
+  "id": 2,
+  "title": "Updated Itinerary Title",
+  "desc": "Edit this to be the description of your travel plan!",
+  "created_at": "2022-02-24T00:58:45.244661Z",
+  "last_modified": "2022-02-24T01:46:23.369164Z",
+  "user": 1,
+  "trip_event": []
+}
+
+```
+
+</details>
+<br></br>
 
 ## **TripEvent** CRUD
 <!-- `NOTE:` Since `TripEvent` does not have owner (user) field, you can only identify which user owns this `TripEvent` by looking at the ownership of this `TripEvent`'s `Itinerary`, `Itinerary` will have a field named `user` to identify which user this `Itinerary` belongs to.  -->
 
 ### Create an TripEvent Under an Itinerary
-To create an TripEvent, you need to first know which Itinerary it belongs to, let's say you want to create a TripEvent that go to UCLA during `14:30` to `17:30`, under the Itinerary titled `"Crazy trip to your grandma's house"` (`id=19`). You can send a `POST` request to http://127.0.0.1:8000/trip/event/create/. It will be succefully created only if you are the owner of Itinerary (`id=19`) or you are the holy-moly admin. Like this:
+To create an TripEvent, you need to first know which Itinerary it belongs to, let's say you want to create a TripEvent that go to UCLA during `14:30` to `17:30`, under the Itinerary titled `"Updated Itinerary Title"` (`id=2`). You can send a `POST` request to http://127.0.0.1:8000/trip/event/create/. It will be succefully created only if you are the owner of Itinerary (`id=2`) or you are the holy-moly admin. Like this:
 ```http
 POST http://127.0.0.1:8000/trip/event/create/ HTTP/1.1
 Content-Type: application/json
+Authorization: Bearer <YOUR-OR-ADMIN-ACCESS-TOKEN>
 
 {
-    "xid": "<UCLA-xid>",
-    "itin": "19",
-    "start_time": "14:30",
-    "end_time": "17:30" ,
-    "access_token": "<YOUR-OR-ADMIN-ACCESS-TOKEN>"
+    "place_id": "<UCLA-place_id-PLACEHOLDER>",
+    "itin": "2",
+    "start_time": "2022-02-22 14:30",
+    "end_time": "2022-02-22 17:30"
 }
 ```
+<details>
+<summary> Response Example</summary>
+
+```http
+HTTP/1.1 201 Created
+Date: Thu, 24 Feb 2022 01:49:14 GMT
+Server: WSGIServer/0.2 CPython/3.10.2
+Content-Type: application/json
+Vary: Accept, Origin
+Allow: POST, OPTIONS
+X-Frame-Options: DENY
+Content-Length: 168
+X-Content-Type-Options: nosniff
+Referrer-Policy: same-origin
+Cross-Origin-Opener-Policy: same-origin
+
+{
+  "id": 3,
+  "place_id": "<UCLA-place_id-PLACEHOLDER>",
+  "start_time": "2022-02-22T14:30:00Z",
+  "end_time": "2022-02-22T17:30:00Z",
+  "itin": 2,
+  "place_json": "<place_json-PLACEHOLDER>"
+}
+```
+
+</details>
+<br></br>
 
 ### Retrieve an TripEvent by the ID
 As a regular user, you probably don't need to retrieve single TripEvent by the ID, you can instead retrieve your Itineraries which will contain every TripEvent inside them. **But** as an admin, it's reasonable to do so. Just send `GET` request to http://127.0.0.1:8000/trip/event/10/ if you want to view specific TripEvent with `id=10`. Like this:
 ```http
 GET http://127.0.0.1:8000/trip/event/10/ HTTP/1.1
 Content-Type: application/json
-
-{
-    "access_token": "<YOUR-OR-ADMIN-ACCESS-TOKEN>"
-}
+Authorization: Bearer <YOUR-OR-ADMIN-ACCESS-TOKEN>
 ```
 
 
@@ -210,50 +769,56 @@ It's simple to update an TripEvent, let's say you want to update your UCLA trip 
 ```http
 PATCH http://127.0.0.1:8000/trip/event/10/ HTTP/1.1
 Content-Type: application/json
+Authorization: Bearer <YOUR-OR-ADMIN-ACCESS-TOKEN>
 
 {
-    "xid": "<USC-xid>",
-    "start_time": "15:30",
-    "end_time": "18:30" ,
-    "access_token": "<YOUR-OR-ADMIN-ACCESS-TOKEN>"
+    "place_id": "<USC-place_id-PLACEHOLDER>",
+    "start_time": "2022-02-22 15:30",
+    "end_time": "2022-02-22 18:30"
 }
 ```
 You can also move this TripEvent under other Itinerary, but you can only move to those Itinerary that belongs to you (or you are admin). Like this:
 ```http
 PATCH http://127.0.0.1:8000/trip/event/10/ HTTP/1.1
 Content-Type: application/json
+Authorization: Bearer <YOUR-OR-ADMIN-ACCESS-TOKEN>
 
 {
     "itin": "20", # assume itin 20 belongs to you
-    "access_token": "<YOUR-OR-ADMIN-ACCESS-TOKEN>"
 }
 ```
 
 
 ## **Query Place Info**
 #### Getting Place Recommendations Using Name of the Destination:
-Specify the name of the location (don't have to be exact, such as "`Westwood`"). It will be matched to the most similar places, and using that as the query location to return back to you suggested attractions. Like this:
+We use `URL parameters` as query method, you need to specify the name of the location (don't have to be exact, such as "`Westwood`"). It will be matched to the most similar places, and using that as the query location to return back to you suggested attractions. Like this:
 ```http
-GET http://127.0.0.1:8000/trip/search/loc/ HTTP/1.1
-Content-Type: application/json
-
-{
-    "location": "Westwood",
-    "access_token": "<YOUR-ACCESS-TOKEN>"
-}
+GET http://127.0.0.1:8000/trip/search/loc?location=Westwood HTTP/1.1
 ```
 
 #### Getting Details of Exact Attraction (`place_id`):
-Instead of getting suggestions around a place, you can also get the information of an exact attraction based on the `place_id` (the unique object ID of GoogleMap API for each place). It has MUCH MUCH MORE detailed information about that exact attraction, simply send a `GET` request to http://127.0.0.1:8000/trip/search/place-id/.
+Instead of getting suggestions around a place, you can also get the information of an exact attraction based on the `place_id` (the unique object ID of GoogleMap API for each place). It has MUCH MUCH MORE detailed information about that exact attraction. We use `URL parameters` as query method, simply send a `GET` request to http://127.0.0.1:8000/trip/search/place-id, with parameter `id=<place_id>`
 ```http
-GET http://127.0.0.1:8000/trip/search/place-id HTTP/1.1
-Content-Type: application/json
+GET http://127.0.0.1:8000/trip/search/place_id?id=ChIJD0eFf57DwoAR2VMsk3eVhn8 HTTP/1.1
+```
 
+## **Scheduling API**
+To request a itinerary schedule, you need to prepare some data entered by user:
+```json
 {
-    "place_id": "ChIJD0eFf57DwoAR2VMsk3eVhn8", 
-    "access_token": "<YOUR-ACCESS-TOKEN>"
+"userOptions":{
+            "places": [
+                {},
+                {},
+                ...
+            ],
+            "wakeUpTime": “<WAKE-UP-TIME-FORMAT>”,
+            "dates": ["<DATE-1>", "<DATE-2>", "<DATE-3>"],
+            "hotel": {} # this field optional
+        }
 }
 ```
+Simply send a POST request to http://127.0.0.1:8000/trip/schedule/, with above data body. It will return the newly generated `id`, you can use that to query the detail of that specific itinerary.
 
 <!-- ### Getting Attraction Suggestions Based on Location Chosen (Deprecated, but still usable :))
 Once user chooses a place, you can send the coordinate or the name of the place to backend, the backend will retrieve relevant attractions and get back to you. That said, there are 2 ways to give backend users' places of interests, both using `GET` request to http://127.0.0.1:8000/trip/search/loc/.

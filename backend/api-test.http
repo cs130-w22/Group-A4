@@ -102,15 +102,24 @@ POST http://127.0.0.1:8000/trip/itinerary/create/ HTTP/1.1
 Content-Type: application/json
 
 {
-    "title": "Non-Admin's First Itinerary!",
+    "title": "My's Third Itinerary!",
     "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjQ0NjMzMDQ4LCJpYXQiOjE2NDQ1NDY2NDgsImp0aSI6IjU3MzYxZTM3NjUyNzQ1ZTM4ODdlMGFmYTU3YTMxYmU3IiwidXNlcl9pZCI6MX0.fT3_gJ-S_iU3g09fjeztrU-PePDYW1k2s0tJR0T7mpQ"
 }
 
 ### REST API Retrieve Itinerary from Logged In User
-GET http://127.0.0.1:8000/trip/itinerary/ HTTP/1.1
+GET http://127.0.0.1:8000/trip/itinerary/all/ HTTP/1.1
 Content-Type: application/json
 
 {
+    "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjQ0NjMzMDQ4LCJpYXQiOjE2NDQ1NDY2NDgsImp0aSI6IjU3MzYxZTM3NjUyNzQ1ZTM4ODdlMGFmYTU3YTMxYmU3IiwidXNlcl9pZCI6MX0.fT3_gJ-S_iU3g09fjeztrU-PePDYW1k2s0tJR0T7mpQ"
+}
+
+### REST API Update Itinerary based on id
+PATCH http://127.0.0.1:8000/trip/itinerary/2/ HTTP/1.1
+Content-Type: application/json
+
+{
+    "title": "Updated Itinerary Title",
     "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjQ0NjMzMDQ4LCJpYXQiOjE2NDQ1NDY2NDgsImp0aSI6IjU3MzYxZTM3NjUyNzQ1ZTM4ODdlMGFmYTU3YTMxYmU3IiwidXNlcl9pZCI6MX0.fT3_gJ-S_iU3g09fjeztrU-PePDYW1k2s0tJR0T7mpQ"
 }
 
@@ -124,6 +133,14 @@ Content-Type: application/json
 
 ### REST API List User Profile Test 1
 GET http://127.0.0.1:8000/user/ HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjQ1NzU3ODk2LCJpYXQiOjE2NDU2NzE0OTYsImp0aSI6ImI1OWZhZDQwZjQwNzQzMmI4MjhlMTc2MmVmNDhiZDk1IiwidXNlcl9pZCI6MX0.IabsdL3Ht3RqOF5QL8OMAC3A_b6kzeXb5BGZJSpH24k
+
+{
+    "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjQ0NjQ4MzExLCJpYXQiOjE2NDQ1NjE5MTEsImp0aSI6IjUyNGU3NGYwYzhhODQ0ODRhNWVlNmIxYzc3ZTFjOGM5IiwidXNlcl9pZCI6MX0.wYGNVTW5FYgcsGXLVvHXurW8zTgBKU8gLTRTHfXNQ8k"
+}
+### REST API List User Profile Test 2
+GET http://127.0.0.1:8000/user/profile/ HTTP/1.1
 Content-Type: application/json
 
 {
@@ -148,51 +165,38 @@ POST http://127.0.0.1:8000/trip/event/create/ HTTP/1.1
 Content-Type: application/json
 
 {
-    "xid": "<xid-PLACEHOLDER>",
-    "itin": "24",
-    "start_time": "14:30",
-    "end_time": "17:30" ,
-    "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjQ0OTk0MDM3LCJpYXQiOjE2NDQ5MDc2MzcsImp0aSI6IjczMTFlZTY1NDM1NDRlOTU4Yjg1ZWRiZmNhYWZmNWZmIiwidXNlcl9pZCI6MX0.n1t-Gd1vmdb3hTw105HU9CUmwgM4fvK5eGEp-Znr8II"
+    "place_id": "<UCLA-place_id-PLACEHOLDER>",
+    "itin": "2",
+    "start_time": "2022-02-22 14:30",
+    "end_time": "2022-02-22 17:30" ,
+    "place_json": "<place_json-PLACEHOLDER>",
+    "access_token": "<YOUR-OR-ADMIN-ACCESS-TOKEN>"
 }
 
 ### REST API Update TripEvent from Logged In User
-PATCH http://127.0.0.1:8000/trip/event/9/ HTTP/1.1
+PATCH http://127.0.0.1:8000/trip/event/2/ HTTP/1.1
 Content-Type: application/json
 
 {
-    "xid": "<xid-PLACEHOLDER-NEW>",
-    "itin": "24",
-    "start_time": "14:30",
-    "end_time": "17:30" ,
+    "place_id": "<place_id-PLACEHOLDER>",
+    "itin": "1",
+    "start_time": "2022-02-23 14:30",
+    "end_time": "2022-02-23 17:30" ,
     "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjQ0OTk0MDM3LCJpYXQiOjE2NDQ5MDc2MzcsImp0aSI6IjczMTFlZTY1NDM1NDRlOTU4Yjg1ZWRiZmNhYWZmNWZmIiwidXNlcl9pZCI6MX0.n1t-Gd1vmdb3hTw105HU9CUmwgM4fvK5eGEp-Znr8II"
 }
 
 
-### REST API Search Attractions Based on Coordinates/Name
-GET http://127.0.0.1:8000/trip/search/loc HTTP/1.1
+### REST API Attractions Suggestions Based on Name (URL Query Param)
+GET http://127.0.0.1:8000/trip/search/loc?location=Westwood HTTP/1.1
+
+### REST API Search Attractions Based on place_id (URL Query Param)
+GET http://127.0.0.1:8000/trip/search/place_id?id=ChIJD0eFf57DwoAR2VMsk3eVhn8 HTTP/1.1
+
+### REST API Search Attractions Based on place_id (URL Query Param)
+GET http://127.0.0.1:8000/user/profile/ HTTP/1.1
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjQ1NzU3ODk2LCJpYXQiOjE2NDU2NzE0OTYsImp0aSI6ImI1OWZhZDQwZjQwNzQzMmI4MjhlMTc2MmVmNDhiZDk1IiwidXNlcl9pZCI6MX0.IabsdL3Ht3RqOF5QL8OMAC3A_b6kzeXb5BGZJSpH24k
+
+
+### REST API Search Attractions Based on place_id (URL Query Param)
+GET http://127.0.0.1:8000/trip/schedule/test?location=Los%20Angeles HTTP/1.1
 Content-Type: application/json
-
-{
-    "lon": "-118.4452",
-    "lat": "34.0689",
-    "location": "Westwood, Los Angeles",
-    "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjQ0OTk0MDM3LCJpYXQiOjE2NDQ5MDc2MzcsImp0aSI6IjczMTFlZTY1NDM1NDRlOTU4Yjg1ZWRiZmNhYWZmNWZmIiwidXNlcl9pZCI6MX0.n1t-Gd1vmdb3hTw105HU9CUmwgM4fvK5eGEp-Znr8II"
-}
-
-### REST API Search Attractions Based on XID
-GET http://127.0.0.1:8000/trip/search/place-id HTTP/1.1
-Content-Type: application/json
-
-{
-    "place_id": "ChIJpbxvgcW8woARAfXIdZBKSsY", 
-    "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjQ0OTk0MDM3LCJpYXQiOjE2NDQ5MDc2MzcsImp0aSI6IjczMTFlZTY1NDM1NDRlOTU4Yjg1ZWRiZmNhYWZmNWZmIiwidXNlcl9pZCI6MX0.n1t-Gd1vmdb3hTw105HU9CUmwgM4fvK5eGEp-Znr8II"
-}
-
-### REST API Attractions Suggestions Based on Name
-GET http://127.0.0.1:8000/trip/search/loc HTTP/1.1
-Content-Type: application/json
-
-{
-    "location": "Pasadena",
-    "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjQ0OTk0MDM3LCJpYXQiOjE2NDQ5MDc2MzcsImp0aSI6IjczMTFlZTY1NDM1NDRlOTU4Yjg1ZWRiZmNhYWZmNWZmIiwidXNlcl9pZCI6MX0.n1t-Gd1vmdb3hTw105HU9CUmwgM4fvK5eGEp-Znr8II"
-}
