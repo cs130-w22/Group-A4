@@ -92,7 +92,7 @@ Set-Cookie: LazyTrip-auth=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlI
 
 Once you got the `access_token` (from our backend, not Google), you can add that as an header in each of your request representing the user identity. Like this:
 ```http
-POST http://128.0.0.1:8000/any/api/request/that/needs/authentication/ HTTP/1.1
+POST http://127.0.0.1:8000/any/api/request/that/needs/authentication/ HTTP/1.1
 Content-Type: application/json
 Authorization: Bearer <YOUR-ACCESS-TOKEN>
 
