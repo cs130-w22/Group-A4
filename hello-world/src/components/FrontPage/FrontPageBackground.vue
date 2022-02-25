@@ -17,7 +17,7 @@
       @click:append="onEnter"
       :error-messages="errorMessages"
       :error="errorMessages !== null"
-      prefix="Plan a trip to"
+      prefix="A trip to"
       append-icon="mdi-magnify"
       solo
       shaped

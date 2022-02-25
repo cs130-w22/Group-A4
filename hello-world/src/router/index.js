@@ -45,8 +45,17 @@ export default new Router({
         {
             path: '/itinerary',
             name: 'itinerary',
-            component: ItineraryRouter
+            component: ItineraryRouter,
+            children: [
+                {
+                    path: '/itinerary/:id',
+                    component: FrontPageRouter,
+                },
+            ]
         },
+
+
+
         {
             path: '/404',
             alias: ['*'],

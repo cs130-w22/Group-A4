@@ -81,7 +81,7 @@ export default {
     };
   },
   created() {
-    this.$root.$on("show-place-on-map", this.showPlaceOnMap); // register hook for SchedulePlacesCard.vueow
+    this.$root.$on("show-place-on-map", this.showPlaceOnMap); // register hook for SchedulePlacesCard.vue
     this.$root.$on("hide-place-on-map", this.hidePlaceOnMap); // register hook for SchedulePlacesCard.vue
 
     this.$gmapApiPromiseLazy().then(() => {

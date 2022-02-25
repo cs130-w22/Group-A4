@@ -4,7 +4,11 @@
 
     <v-toolbar dense flat>
       <v-tabs v-model="tab" centered center-active show-arrows optional>
-        <v-tab v-for="(item, index) in itineraryNames" :key="item">
+        <v-tab
+          v-for="(item, index) in itineraryNames"
+          :key="item"
+          :to="'/itinerary/' + item"
+        >
           <v-badge v-if="index === 0" color="pink" dot>
             <span>
               {{ item.length > 8 ? item.substring(0, 8) + ".." : item }}
