@@ -17,7 +17,7 @@
       > -->
       <div style="width: 48px">
         <v-btn
-          v-if="!isSignIn"
+          v-if="!user"
           dark
           @click="handleClickSignIn"
           style="transform: translateX(-50%)"
@@ -44,7 +44,7 @@
 </template>
 
 <script>
-// import axios from "axios";
+import axios from "axios";
 
 import UserPanel from "./components/UserPanel.vue";
 
@@ -64,6 +64,7 @@ export default {
     isSignIn: false,
     isInit: false,
     access_token: null,
+    user: null,
   }),
   created() {
     let that = this;
@@ -87,22 +88,23 @@ export default {
           this.$gAuth.GoogleAuth.currentUser.get().getAuthResponse()
         );
         this.isSignIn = this.$gAuth.isAuthorized;
+
+        axios
+          .post("http://localhost:8000/auth/google/", {
+            access_token: googleUser.getAuthResponse().access_token,
+          })
+          .then((resp) => {
+            console.log(resp);
+            this.user = resp.data.user;
+            // this.$cookies("access_token",resp.data.access_token)
+          })
+          .catch((err) => {
+            console.log(err.response);
+          });
       } catch (error) {
         //on fail do something
         console.error(error);
       }
-
-      // axios
-      //   .post("http://localhost:8000/auth/google/", {
-      //     access_token: googleUser.getAuthResponse(),
-      //   })
-      //   .then((resp) => {
-      //     this.user = resp.data.user;
-      //     this.$cookies("access_token",resp.data.access_token)
-      //   })
-      //   .catch((err) => {
-      //     console.log(err.response);
-      //   });
     },
 
     async handleClickSignOut() {
@@ -110,6 +112,8 @@ export default {
         await this.$gAuth.signOut();
         this.isSignIn = this.$gAuth.isAuthorized;
         console.log("isSignIn", this.$gAuth.isAuthorized);
+
+        this.user = null;
       } catch (error) {
         console.error(error);
       }

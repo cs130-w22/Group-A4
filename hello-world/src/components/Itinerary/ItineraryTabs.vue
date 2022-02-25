@@ -41,6 +41,8 @@
 </template>
 
 <script>
+import axios from "axios";
+
 export default {
   name: "ItineraryTabs",
 
@@ -48,12 +50,29 @@ export default {
     return {
       tab: null,
       itineraryNames: [],
-
-      text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
     };
   },
 
   created() {
+    const headers = {
+      "Content-Type": "application/json",
+      Authorization:
+        "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjQ1NzU3ODk2LCJpYXQiOjE2NDU2NzE0OTYsImp0aSI6ImI1OWZhZDQwZjQwNzQzMmI4MjhlMTc2MmVmNDhiZDk1IiwidXNlcl9pZCI6MX0.IabsdL3Ht3RqOF5QL8OMAC3A_b6kzeXb5BGZJSpH24k",
+    };
+
+    axios
+      .get("http://127.0.0.1:8000/trip/itinerary/", {
+        headers,
+      })
+      .then((resp) => {
+        console.log(resp);
+        // this.user = resp.data.user;
+        // this.$cookies("access_token",resp.data.access_token)
+      })
+      .catch((err) => {
+        console.log(err.response);
+      });
+
     setTimeout(() => {
       this.itineraryNames = [
         "my trip to nyc",
