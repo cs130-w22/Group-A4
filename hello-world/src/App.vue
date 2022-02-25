@@ -2,7 +2,7 @@
   <v-app id="inspire">
     <v-app-bar app color="white" flat>
       <v-tabs centered class="ml-n9" color="grey darken-1">
-        <v-tab v-for="link in links" :key="link.name" :to="link.name">
+        <v-tab v-for="link in links" :key="link.route" :to="link.route">
           {{ link.name }}
         </v-tab>
       </v-tabs>
@@ -17,7 +17,7 @@
       > -->
       <div style="width: 48px">
         <v-btn
-          v-if="!isSignIn"
+          v-if="!user"
           dark
           @click="handleClickSignIn"
           style="transform: translateX(-50%)"
@@ -35,14 +35,16 @@
     </v-app-bar>
     <v-main class="grey lighten-2">
       <v-container fluid>
-        <router-view />
+        <keep-alive>
+          <router-view />
+        </keep-alive>
       </v-container>
     </v-main>
   </v-app>
 </template>
 
 <script>
-// import axios from "axios";
+import axios from "axios";
 
 import UserPanel from "./components/UserPanel.vue";
 
@@ -54,10 +56,15 @@ export default {
   },
 
   data: () => ({
-    links: [{ name: "Map" }, { name: "Schedule" }],
+    links: [
+      { name: "New trip", route: "/home" },
+      { name: "schedule", route: "/schedule" },
+      { name: "itinerary", route: "/itinerary" },
+    ],
     isSignIn: false,
     isInit: false,
     access_token: null,
+    user: null,
   }),
   created() {
     let that = this;
@@ -68,44 +75,59 @@ export default {
     }, 1000);
   },
   methods: {
-    async handleClickSignIn() {
+    handleClickSignIn() {
+      this.$gAuth
+        .signIn()
+        .then((googleUser) => {
+          if (!googleUser) return;
+          // console.log("getAuthResponse", googleUser.getAuthResponse());
+          // console.log(
+          // "getAuthResponse",
+          // this.$gAuth.GoogleAuth.currentUser.get().getAuthResponse()
+          // );
+          this.isSignIn = this.$gAuth.isAuthorized;
+
+          axios
+            .post("http://localhost:8000/auth/google/", {
+              access_token: googleUser.getAuthResponse().access_token,
+            })
+            .then((resp) => {
+              console.log(resp);
+              this.user = resp.data.user;
+              // this.$cookies("access_token",resp.data.access_token)
+            })
+            .catch((err) => {
+              console.log(err.response);
+            });
+        })
+        .catch((err) => {
+          console.log(err.response);
+        });
+    },
+
+    handleClickSignOut() {
+      this.$gAuth
+        .signOut()
+        .then(() => {
+          this.isSignIn = this.$gAuth.isAuthorized;
+          console.log("isSignIn", this.$gAuth.isAuthorized);
+
+          this.user = null;
+        })
+        .catch((err) => {
+          console.log(err.response);
+        });
+
       // axios
-      //   .post("http://localhost:8000/auth/google/", {
-      //     access_token: token,
+      //   .post("http://localhost:8000/auth/logout/", {
+      //     access_token: googleUser.getAuthResponse(),
       //   })
       //   .then((resp) => {
-      //     this.user = resp.data.user;
+      //     this.delete_cookies(access_token)
       //   })
       //   .catch((err) => {
       //     console.log(err.response);
       //   });
-
-      try {
-        const googleUser = await this.$gAuth.signIn();
-        if (!googleUser) return;
-        console.log("googleUser", googleUser);
-        console.log("getId", googleUser.getId());
-        console.log("getBasicProfile", googleUser.getBasicProfile());
-        console.log("getAuthResponse", googleUser.getAuthResponse());
-        console.log(
-          "getAuthResponse",
-          this.$gAuth.GoogleAuth.currentUser.get().getAuthResponse()
-        );
-        this.isSignIn = this.$gAuth.isAuthorized;
-      } catch (error) {
-        //on fail do something
-        console.error(error);
-      }
-    },
-
-    async handleClickSignOut() {
-      try {
-        await this.$gAuth.signOut();
-        this.isSignIn = this.$gAuth.isAuthorized;
-        console.log("isSignIn", this.$gAuth.isAuthorized);
-      } catch (error) {
-        console.error(error);
-      }
     },
   },
 };

@@ -12,7 +12,7 @@
         disableDefaultUi: true,
       }"
       style="width: 100%; height: 100%"
-      ref="mapRef"
+      ref="itineraryMap"
     >
       <GmapMarker
         v-for="(marker, index) in markers"
@@ -66,7 +66,7 @@
 import { gmapApi } from "vue2-google-maps";
 
 export default {
-  name: "ScheduleMap",
+  name: "ItineraryMap",
   data() {
     return {
       map: null,
@@ -75,40 +75,16 @@ export default {
         lng: 0,
       },
       zoom: 12,
+      currentPlace: null,
       markers: [],
       googlePlacesService: null,
-      googleGeocoder: null,
     };
-  },
-  created() {
-    this.$root.$on("show-place-on-map", this.showPlaceOnMap); // register hook for SchedulePlacesCard.vue
-    this.$root.$on("hide-place-on-map", this.hidePlaceOnMap); // register hook for SchedulePlacesCard.vue
-
-    this.$gmapApiPromiseLazy().then(() => {
-      this.setCityCoordinate(); // wait to use the geocoder service of google api
-    });
-  },
-  mounted() {
-    this.$refs.mapRef.$mapPromise.then((map) => (this.map = map));
-  },
-  watch: {
-    location: {
-      // do not need immediate because it is done by he created()
-      handler(newLocation) {
-        if (newLocation === undefined) return; // user leaving the tab
-
-        this.setCityCoordinate();
-      },
-    },
-  },
-  computed: {
-    google: gmapApi,
-    location() {
-      return this.$route.params.location;
-    },
   },
 
   methods: {
+    setPlace(place) {
+      this.currentPlace = place;
+    },
     async addMarker(place) {
       if (this.markers.some((e) => e.place_id === place.place_id)) return; // markers already contain this place
 
@@ -129,9 +105,22 @@ export default {
         } catch (err) {
           placeObj.review = "No review"; // google api fails to return anything useful
         }
+        // placeObj.zIndex = ++this.curZIndex;
+
+        // this.markers.push({
+        //   position: marker,
+        //   infoWindowShown: true,
+        //   place_id: place_id,
+        //   // url: place.photos[0].getUrl(),
+        //   name: place.name,
+        //   rating: place.rating,
+        //   price_level: place.price_level,
+        //   zIndex: ++this.curZIndex,
+        // });
 
         this.markers.forEach((e) => (e.infoWindowShown = false));
         this.markers.push(placeObj);
+        // this.currentPlace = null;
       }
     },
 
@@ -156,6 +145,7 @@ export default {
         };
       }
 
+      this.setPlace(place);
       this.addMarker(place);
 
       // this.getPlaceDetails(place);
@@ -176,40 +166,6 @@ export default {
       //     this.addMarker(results[0]);
 
       //     this.map.setCenter(results[0].geometry.location);
-      //   }
-      // });
-    },
-    async setCityCoordinate() {
-      const service = this.getGoogleGeocoder();
-
-      const request = {
-        address: this.location,
-      };
-
-      const { results, status } = await new Promise((resolve) =>
-        service.geocode(
-          request,
-          // pass a callback to getDetails that resolves the promise
-          (results, status) => resolve({ results, status })
-        )
-      );
-
-      if (
-        status === this.google.maps.GeocoderStatus.OK &&
-        status !== this.google.maps.GeocoderStatus.ZERO_RESULTS
-      ) {
-        this.map.setCenter(results[0].geometry.location);
-        return Promise.resolve(results);
-      } else {
-        return Promise.reject(results);
-      }
-
-      // service.geocode(request, (results, status) => {
-      //   if (status === this.google.maps.GeocoderStatus.OK) {
-      //     if (status !== this.google.maps.GeocoderStatus.ZERO_RESULTS) {
-      //       console.log(results);
-      //       this.map.setCenter(results[0].geometry.location);
-      //     }
       //   }
       // });
     },
@@ -247,16 +203,40 @@ export default {
     getGooglePlacesService() {
       if (this.googlePlacesService !== null) return this.googlePlacesService;
 
-      this.googlePlacesService = new this.google.maps.places.PlacesService(
-        this.map
-      );
-      return this.googlePlacesService;
+      return new this.google.maps.places.PlacesService(this.map);
     },
-    getGoogleGeocoder() {
-      if (this.googleGeocoder !== null) return this.googleGeocoder;
+  },
 
-      this.googleGeocoder = new this.google.maps.Geocoder();
-      return this.googleGeocoder;
+  created() {
+    this.$root.$on("show-place-on-map", this.showPlaceOnMap); // register hook for SchedulePlacesCard.vueow
+    this.$root.$on("hide-place-on-map", this.hidePlaceOnMap); // register hook for SchedulePlacesCard.vue
+
+    this.$gmapApiPromiseLazy(); // init google api
+    this.$getLocation({})
+      .then((coordinates) => {
+        this.userCoordinates = coordinates;
+      })
+      .catch((error) => console.log(error)); // users do not grant permission of the location
+  },
+
+  mounted() {
+    this.$refs.itineraryMap.$mapPromise.then((map) => (this.map = map));
+  },
+
+  computed: {
+    google: gmapApi,
+    mapCoordinates() {
+      if (!this.map) {
+        // google map not inited
+        return {
+          lat: 0,
+          lnt: 0,
+        };
+      }
+      return {
+        lat: this.map.getCenter().lat(),
+        lng: this.map.getCenter().lng(),
+      };
     },
   },
 };

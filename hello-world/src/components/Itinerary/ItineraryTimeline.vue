@@ -1,19 +1,19 @@
 <template>
   <v-timeline dense clipped class="mr-8">
-    <!-- <v-timeline-item fill-dot class="white--text mb-12" color="orange" large>
-        <v-text-field
-          v-model="input"
-          hide-details
-          flat
-          label="Leave a comment..."
-          solo
-          @keydown.enter="comment"
-        >
-          <template v-slot:append>
-            <v-btn class="mx-0" depressed @click="comment"> Post </v-btn>
-          </template>
-        </v-text-field>
-      </v-timeline-item> -->
+    <v-timeline-item fill-dot class="white--text mb-12" color="orange" large>
+      <v-text-field
+        v-model="input"
+        hide-details
+        flat
+        label="Leave a comment..."
+        solo
+        @keydown.enter="comment"
+      >
+        <template v-slot:append>
+          <v-btn class="mx-0" depressed @click="comment"> Post </v-btn>
+        </template>
+      </v-text-field>
+    </v-timeline-item>
 
     <v-slide-x-transition group>
       <v-timeline-item
@@ -46,7 +46,7 @@
       </v-row>
     </v-timeline-item>
 
-    <v-timeline-item class="mb-4" small>
+    <!-- <v-timeline-item class="mb-4" small>
       <v-row justify="space-between">
         <v-col cols="7">
           <v-chip class="white--text ml-0" color="purple" label small>
@@ -56,30 +56,28 @@
         </v-col>
         <v-col class="text-right" cols="5"> 10:00 EDT </v-col>
       </v-row>
+    </v-timeline-item> -->
+    <!-- <v-timeline-item class="mb-4" color="grey" small>
+      <v-row justify="space-between">
+        <v-col cols="7">
+          Order confirmation email was sent to John Leider (john@vuetifyjs.com).
+        </v-col>
+        <v-col class="text-right" cols="5"> 15:25 EDT </v-col>
+      </v-row>
     </v-timeline-item>
-    <!-- 
-      <v-timeline-item class="mb-4" color="grey" small>
-        <v-row justify="space-between">
-          <v-col cols="7">
-            Order confirmation email was sent to John Leider
-            (john@vuetifyjs.com).
-          </v-col>
-          <v-col class="text-right" cols="5"> 15:25 EDT </v-col>
-        </v-row>
-      </v-timeline-item> -->
 
-    <!-- <v-timeline-item class="mb-4" hide-dot>
-        <v-btn class="mx-0"> Resend Email </v-btn>
-      </v-timeline-item>
+    <v-timeline-item class="mb-4" hide-dot>
+      <v-btn class="mx-0"> Resend Email </v-btn>
+    </v-timeline-item> -->
 
-      <v-timeline-item class="mb-4" color="grey" small>
-        <v-row justify="space-between">
-          <v-col cols="7">
-            A $15.00 USD payment was processed on PayPal Express Checkout
-          </v-col>
-          <v-col class="text-right" cols="5"> 15:25 EDT </v-col>
-        </v-row>
-      </v-timeline-item> -->
+    <v-timeline-item class="mb-4" color="grey" small>
+      <v-row justify="space-between">
+        <v-col cols="7">
+          A $15.00 USD payment was processed on PayPal Express Checkout
+        </v-col>
+        <v-col class="text-right" cols="5"> 15:25 EDT </v-col>
+      </v-row>
+    </v-timeline-item>
 
     <v-timeline-item class="mb-4" small>
       <v-row justify="space-between">
@@ -103,7 +101,7 @@
 </template>
 <script>
 export default {
-  name: "ScheduleTimeline",
+  name: "ItineraryTimeline",
   data: () => ({
     events: [],
     input: null,
