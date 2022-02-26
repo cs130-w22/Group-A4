@@ -36,7 +36,7 @@
     <v-main class="grey lighten-2">
       <v-container fluid>
         <keep-alive>
-          <router-view />
+          <router-view> </router-view>
         </keep-alive>
       </v-container>
     </v-main>

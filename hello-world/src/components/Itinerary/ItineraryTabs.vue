@@ -20,21 +20,29 @@
       optional
       class="ItineraryTabs"
     >
-      <v-tab v-for="(item, index) in itineraryNames" :key="item">
+      <v-tab v-for="(itinerary, index) in itinerarys" :key="itinerary.id">
         <v-badge v-if="index === 0" color="pink" dot>
           <span>
-            {{ item.length > 8 ? item.substring(0, 8) + ".." : item }}
+            {{
+              itinerary.title.length > 8
+                ? itinerary.title.substring(0, 8) + ".."
+                : itinerary.title
+            }}
           </span>
         </v-badge>
         <span v-else>
-          {{ item.length > 8 ? item.substring(0, 8) + ".." : item }}
+          {{
+            itinerary.title.length > 8
+              ? itinerary.title.substring(0, 8) + ".."
+              : itinerary.title
+          }}
         </span>
       </v-tab>
     </v-tabs>
 
     <v-tabs-items v-model="tab">
-      <v-tab-item v-for="item in itineraryNames" :key="item">
-        <router-view v-if="item === itineraryNames[tab]"></router-view>
+      <v-tab-item v-for="itinerary in itinerarys" :key="itinerary.id">
+        <router-view v-if="itinerary === itinerarys[tab]"></router-view>
       </v-tab-item>
     </v-tabs-items>
   </v-sheet>
@@ -49,39 +57,29 @@ export default {
   data() {
     return {
       tab: null,
-      itineraryNames: [],
+      itinerarys: [],
     };
   },
 
   created() {
-    const headers = {
-      "Content-Type": "application/json",
-      Authorization:
-        "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjQ1NzU3ODk2LCJpYXQiOjE2NDU2NzE0OTYsImp0aSI6ImI1OWZhZDQwZjQwNzQzMmI4MjhlMTc2MmVmNDhiZDk1IiwidXNlcl9pZCI6MX0.IabsdL3Ht3RqOF5QL8OMAC3A_b6kzeXb5BGZJSpH24k",
-    };
+    const ac_token = this.$cookie.get("access_token");
+    if (ac_token) {
+      const headers = {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + ac_token,
+      };
 
-    axios
-      .get("http://127.0.0.1:8000/trip/itinerary/", {
-        headers,
-      })
-      .then((resp) => {
-        console.log(resp);
-        // this.user = resp.data.user;
-        // this.$cookies("access_token",resp.data.access_token)
-      })
-      .catch((err) => {
-        console.error(err);
-      });
-
-    setTimeout(() => {
-      this.itineraryNames = [
-        "my trip to nyc",
-        "shopping11111111111111111111111111",
-        "videos",
-        "images",
-        "news",
-      ];
-    }, 1000);
+      axios
+        .get("http://127.0.0.1:8000/trip/itinerary/", {
+          headers,
+        })
+        .then((resp) => {
+          this.itinerarys = resp.data;
+        })
+        .catch((err) => {
+          console.error(err);
+        });
+    }
   },
 
   methods: {
@@ -89,7 +87,7 @@ export default {
       if (this.tab === undefined) {
         this.$router.push("/itinerary");
       } else {
-        this.$router.push("/itinerary/" + this.itineraryNames[this.tab]);
+        this.$router.push("/itinerary/" + this.itinerarys[this.tab].id);
       }
     },
   },

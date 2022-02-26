@@ -52,7 +52,20 @@ export default new Router({
                     component: ItineraryTabItem,
                     props: true
                 },
-            ]
+            ],
+            beforeEnter: (to, from, next) => {
+                const access_token = Vue.cookie.get('access_token')
+
+                console.log(access_token)
+                if (access_token === null) {
+                    // user doesn't have access token, redirect to login
+                    next("/404")
+                }
+                else {
+                    // user has access token, user can open the page
+                    next()
+                }
+            },
         },
 
         {
