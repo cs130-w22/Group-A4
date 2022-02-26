@@ -12,6 +12,7 @@
     "core-js": "^3.6.5",
     "vue": "^2.6.11",
     "vue-browser-geolocation": "^1.8.0",
+    "vue-cookie": "^1.1.4",
     "vue-google-oauth2": "^1.5.8",
     "vue-router": "^3.5.3",
     "vue2-google-maps": "^0.10.7",

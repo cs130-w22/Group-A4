@@ -63,21 +63,35 @@ export default {
     ],
     isSignIn: false,
     isInit: false,
-    access_token: null,
     user: null,
   }),
   created() {
-    let that = this;
-    let checkGauthLoad = setInterval(function () {
-      that.isInit = that.$gAuth.isInit;
-      that.isSignIn = that.$gAuth.isAuthorized;
-      if (that.isInit) clearInterval(checkGauthLoad);
+    const checkGauthLoad = setInterval(() => {
+      this.isInit = this.$gAuth.isInit;
+      this.isSignIn = this.$gAuth.isAuthorized;
+      if (this.isInit) clearInterval(checkGauthLoad);
     }, 1000);
+
+    const ac_token = this.$cookie.get("access_token");
+    if (ac_token) {
+      const headers = {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + ac_token,
+      };
+      axios
+        .get("http://localhost:8000/user/profile/", {
+          headers,
+        })
+        .then((resp) => {
+          this.user = resp.data;
+        })
+        .catch((err) => console.error(err));
+    }
   },
   methods: {
     handleClickSignIn() {
       this.$gAuth
-        .signIn()
+        .signIn() // log in from the frontend
         .then((googleUser) => {
           if (!googleUser) return;
           // console.log("getAuthResponse", googleUser.getAuthResponse());
@@ -87,47 +101,40 @@ export default {
           // );
           this.isSignIn = this.$gAuth.isAuthorized;
 
+          // log in from the backend
           axios
             .post("http://localhost:8000/auth/google/", {
               access_token: googleUser.getAuthResponse().access_token,
             })
             .then((resp) => {
-              console.log(resp);
+              // console.log(resp);
+              this.$cookie.set("access_token", resp.data.access_token, {
+                expires: "1D",
+              });
+
               this.user = resp.data.user;
-              // this.$cookies("access_token",resp.data.access_token)
-            })
-            .catch((err) => {
-              console.log(err.response);
             });
         })
         .catch((err) => {
-          console.log(err.response);
+          console.error(err);
         });
     },
 
     handleClickSignOut() {
+      // log out from the frontend
       this.$gAuth
         .signOut()
         .then(() => {
           this.isSignIn = this.$gAuth.isAuthorized;
-          console.log("isSignIn", this.$gAuth.isAuthorized);
-
+          this.$cookie.delete("access_token");
           this.user = null;
+
+          // log out from the backend
+          axios.post("http://localhost:8000/logout/");
         })
         .catch((err) => {
-          console.log(err.response);
+          console.error(err);
         });
-
-      // axios
-      //   .post("http://localhost:8000/auth/logout/", {
-      //     access_token: googleUser.getAuthResponse(),
-      //   })
-      //   .then((resp) => {
-      //     this.delete_cookies(access_token)
-      //   })
-      //   .catch((err) => {
-      //     console.log(err.response);
-      //   });
     },
   },
 };

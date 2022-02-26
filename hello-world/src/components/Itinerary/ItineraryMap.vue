@@ -216,7 +216,7 @@ export default {
       .then((coordinates) => {
         this.userCoordinates = coordinates;
       })
-      .catch((error) => console.log(error)); // users do not grant permission of the location
+      .catch((error) => console.error(error)); // users do not grant permission of the location
   },
 
   mounted() {
