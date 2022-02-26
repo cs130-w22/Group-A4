@@ -1,20 +1,5 @@
 <template>
   <v-timeline dense clipped class="mr-8">
-    <v-timeline-item fill-dot class="white--text mb-12" color="orange" large>
-      <v-text-field
-        v-model="input"
-        hide-details
-        flat
-        label="Leave a comment..."
-        solo
-        @keydown.enter="comment"
-      >
-        <template v-slot:append>
-          <v-btn class="mx-0" depressed @click="comment"> Post </v-btn>
-        </template>
-      </v-text-field>
-    </v-timeline-item>
-
     <v-slide-x-transition group>
       <v-timeline-item
         v-for="event in timeline"
@@ -114,22 +99,6 @@ export default {
     },
   },
 
-  methods: {
-    comment() {
-      const time = new Date().toTimeString();
-      this.events.push({
-        id: this.nonce++,
-        text: this.input,
-        time: time.replace(/:\d{2}\sGMT-\d{4}\s\((.*)\)/, (match, contents) => {
-          return ` ${contents
-            .split(" ")
-            .map((v) => v.charAt(0))
-            .join("")}`;
-        }),
-      });
-
-      this.input = null;
-    },
-  },
+  methods: {},
 };
 </script>
