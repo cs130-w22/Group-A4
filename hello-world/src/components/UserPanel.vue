@@ -29,26 +29,18 @@
 export default {
   name: "UserPanel",
   props: ["user"],
-  // data: () => ({
-  //   user: {
-  //     initials: "JD",
-  //     fullName: "John Doe",
-  //     email: "john.doe@doe.com",
-  //   },
-  // }),
-
   computed: {
     fullName() {
-      if (!this.user) return "";
+      // if (!this.user) return "";
       return this.user.first_name + " " + this.user.last_name;
     },
     initials() {
-      if (!this.user) return "";
+      // if (!this.user) return "";
 
       return this.user.first_name[0] + this.user.last_name[0];
     },
     email() {
-      if (!this.user) return "";
+      // if (!this.user) return "";
 
       return this.user.email;
     },

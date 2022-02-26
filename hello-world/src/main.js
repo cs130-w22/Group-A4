@@ -8,6 +8,9 @@ import GAuth from 'vue-google-oauth2'
 
 import * as VueGoogleMaps from 'vue2-google-maps'
 
+import VueCookie from 'vue-cookie';
+
+
 const gauthOption = {
   clientId: '113665789634-ouu64vjjn7mnj0slrmtmm5e5gauu17o7.apps.googleusercontent.com',
   scope: 'profile email',
@@ -26,6 +29,8 @@ Vue.use(VueGoogleMaps, {
   },
   installComponents: true
 })
+
+Vue.use(VueCookie);
 
 
 new Vue({

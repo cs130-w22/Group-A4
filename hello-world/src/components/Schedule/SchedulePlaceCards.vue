@@ -113,7 +113,7 @@ export default {
         })
         .catch((err) => {
           this.loading = false;
-          console.log(err.response);
+          console.error(err);
         });
     },
     showPlace(place) {

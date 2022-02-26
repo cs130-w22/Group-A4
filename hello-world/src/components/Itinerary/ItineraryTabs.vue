@@ -70,7 +70,7 @@ export default {
         // this.$cookies("access_token",resp.data.access_token)
       })
       .catch((err) => {
-        console.log(err.response);
+        console.error(err);
       });
 
     setTimeout(() => {
