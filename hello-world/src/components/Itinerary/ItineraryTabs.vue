@@ -1,5 +1,10 @@
 <template>
   <v-sheet rounded="lg" height="90vh">
+    <v-overlay :value="overlay" absolute>
+      <v-btn class="white--text" color="teal" v-on:click="onSignInClicked">
+        Log in to see this page
+      </v-btn>
+    </v-overlay>
     <v-card color="teal darken-3">
       <v-card-title class="text-center justify-center py-3">
         <h1 class="white--text font-weight-bold text-h2">Saved trip</h1>
@@ -58,31 +63,48 @@ export default {
     return {
       tab: null,
       itinerarys: [],
+      overlay: true,
     };
   },
 
-  created() {
-    const ac_token = this.$cookie.get("access_token");
-    if (ac_token) {
-      const headers = {
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + ac_token,
-      };
+  computed: {
+    isSignIn() {
+      return this.$root.$children[0].isSignIn;
+    },
+  },
+  watch: {
+    isSignIn: {
+      immediate: true,
+      deep: true,
+      handler() {
+        if (this.isSignIn) {
+          const access_token = this.$cookie.get("access_token");
 
-      axios
-        .get("http://127.0.0.1:8000/trip/itinerary/", {
-          headers,
-        })
-        .then((resp) => {
-          this.itinerarys = resp.data;
-        })
-        .catch((err) => {
-          console.error(err);
-        });
-    }
+          const headers = {
+            "Content-Type": "application/json",
+            Authorization: "Bearer " + access_token,
+          };
+
+          axios
+            .get("http://127.0.0.1:8000/trip/itinerary/", {
+              headers,
+            })
+            .then((resp) => {
+              this.itinerarys = resp.data;
+              this.overlay = false;
+            })
+            .catch((err) => {
+              console.error(err);
+            });
+        }
+      },
+    },
   },
 
   methods: {
+    onSignInClicked() {
+      this.$root.$children[0].handleClickSignIn();
+    },
     onTabChanged() {
       if (this.tab === undefined) {
         this.$router.push("/itinerary");

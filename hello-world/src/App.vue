@@ -7,14 +7,6 @@
         </v-tab>
       </v-tabs>
 
-      <!-- <g-signin-button
-        v-if="isEmpty(user)"
-        :params="googleSignInParams"
-        @success="onGoogleSignInSuccess"
-        @error="onGoogleSignInError"
-        style="width: 40px; transform: translateX(-100%)"
-        </g-signin-button> 
-      > -->
       <div style="width: 48px">
         <v-btn
           v-if="!user"
@@ -99,7 +91,6 @@ export default {
           // "getAuthResponse",
           // this.$gAuth.GoogleAuth.currentUser.get().getAuthResponse()
           // );
-          this.isSignIn = this.$gAuth.isAuthorized;
 
           // log in from the backend
           axios
@@ -107,12 +98,11 @@ export default {
               access_token: googleUser.getAuthResponse().access_token,
             })
             .then((resp) => {
-              // console.log(resp);
               this.$cookie.set("access_token", resp.data.access_token, {
                 expires: "1D",
               });
-
               this.user = resp.data.user;
+              this.isSignIn = this.$gAuth.isAuthorized;
             });
         })
         .catch((err) => {
@@ -125,16 +115,18 @@ export default {
       this.$gAuth
         .signOut()
         .then(() => {
-          this.isSignIn = this.$gAuth.isAuthorized;
-          this.$cookie.delete("access_token");
-          this.user = null;
-
           // log out from the backend
-          axios.post("http://localhost:8000/logout/");
+          axios.post("http://localhost:8000/logout/").then(() => {
+            this.$cookie.delete("access_token");
+            this.user = null;
+            this.isSignIn = this.$gAuth.isAuthorized;
+          });
         })
         .catch((err) => {
           console.error(err);
         });
+
+      this.$router.push("/home");
     },
   },
 };
