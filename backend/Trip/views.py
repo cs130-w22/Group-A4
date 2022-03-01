@@ -1,4 +1,6 @@
 import json
+from datetime import datetime
+from collections import defaultdict
 from pprint import pprint
 
 from django.http import HttpResponse
@@ -10,6 +12,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import generics, permissions, mixins
 from rest_framework import status
+from rest_framework.exceptions import ParseError
 
 from .permissions import IsOwnerOrReadOnly, IsAdmin, IsOwnerOrAdmin, IsTripEventOwnerOrAdminCreate, IsTripEventOwnerOrAdminUpdate
 
@@ -126,6 +129,26 @@ class ItineraryViewUpdate(generics.RetrieveUpdateAPIView):
     # support PATCH (update current user profile)
     def patch(self, request, *args, **kwargs):
         return self.partial_update(request, *args, **kwargs)
+
+    def get(self, request, pk):
+        # group by each date
+        try:
+            itinerary = Itinerary.objects.get(id=pk)
+        except:
+            raise ParseError(detail=f"Itinerary id={pk} not found", code=404)
+        itinerary_serializer = ItinerarySerializer(itinerary)
+
+        # reorder tripevents into dates
+        itinerary_json = itinerary_serializer.data
+        date_grouped_table = defaultdict(list)
+        for event in itinerary_json['trip_event']:
+            date = str(datetime.strptime(event['start_time'], "%Y-%m-%dT%H:%M:%S%z").date())
+            date_grouped_table[str(date)].append(event)
+
+        # group by date
+        itinerary_json['trip_event'] = date_grouped_table
+
+        return Response(itinerary_json)
 
 
 
