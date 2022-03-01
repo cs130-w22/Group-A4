@@ -5,15 +5,6 @@
         Log in to see this page
       </v-btn>
     </v-overlay>
-    <v-card color="teal darken-3">
-      <v-card-title class="text-center justify-center py-3">
-        <h1 class="white--text font-weight-bold text-h2">Saved trip</h1>
-      </v-card-title>
-    </v-card>
-    <v-divider></v-divider>
-    <v-divider></v-divider>
-    <v-divider></v-divider>
-
     <v-tabs
       dark
       background-color="teal darken-3"

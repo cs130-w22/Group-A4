@@ -1,14 +1,12 @@
 <template>
   <v-card class="mx-auto">
-    <v-card-title class="pa-2">
-      <h3 class="text-h6 font-weight-light text-center grow">
-        {{ timeline.title }}
-      </h3>
+    <v-card-title class="text-h5 ml-10">
+      {{ timeline.title }}
     </v-card-title>
     <v-virtual-scroll
       :items="timeline.trip_event"
       item-height="500"
-      height="70vh"
+      height="800"
       bench="1"
     >
       <template v-slot="{ item }">
@@ -105,7 +103,7 @@ export default {
 
   created() {
     // this.timeline.trip_event
-    // console.log(this.timeline);
+    console.log(this.timeline);
   },
 
   methods: {},
