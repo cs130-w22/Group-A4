@@ -32,6 +32,7 @@ ItineraryRouter.beforeRouteEnter = function (to, from, next) {
         next();
     }
     else if (prevItineraryId !== -1) { // user was previously visiting a tab and navigated away, using saved tab id to restore the old tab
+        console.log(to, from)
         const saveItineraryId = prevItineraryId
         prevItineraryId = -1;
 

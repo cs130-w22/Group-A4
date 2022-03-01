@@ -212,11 +212,6 @@ export default {
     this.$root.$on("hide-place-on-map", this.hidePlaceOnMap); // register hook for SchedulePlacesCard.vue
 
     this.$gmapApiPromiseLazy(); // init google api
-    this.$getLocation({})
-      .then((coordinates) => {
-        this.userCoordinates = coordinates;
-      })
-      .catch((error) => console.error(error)); // users do not grant permission of the location
   },
 
   mounted() {

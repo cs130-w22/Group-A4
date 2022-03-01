@@ -1,12 +1,5 @@
 <template>
-  <v-stepper
-    v-model="e6"
-    vertical
-    non-linear
-    min-height="90vh"
-    elevation="0"
-    rounded="lg"
-  >
+  <v-stepper v-model="e6" vertical min-height="90vh" elevation="0" rounded="lg">
     <v-stepper-step complete step="1">
       Select an place
       <small class="font-weight-bold"> {{ location }}</small>
@@ -19,46 +12,52 @@
 
     <v-stepper-step complete step="2">
       Pick your places of interest
-      <small class="font-weight-bold"> The battery, nyc stock exchange </small>
     </v-stepper-step>
 
     <v-stepper-content step="2">
       <!-- <v-btn color="primary" @click="e6 = 3"> Continue </v-btn> -->
     </v-stepper-content>
 
-    <v-stepper-step :complete="step3" step="3" editable edit-icon="$complete">
+    <v-stepper-step :complete="e6 > 3" step="3" editable edit-icon="$complete">
       Select the length of your trip
+      <small class="font-weight-bold"
+        >Some places may not in the final schedule
+      </small>
     </v-stepper-step>
 
     <v-stepper-content step="3">
       <v-card>
-        <v-card-title>Pick your time</v-card-title>
+        <v-card-title>When do you want to travel</v-card-title>
         <v-card-text>
-          <ScheduleTimePicker></ScheduleTimePicker>
+          <v-date-picker
+            v-model="dates"
+            range
+            show-adjacent-months
+            width="100%"
+            :allowed-dates="allowedDates"
+          >
+          </v-date-picker>
         </v-card-text>
 
         <v-divider class="mx-1"></v-divider>
 
-        <v-card-title>When do you wake up</v-card-title>
+        <v-card-title>When do you want to wake up</v-card-title>
         <v-card-text>
           <v-chip-group
             v-model="selection"
             active-class="deep-purple accent-4 white--text"
             column
           >
-            <v-chip>5:30AM</v-chip>
-
-            <v-chip>7:30AM</v-chip>
-
-            <v-chip>8:00AM</v-chip>
-
-            <v-chip>9:00AM</v-chip>
+            <v-chip v-for="time in wakeUpTime" :key="time">{{ time }}</v-chip>
           </v-chip-group>
         </v-card-text>
-        <v-btn color="primary" @click="(step3 = true), e6++"> Confirm </v-btn>
+        <!-- <v-btn color="primary" @click="(step3 = true), e6++"> Confirm </v-btn> -->
+        <v-btn color="primary" @click="generateItinerary">
+          Generate itinerary
+        </v-btn>
       </v-card>
     </v-stepper-content>
-
+    <!-- 
     <v-stepper-step :complete="e6 > 4" step="4" editable edit-icon="$complete">
       Finalize detail
       <small class="font-weight-bold"
@@ -68,10 +67,7 @@
 
     <v-stepper-content step="4">
       <v-spacer></v-spacer>
-      <v-btn color="primary" @click="generateItinerary">
-        Generate itinerary
-      </v-btn>
-    </v-stepper-content>
+    </v-stepper-content> -->
 
     <v-progress-linear
       reverse
@@ -79,6 +75,17 @@
       :indeterminate="loading"
     ></v-progress-linear>
 
+    <v-snackbar
+      v-model="snackbar"
+      color="red accent-2"
+      absolute
+      top
+      timeout="1000"
+    >
+      <div class="text-center font-weight-bold">
+        Select 2 dates for your trip
+      </div>
+    </v-snackbar>
     <!-- <v-stepper-step :complete="e6 > 4" step="4" editable>
       View setup instructions
     </v-stepper-step>
@@ -92,34 +99,44 @@
 <script>
 import axios from "axios";
 
-import ScheduleTimePicker from "./ScheduleTimePicker.vue";
 export default {
   name: "ScheduleStepper",
-  components: {
-    ScheduleTimePicker,
-  },
+
   computed: {
     location() {
       return this.$route.params.location;
+    },
+    userOptions() {
+      return {
+        dates: this.dates,
+        wakeUpTime: this.wakeUpTime[this.selection].substring(0, 5),
+        places: [],
+      };
     },
   },
   data() {
     return {
       e6: 3,
       selection: 1,
-      step3: false,
       loading: false,
-
-      userOptions: {
-        dates: ["2022-02-22", "2022-02-25"],
-        wakeUpTime: "07:30",
-        places: [""],
-      },
+      snackbar: false,
+      dates: [],
+      wakeUpTime: ["07:30AM", "08:00AM", "08:30AM", "09:00AM"],
     };
   },
 
   methods: {
+    allowedDates(val) {
+      const today = new Date();
+      const candidateDay = new Date(val);
+      return today <= candidateDay;
+    },
     generateItinerary() {
+      if (this.dates.length < 2) {
+        this.snackbar = true;
+        return;
+      }
+
       const places =
         this.$parent.$parent.$children[2].$refs.placeCards.places.slice(15);
 
@@ -128,8 +145,7 @@ export default {
       this.e6 = 5;
 
       const ac_token = this.$cookie.get("access_token");
-      // console.log(ac_token);
-      if (ac_token) {
+      if (ac_token !== null) {
         const headers = {
           "Content-Type": "application/json",
           Authorization: "Bearer " + ac_token,
@@ -142,12 +158,18 @@ export default {
           })
           .then((resp) => {
             this.loading = false;
-            console.log(resp);
+            this.$router.push({
+              path: "/itinerary/" + resp.data.id,
+              params: { new_itinerary: true },
+            });
+            // console.log(resp);
           })
           .catch((err) => {
             this.loading = false;
             console.error(err);
           });
+      } else {
+        console.log("User does not have access token");
       }
     },
   },

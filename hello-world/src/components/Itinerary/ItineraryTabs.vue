@@ -1,7 +1,12 @@
 <template>
   <v-sheet rounded="lg" height="90vh">
     <v-overlay :value="overlay" absolute>
-      <v-btn class="white--text" color="teal" v-on:click="onSignInClicked">
+      <v-btn
+        v-if="isInit"
+        class="white--text"
+        color="teal"
+        v-on:click="onSignInClicked"
+      >
         Log in to see this page
       </v-btn>
     </v-overlay>
@@ -51,6 +56,10 @@ export default {
   computed: {
     isSignIn() {
       return this.$root.$children[0].isSignIn;
+    },
+
+    isInit() {
+      return this.$root.$children[0].isInit;
     },
 
     activeTabId() {

@@ -40,7 +40,7 @@ export default {
           console.error(err);
         });
     } else {
-      console.log("User do not have access token");
+      console.log("User does not have access token");
     }
   },
 };

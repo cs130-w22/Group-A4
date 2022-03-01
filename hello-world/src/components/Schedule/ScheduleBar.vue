@@ -7,7 +7,7 @@
       v-model="drawer"
       bottom
       temporary
-      width="25vw"
+      :width="$vuetify.breakpoint.lgAndUp ? '25vw' : '50vw'"
       app
       hide-overlay
       right
