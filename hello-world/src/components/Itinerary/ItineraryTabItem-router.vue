@@ -1,10 +1,6 @@
 <template>
-  <div>
-    {{ id }}
-    <ItineraryTimeline v-if="timeline !== null" :timeline="timeline">
-    </ItineraryTimeline>
-    <div v-else>You are not authorized to view this page</div>
-  </div>
+  <ItineraryTimeline v-if="timeline !== null" :timeline="timeline">
+  </ItineraryTimeline>
 </template>
 
 <script>

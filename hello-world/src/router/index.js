@@ -20,16 +20,6 @@ FrontPageRouter.beforeRouteLeave = function (to, from, next) {
     }
 }
 
-ItineraryTabItemRouter.beforeRouteEnter = function (to, from, next) {
-    // const access_token = Vue.cookie.get('access_token');
-    console.log(to.params.id)
-    if (to.params.id === '80') {
-        next('/404')
-    } else {
-        next();
-    }
-}
-
 ItineraryTabItemRouter.beforeRouteLeave = function (to, from, next) {
     prevItineraryId = this.id;
     next();
