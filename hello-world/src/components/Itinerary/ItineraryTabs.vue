@@ -27,27 +27,17 @@
     >
       <v-tab v-for="(itinerary, index) in itinerarys" :key="itinerary.id">
         <v-badge v-if="index === 0" color="pink" dot>
-          <span>
-            {{
-              itinerary.title.length > 8
-                ? itinerary.title.substring(0, 8) + ".."
-                : itinerary.title
-            }}
-          </span>
+          <span>{{ itinerary.title }} </span>
         </v-badge>
         <span v-else>
-          {{
-            itinerary.title.length > 8
-              ? itinerary.title.substring(0, 8) + ".."
-              : itinerary.title
-          }}
+          {{ itinerary.title }}
         </span>
       </v-tab>
     </v-tabs>
 
     <v-tabs-items v-model="tab">
       <v-tab-item v-for="itinerary in itinerarys" :key="itinerary.id">
-        <router-view v-if="itinerary === itinerarys[tab]"></router-view>
+        <router-view v-if="itinerary.id === activeTabId"></router-view>
       </v-tab-item>
     </v-tabs-items>
   </v-sheet>
@@ -61,7 +51,7 @@ export default {
 
   data() {
     return {
-      tab: null,
+      tab: -1,
       itinerarys: [],
       overlay: true,
     };
@@ -71,10 +61,16 @@ export default {
     isSignIn() {
       return this.$root.$children[0].isSignIn;
     },
+
+    activeTabId() {
+      if (this.tab === undefined || this.tab === -1) return null;
+
+      return this.itinerarys[this.tab].id;
+    },
   },
   watch: {
     isSignIn: {
-      immediate: true,
+      immediate: false,
       deep: true,
       handler() {
         if (this.isSignIn) {
@@ -96,6 +92,14 @@ export default {
             .catch((err) => {
               console.error(err);
             });
+        } else {
+          this.itinerarys = [];
+          this.overlay = true;
+          this.tab = -1;
+          if (this.$route.path !== "/itinerary") {
+            // prevent double navigation
+            this.$router.push({ path: "/itinerary", replace: true });
+          }
         }
       },
     },
@@ -103,13 +107,13 @@ export default {
 
   methods: {
     onSignInClicked() {
-      this.$root.$children[0].handleClickSignIn();
+      this.$root.$children[0].onSignInClicked();
     },
     onTabChanged() {
       if (this.tab === undefined) {
         this.$router.push("/itinerary");
       } else {
-        this.$router.push("/itinerary/" + this.itinerarys[this.tab].id);
+        this.$router.push("/itinerary/" + this.activeTabId);
       }
     },
   },

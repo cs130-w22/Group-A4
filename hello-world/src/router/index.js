@@ -4,11 +4,12 @@ import ScheduleRouter from '@/components/Schedule/Schedule-router'
 import FrontPageRouter from '@/components/FrontPage/FrontPage-router'
 import ItineraryRouter from '@/components/Itinerary/Itinerary-router'
 import PageNotFoundRouter from '@/components/Utils/PageNotFound-router'
-import ItineraryTabItem from '@/components/Itinerary/ItineraryTabItem'
+import ItineraryTabItemRouter from '@/components/Itinerary/ItineraryTabItem-router'
 
 import axios from 'axios'
 
 let firstVisit = true;
+let prevItineraryId = -1;
 
 FrontPageRouter.beforeRouteLeave = function (to, from, next) {
     if (firstVisit && (to.name == 'schedule' && to.params.location === undefined)) { // users do not provide any location on the first visit
@@ -19,63 +20,53 @@ FrontPageRouter.beforeRouteLeave = function (to, from, next) {
     }
 }
 
+ItineraryTabItemRouter.beforeRouteEnter = function (to, from, next) {
+    // const access_token = Vue.cookie.get('access_token');
+    console.log(to.params.id)
+    if (to.params.id === '80') {
+        next('/404')
+    } else {
+        next();
+    }
+}
+
+ItineraryTabItemRouter.beforeRouteLeave = function (to, from, next) {
+    prevItineraryId = this.id;
+    next();
+}
+
 ItineraryRouter.beforeRouteEnter = function (to, from, next) {
     const access_token = Vue.cookie.get('access_token')
 
-    if (access_token === null) {
-        next(vm => {
-            const ItineraryTabs = vm.$refs.ItineraryTabs;
-
-            ItineraryTabs.overlay = true;
-
-        });
-        // user doesn't have access token, redirect to login
-        // next("/404")
-        // next(vm => {
-        //     const app = vm.$root.$children[0]
-        //     app.handleClickSignIn(function () {
-
-        //         const cookie = Vue.cookie.get('access_token')
-
-        //         if (cookie !== null) {
-        //             const headers = {
-        //                 "Content-Type": "application/json",
-        //                 Authorization: "Bearer " + cookie,
-        //             };
-
-        //             axios
-        //                 .get("http://127.0.0.1:8000/trip/itinerary/", {
-        //                     headers,
-        //                 })
-        //                 .then((resp) => {
-        //                     const ItineraryTabs = vm.$refs.ItineraryTabs;
-        //                     ItineraryTabs.itinerarys = resp.data
-        //                 })
-        //                 .catch((err) => {
-        //                     console.error(err);
-        //                 });
-        //         }
-        //     })
-        // })
+    if (access_token === null) { // user does not has access token, show this page with overlay
+        next();
     }
-    else {
-        // user has access token, user can open the page
+    else if (prevItineraryId !== -1) { // user was previously visiting a tab and navigated away, using saved tab id to restore the old tab
+        const saveItineraryId = prevItineraryId
+        prevItineraryId = -1;
+
+        next("/itinerary/" + saveItineraryId)
+    }
+    else { // user has access token, fetch the menu for him
         next(vm => {
-
             const headers = {
-                "Content-Type": "application/json",
-                Authorization: "Bearer " + access_token,
+                'Content-Type': 'application/json',
+                Authorization: 'Bearer ' + access_token,
             };
-
             axios
-                .get("http://127.0.0.1:8000/trip/itinerary/", {
+                .get('http://127.0.0.1:8000/trip/itinerary/', {
                     headers,
                 })
                 .then((resp) => {
+                    const itinerarys = resp.data;
                     const ItineraryTabs = vm.$refs.ItineraryTabs;
+                    ItineraryTabs.itinerarys = itinerarys
 
-                    ItineraryTabs.itinerarys = resp.data
-                    ItineraryTabs.overlay = false;
+                    // user was previously visiting a tab and refreshed the page, using param to restore the old tab
+                    const activeTabId = Number(to.params.id)
+                    ItineraryTabs.tab = itinerarys.findIndex((e => e.id === activeTabId));
+
+                    // tab might be -1, in this case, ItineraryTabItemRouter would redirect to 404
                 })
                 .catch((err) => {
                     console.error(err);
@@ -118,22 +109,10 @@ export default new Router({
             children: [
                 {
                     path: ':id',
-                    component: ItineraryTabItem,
+                    component: ItineraryTabItemRouter,
                     props: true
                 },
             ],
-            // beforeEnter: (to, from, next) => {
-            //     const access_token = Vue.cookie.get('access_token')
-
-            //     if (access_token === null) {
-            //         // user doesn't have access token, redirect to login
-            //         next("/404")
-            //     }
-            //     else {
-            //         // user has access token, user can open the page
-            //         next()
-            //     }
-            // },
         },
 
         {

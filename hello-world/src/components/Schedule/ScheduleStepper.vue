@@ -128,7 +128,7 @@ export default {
       this.e6 = 5;
 
       const ac_token = this.$cookie.get("access_token");
-      console.log(ac_token);
+      // console.log(ac_token);
       if (ac_token) {
         const headers = {
           "Content-Type": "application/json",
@@ -149,22 +149,6 @@ export default {
             console.error(err);
           });
       }
-      // const headers = {
-      //   Authorization:
-      //     "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjQ1NzU3ODk2LCJpYXQiOjE2NDU2NzE0OTYsImp0aSI6ImI1OWZhZDQwZjQwNzQzMmI4MjhlMTc2MmVmNDhiZDk1IiwidXNlcl9pZCI6MX0.IabsdL3Ht3RqOF5QL8OMAC3A_b6kzeXb5BGZJSpH24k",
-      // };
-      // axios
-      //   .post("http://localhost:8000/trip/schedule/", this.userOptions, {
-      //     headers,
-      //   })
-      //   .then((resp) => {
-      //     console.log(resp);
-      //     // this.user = resp.data.user;
-      //     // this.$cookies("access_token",resp.data.access_token)
-      //   })
-      //   .catch((err) => {
-      //     console.error(err);
-      // });
     },
   },
 };

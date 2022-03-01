@@ -1,102 +1,98 @@
 <template>
-  <v-timeline dense clipped class="mr-8">
-    <v-slide-x-transition group>
-      <v-timeline-item
-        v-for="event in timeline"
-        :key="event.id"
-        class="mb-4"
-        color="pink"
-        small
-      >
-        <v-row justify="space-between">
-          <v-col cols="7" v-text="event.text"></v-col>
-          <v-col class="text-right" cols="5" v-text="event.time"></v-col>
-        </v-row>
-      </v-timeline-item>
-    </v-slide-x-transition>
+  <v-card class="mx-auto">
+    <v-card-title class="pa-2 purple lighten-3">
+      <h3 class="text-h6 font-weight-light text-center grow">Timeline</h3>
+      <v-avatar>
+        <v-img
+          src="https://avataaars.io/?avatarStyle=Circle&topType=LongHairStraight&accessoriesType=Blank&hairColor=BrownDark&facialHairType=Blank&clotheType=BlazerShirt&eyeType=Default&eyebrowType=Default&mouthType=Default&skinColor=Light"
+        ></v-img>
+      </v-avatar>
+    </v-card-title>
 
-    <v-timeline-item class="mb-6" hide-dot>
-      <span>2/11/2022</span>
-    </v-timeline-item>
-
-    <v-timeline-item
-      class="mb-4"
-      color="grey"
-      icon-color="grey lighten-2"
-      small
-    >
-      <v-row justify="space-between">
-        <v-col cols="7"> Depart from Hotel </v-col>
-        <v-col class="text-right" cols="5"> 9:00 EDT </v-col>
-      </v-row>
-    </v-timeline-item>
-
-    <!-- <v-timeline-item class="mb-4" small>
-      <v-row justify="space-between">
-        <v-col cols="7">
-          <v-chip class="white--text ml-0" color="purple" label small>
-            Stop 1
-          </v-chip>
-          Hollywood Sign
+    <v-container class="fill-height" style="margin-left: 54px">
+      <v-row align="center">
+        <strong class="display-1 font-weight-regular mr-4">20</strong>
+        <v-col justify="end">
+          <div class="title font-weight-light">Tuesday</div>
+          <div class="text-uppercase font-weight-light">February 2015</div>
         </v-col>
-        <v-col class="text-right" cols="5"> 10:00 EDT </v-col>
       </v-row>
-    </v-timeline-item> -->
-    <!-- <v-timeline-item class="mb-4" color="grey" small>
-      <v-row justify="space-between">
-        <v-col cols="7">
-          Order confirmation email was sent to John Leider (john@vuetifyjs.com).
-        </v-col>
-        <v-col class="text-right" cols="5"> 15:25 EDT </v-col>
-      </v-row>
-    </v-timeline-item>
+    </v-container>
+    <v-card-text class="py-0">
+      <v-timeline align-top dense>
+        <v-timeline-item color="pink" small>
+          <v-row class="pt-1">
+            <v-col cols="3">
+              <strong>5pm</strong>
+            </v-col>
+            <v-col>
+              <strong>New Icon</strong>
+              <div class="text-caption">Mobile App</div>
+            </v-col>
+          </v-row>
+        </v-timeline-item>
 
-    <v-timeline-item class="mb-4" hide-dot>
-      <v-btn class="mx-0"> Resend Email </v-btn>
-    </v-timeline-item> -->
+        <v-timeline-item color="teal lighten-3" small>
+          <v-row class="pt-1">
+            <v-col cols="3">
+              <strong>3-4pm</strong>
+            </v-col>
+            <v-col>
+              <strong>Design Stand Up</strong>
+              <div class="text-caption mb-2">Hangouts</div>
+              <v-avatar>
+                <v-img
+                  src="https://avataaars.io/?avatarStyle=Circle&topType=LongHairFrida&accessoriesType=Kurt&hairColor=Red&facialHairType=BeardLight&facialHairColor=BrownDark&clotheType=GraphicShirt&clotheColor=Gray01&graphicType=Skull&eyeType=Wink&eyebrowType=RaisedExcitedNatural&mouthType=Disbelief&skinColor=Brown"
+                ></v-img>
+              </v-avatar>
+              <v-avatar>
+                <v-img
+                  src="https://avataaars.io/?avatarStyle=Circle&topType=ShortHairFrizzle&accessoriesType=Prescription02&hairColor=Black&facialHairType=MoustacheMagnum&facialHairColor=BrownDark&clotheType=BlazerSweater&clotheColor=Black&eyeType=Default&eyebrowType=FlatNatural&mouthType=Default&skinColor=Tanned"
+                ></v-img>
+              </v-avatar>
+              <v-avatar>
+                <v-img
+                  src="https://avataaars.io/?avatarStyle=Circle&topType=LongHairMiaWallace&accessoriesType=Sunglasses&hairColor=BlondeGolden&facialHairType=Blank&clotheType=BlazerSweater&eyeType=Surprised&eyebrowType=RaisedExcited&mouthType=Smile&skinColor=Pale"
+                ></v-img>
+              </v-avatar>
+            </v-col>
+          </v-row>
+        </v-timeline-item>
 
-    <v-timeline-item class="mb-4" color="grey" small>
-      <v-row justify="space-between">
-        <v-col cols="7">
-          A $15.00 USD payment was processed on PayPal Express Checkout
-        </v-col>
-        <v-col class="text-right" cols="5"> 15:25 EDT </v-col>
-      </v-row>
-    </v-timeline-item>
+        <v-timeline-item color="pink" small>
+          <v-row class="pt-1">
+            <v-col cols="3">
+              <strong>12pm</strong>
+            </v-col>
+            <v-col>
+              <strong>Lunch break</strong>
+            </v-col>
+          </v-row>
+        </v-timeline-item>
 
-    <v-timeline-item class="mb-4" small>
-      <v-row justify="space-between">
-        <v-col cols="7">
-          <v-chip class="white--text ml-0" color="purple" label small>
-            Stop 2
-          </v-chip>
-          University of California, Los Angeles
-        </v-col>
-        <v-col class="text-right" cols="5"> 15:25 EDT </v-col>
-      </v-row>
-    </v-timeline-item>
-
-    <v-timeline-item color="grey" small>
-      <v-row justify="space-between">
-        <v-col cols="7"> Go back to hotel </v-col>
-        <v-col class="text-right" cols="5"> 19:00 EDT </v-col>
-      </v-row>
-    </v-timeline-item>
-  </v-timeline>
+        <v-timeline-item color="teal lighten-3" small>
+          <v-row class="pt-1">
+            <v-col cols="3">
+              <strong>9-11am</strong>
+            </v-col>
+            <v-col>
+              <strong>Finish Home Screen</strong>
+              <div class="text-caption">Web App</div>
+            </v-col>
+          </v-row>
+        </v-timeline-item>
+      </v-timeline>
+    </v-card-text>
+  </v-card>
 </template>
 <script>
 export default {
   name: "ItineraryTimeline",
-  data: () => ({
-    events: [],
-    input: null,
-    nonce: 0,
-  }),
+  props: ["timeline"],
+  data: () => ({}),
 
-  computed: {
-    timeline() {
-      return this.events.slice().reverse();
-    },
+  created() {
+    console.log(this.timeline);
   },
 
   methods: {},

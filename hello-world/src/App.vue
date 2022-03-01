@@ -11,7 +11,7 @@
         <v-btn
           v-if="!user"
           dark
-          @click="handleClickSignIn"
+          @click="onSignInClicked"
           style="transform: translateX(-50%)"
           :style="{ display: isInit ? '' : 'none' }"
         >
@@ -20,7 +20,7 @@
         <user-panel
           :user="user"
           v-else
-          v-on:sign-out="handleClickSignOut"
+          v-on:sign-out="onSignOutClicked"
           :style="{ display: isInit ? '' : 'none' }"
         ></user-panel>
       </div>
@@ -81,7 +81,7 @@ export default {
     }
   },
   methods: {
-    handleClickSignIn() {
+    onSignInClicked() {
       this.$gAuth
         .signIn() // log in from the frontend
         .then((googleUser) => {
@@ -110,7 +110,7 @@ export default {
         });
     },
 
-    handleClickSignOut() {
+    onSignOutClicked() {
       // log out from the frontend
       this.$gAuth
         .signOut()
@@ -126,7 +126,7 @@ export default {
           console.error(err);
         });
 
-      this.$router.push("/home");
+      // this.$router.push("/home");
     },
   },
 };
