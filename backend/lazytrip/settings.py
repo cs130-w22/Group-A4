@@ -60,6 +60,9 @@ INSTALLED_APPS = [
 
 # allow frontend to see all headers
 CORS_ORIGIN_ALLOW_ALL = True
+CORS_EXPOSE_HEADERS = [
+    'Set-Cookie'
+]
 
 # for Google OAuth (django-allauth)
 SITE_ID = 1

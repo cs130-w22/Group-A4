@@ -671,7 +671,7 @@ Cross-Origin-Opener-Policy: same-origin
 <br></br>
 
 ### Retrieve Itinerary by ID [DETAILED VERSION]
-To retrieve itinerary by id, you can send a `GET` request to http://127.0.0.1:8000/trip/itinerary/#(id)/, with your token added, like this:
+To retrieve itinerary by id, you can send a `GET` request to http://127.0.0.1:8000/trip/itinerary/#(id)/, tripevents within this itinerary are grouped by date. Request like this:
 ```http
 GET http://127.0.0.1:8000/trip/itinerary/2/ HTTP/1.1
 Content-Type: application/json
@@ -682,44 +682,84 @@ Authorization: Bearer <YOUR-OR-ADMIN-ACCESS-TOKEN>
 
 ```http
 HTTP/1.1 200 OK
-Date: Fri, 25 Feb 2022 02:23:56 GMT
+Date: Tue, 01 Mar 2022 09:15:45 GMT
 Server: WSGIServer/0.2 CPython/3.10.2
 Content-Type: application/json
 Vary: Accept, Origin
 Allow: GET, PUT, PATCH, HEAD, OPTIONS
 X-Frame-Options: DENY
-Content-Length: 623
+Content-Length: 1352
 X-Content-Type-Options: nosniff
 Referrer-Policy: same-origin
 Cross-Origin-Opener-Policy: same-origin
 
 {
-  "id": 2,
-  "title": "My Itinerary Title",
+  "id": 31,
+  "title": "Your Auto Scheduled Trip",
   "desc": "Edit this to be the description of your travel plan!",
-  "created_at": "2022-02-24T00:58:45.244661Z",
-  "last_modified": "2022-02-24T01:46:23.369164Z",
+  "created_at": "2022-02-25T02:04:06.593162Z",
+  "last_modified": "2022-02-25T02:04:06.593162Z",
   "user": 1,
-  "trip_event": [
-    {
-      "id": 3,
-      "place_id": "<UCLA-place_id-PLACEHOLDER>",
-      "place_name": "default_place_name",
-      "start_time": "2022-02-22T14:30:00Z",
-      "end_time": "2022-02-22T17:30:00Z",
-      "itin": 2,
-      "place_json": "<place_json-PLACEHOLDER>"
-    },
-    {
-      "id": 4,
-      "place_id": "<UCLA-place_id-PLACEHOLDER>",
-      "place_name": "default_place_name",
-      "start_time": "2022-02-22T14:30:00Z",
-      "end_time": "2022-02-22T17:30:00Z",
-      "itin": 2,
-      "place_json": "<place_json-PLACEHOLDER>"
-    }
-  ]
+  "trip_event": {
+    "2022-02-22": [
+      {
+        "id": 161,
+        "place_id": "ChIJh30fAVnGwoAR5gZouxCUABw",
+        "place_name": "Studio For Southern California",
+        "start_time": "2022-02-22T08:30:00Z",
+        "end_time": "2022-02-22T11:00:00Z",
+        "itin": 31,
+        "place_json": ""
+      },
+      {
+        "id": 162,
+        "place_id": "ChIJ-1Vb4UTGwoARANaWGbqWTUA",
+        "place_name": "Avila Adobe",
+        "start_time": "2022-02-22T11:30:00Z",
+        "end_time": "2022-02-22T14:00:00Z",
+        "itin": 31,
+        "place_json": ""
+      },
+      {
+        "id": 163,
+        "place_id": "ChIJSTW1vEXGwoARuir3gc9Q2SA",
+        "place_name": "Chinese American Museum",
+        "start_time": "2022-02-22T14:30:00Z",
+        "end_time": "2022-02-22T17:00:00Z",
+        "itin": 31,
+        "place_json": ""
+      },
+      {
+        "id": 164,
+        "place_id": "ChIJj2tUC2bGwoARwqdCDE37YD0",
+        "place_name": "San Antonio Winery",
+        "start_time": "2022-02-22T17:30:00Z",
+        "end_time": "2022-02-22T20:00:00Z",
+        "itin": 31,
+        "place_json": ""
+      }
+    ],
+    "2022-02-23": [
+      {
+        "id": 165,
+        "place_id": "ChIJP5P8tcrHwoAR5VP3q2oOrzU",
+        "place_name": "Hive Gallery & Studios",
+        "start_time": "2022-02-23T08:30:00Z",
+        "end_time": "2022-02-23T11:00:00Z",
+        "itin": 31,
+        "place_json": ""
+      },
+      {
+        "id": 166,
+        "place_id": "ChIJbQ_1ObbHwoARlVhDqpRy3Gs",
+        "place_name": "Grand Hope Park",
+        "start_time": "2022-02-23T11:30:00Z",
+        "end_time": "2022-02-23T14:00:00Z",
+        "itin": 31,
+        "place_json": ""
+      }
+    ]
+  }
 }
 
 ```
