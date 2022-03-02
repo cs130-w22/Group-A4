@@ -16,7 +16,8 @@
     "vue-google-oauth2": "^1.5.8",
     "vue-router": "^3.5.3",
     "vue2-google-maps": "^0.10.7",
-    "vuetify": "^2.4.0"
+    "vuetify": "^2.4.0",
+    "vuetify-google-autocomplete": "^2.0.4"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "~4.5.0",

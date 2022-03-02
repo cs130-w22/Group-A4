@@ -71,10 +71,10 @@ export default {
     return {
       map: null,
       userCoordinates: {
-        lat: 0,
-        lng: 0,
+        lat: 34.05,
+        lng: -118.24,
       },
-      zoom: 12,
+      zoom: 4,
       currentPlace: null,
       markers: [],
       googlePlacesService: null,
@@ -208,8 +208,8 @@ export default {
   },
 
   created() {
-    this.$root.$on("show-place-on-map", this.showPlaceOnMap); // register hook for SchedulePlacesCard.vueow
-    this.$root.$on("hide-place-on-map", this.hidePlaceOnMap); // register hook for SchedulePlacesCard.vue
+    // this.$root.$on("show-place-on-map", this.showPlaceOnMap); // register hook for SchedulePlacesCard.vueow
+    // this.$root.$on("hide-place-on-map", this.hidePlaceOnMap); // register hook for SchedulePlacesCard.vue
 
     this.$gmapApiPromiseLazy(); // init google api
   },

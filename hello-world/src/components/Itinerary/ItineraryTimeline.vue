@@ -37,16 +37,21 @@
               small
             >
               <v-row class="pt-1">
-                <v-col cols="3">
-                  <strong
-                    >{{ convertToDate(place.start_time).getUTCHours() }} : 00 -
-                    {{ convertToDate(place.end_time).getUTCHours() }} :
-                    00</strong
-                  >
+                <v-col cols="4">
+                  <strong>
+                    {{ convertToDate(place.start_time).getUTCHours() }} : 00 -
+                    {{ convertToDate(place.end_time).getUTCHours() }} : 00
+                  </strong>
                 </v-col>
-                <v-col>
+                <v-col cols="8">
                   <strong>{{ place.place_name }}</strong>
-                  <div class="text-caption">Placeholder for description</div>
+                  <v-icon
+                    color="primary"
+                    class="ml-1"
+                    @click="showPlace(place)"
+                  >
+                    mdi-information
+                  </v-icon>
                 </v-col>
               </v-row>
             </v-timeline-item>
@@ -90,6 +95,9 @@ export default {
   methods: {
     convertToDate(date_str) {
       return new Date(date_str);
+    },
+    showPlace(place) {
+      this.$root.$emit("show-place-on-map", place);
     },
   },
   created() {

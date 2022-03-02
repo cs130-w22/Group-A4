@@ -70,7 +70,7 @@ export default {
   },
   watch: {
     isSignIn: {
-      immediate: false,
+      immediate: true,
       deep: true,
       handler() {
         if (this.isSignIn) {

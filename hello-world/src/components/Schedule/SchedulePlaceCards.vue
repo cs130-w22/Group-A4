@@ -102,19 +102,20 @@ export default {
   methods: {
     getPlaceInfo() {
       this.loading = true;
+
+      console.log(this.location);
       axios
         .get("http://127.0.0.1:8000/trip/search/loc/", {
           headers: { "Content-Type": "application/json" },
           params: { location: this.location },
         })
         .then((resp) => {
-          this.loading = false;
           this.places = resp.data;
         })
         .catch((err) => {
-          this.loading = false;
           console.error(err);
-        });
+        })
+        .finally(() => (this.loading = false));
     },
     showPlace(place) {
       this.$root.$emit("show-place-on-map", place);

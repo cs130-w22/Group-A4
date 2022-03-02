@@ -33,13 +33,14 @@
             v-model="dates"
             range
             show-adjacent-months
+            style="max-width: 260px"
             width="100%"
             :allowed-dates="allowedDates"
           >
           </v-date-picker>
         </v-card-text>
 
-        <v-divider class="mx-1"></v-divider>
+        <v-divider inset class="mx-1"></v-divider>
 
         <v-card-title>When do you want to wake up</v-card-title>
         <v-card-text>
@@ -137,12 +138,14 @@ export default {
         return;
       }
 
+      // console.log(this.userOptions);
+
       const places =
         this.$parent.$parent.$children[2].$refs.placeCards.places.slice(15);
 
       this.userOptions.places = places;
 
-      this.e6 = 5;
+      this.e6 = 4;
 
       const ac_token = this.$cookie.get("access_token");
       if (ac_token !== null) {
@@ -157,17 +160,14 @@ export default {
             headers,
           })
           .then((resp) => {
-            this.loading = false;
             this.$router.push({
               path: "/itinerary/" + resp.data.id,
-              params: { new_itinerary: true },
             });
-            // console.log(resp);
           })
           .catch((err) => {
-            this.loading = false;
             console.error(err);
-          });
+          })
+          .finally(() => (this.loading = false));
       } else {
         console.log("User does not have access token");
       }

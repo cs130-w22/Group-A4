@@ -9,21 +9,21 @@ import ItineraryTabItemRouter from '@/components/Itinerary/ItineraryTabItem-rout
 import axios from 'axios'
 
 let firstVisit = true;
-let prevItineraryId = -1;
+// let prevItineraryId = -1;
 
 FrontPageRouter.beforeRouteLeave = function (to, from, next) {
     if (firstVisit && (to.name == 'schedule' && to.params.location === undefined)) { // users do not provide any location on the first visit
-        this.$refs.textField.showErrorMessage();
+        this.$refs.textField.showErrorMessage("Enter the destination first");
         return false;
     } else {
         next();
     }
 }
 
-ItineraryTabItemRouter.beforeRouteLeave = function (to, from, next) {
-    prevItineraryId = this.id;
-    next();
-}
+// ItineraryTabItemRouter.beforeRouteLeave = function (to, from, next) {
+//     prevItineraryId = this.id;
+//     next();
+// }
 
 ItineraryRouter.beforeRouteEnter = function (to, from, next) {
     const access_token = Vue.cookie.get('access_token')
@@ -31,13 +31,13 @@ ItineraryRouter.beforeRouteEnter = function (to, from, next) {
     if (access_token === null) { // user does not has access token, show this page with overlay
         next();
     }
-    else if (prevItineraryId !== -1) { // user was previously visiting a tab and navigated away, using saved tab id to restore the old tab
-        console.log(to, from)
-        const saveItineraryId = prevItineraryId
-        prevItineraryId = -1;
+    // else if (prevItineraryId !== -1) { // user was previously visiting a tab and navigated away, using saved tab id to restore the old tab
+    //     console.log(to, from)
+    //     const saveItineraryId = prevItineraryId
+    //     prevItineraryId = -1;
 
-        next("/itinerary/" + saveItineraryId)
-    }
+    //     next("/itinerary/" + saveItineraryId)
+    // }
     else { // user has access token, fetch the menu for him
         next(vm => {
             const headers = {
