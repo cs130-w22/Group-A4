@@ -261,6 +261,8 @@ class SchedulingTEST(SearchLocation):
             'Content-Type': 'application/json',
             'Authorization': 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjQ2MjA5OTA1LCJpYXQiOjE2NDYxMjM1MDUsImp0aSI6IjkxMjAxZjkzMzZiMDRhYjJhMzQ2MGM0ZDVhMmZhNTIxIiwidXNlcl9pZCI6MX0.JufpAe_Er3zdQWgqMciiLUfidt9MKKi4zSUQ7zFWZMM'
         }
+        print("MMMMMMMMMMM")
+        pprint(nearby_places)
         simulated_data = {
             "places": nearby_places,
             "dates": [
