@@ -27,10 +27,17 @@ ScheduleRouter.beforeRouteEnter = function (to, from, next) {
     })
 }
 
-// ItineraryTabItemRouter.beforeRouteLeave = function (to, from, next) {
-//     prevItineraryId = this.id;
-//     next();
-// }
+ItineraryTabItemRouter.beforeRouteLeave = function (to, from, next) {
+    // prevItineraryId = this.id;
+    // console.log(this)
+    this.$root.$emit("remove-all-markers-on-itinerary-map");
+    next();
+    // return false;
+    // setTimeout(() => {
+
+    //     next();
+    // }, 3000);
+}
 
 ItineraryRouter.beforeRouteEnter = function (to, from, next) {
     const access_token = Vue.cookie.get('access_token')

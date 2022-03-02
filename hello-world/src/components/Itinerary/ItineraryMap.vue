@@ -74,7 +74,7 @@ export default {
         lat: 34.05,
         lng: -118.24,
       },
-      zoom: 4,
+      zoom: 12,
       currentPlace: null,
       markers: [],
       googlePlacesService: null,
@@ -86,42 +86,32 @@ export default {
       this.currentPlace = place;
     },
     async addMarker(place) {
-      if (this.markers.some((e) => e.place_id === place.place_id)) return; // markers already contain this place
+      if (this.markers.some((e) => e.place_id === place.place_id)) {
+        return;
+      }
 
       if (place) {
+        let placeDetail = await this.getPlaceDetails(place);
+
         const marker = {
-          lat: place.geometry.location.lat(),
-          lng: place.geometry.location.lng(),
+          lat: placeDetail.geometry.location.lat(),
+          lng: placeDetail.geometry.location.lng(),
         };
         this.userCoordinates = marker;
-
-        const placeObj = place;
+        const placeObj = placeDetail;
         placeObj.position = marker;
-        placeObj.infoWindowShown = true;
-        const detail = await this.getPlaceDetails(place);
-
+        placeObj.infoWindowShown = false;
         try {
-          placeObj.review = detail.reviews[0].text;
+          placeObj.review = placeDetail.reviews[0].text;
+          placeObj.photo_url = await placeDetail.photos[0].getUrl();
         } catch (err) {
           placeObj.review = "No review"; // google api fails to return anything useful
         }
-        // placeObj.zIndex = ++this.curZIndex;
 
-        // this.markers.push({
-        //   position: marker,
-        //   infoWindowShown: true,
-        //   place_id: place_id,
-        //   // url: place.photos[0].getUrl(),
-        //   name: place.name,
-        //   rating: place.rating,
-        //   price_level: place.price_level,
-        //   zIndex: ++this.curZIndex,
-        // });
-
-        this.markers.forEach((e) => (e.infoWindowShown = false));
-        this.markers.push(placeObj);
-        // this.currentPlace = null;
+        this.markers.push(placeDetail);
       }
+
+      console.log(this.markers);
     },
 
     markerClicked(marker) {
@@ -134,40 +124,19 @@ export default {
     },
 
     showPlaceOnMap(place) {
-      if (typeof place.geometry.location.lat === "number") {
-        const { lat, lng } = place.geometry.location;
-        place.geometry.location.lat = function () {
-          return lat;
-        };
+      let markersFound = this.markers.filter(
+        (e) => e.place_id === place.place_id
+      );
 
-        place.geometry.location.lng = function () {
-          return lng;
-        };
+      if (markersFound.length > 0) {
+        this.markers.forEach((e) => (e.infoWindowShown = false));
+        markersFound[0].infoWindowShown = true;
+      } else {
+        console.log("clicked a marker that is not present");
       }
 
-      this.setPlace(place);
-      this.addMarker(place);
-
-      // this.getPlaceDetails(place);
-
-      // const request = {
-      //   query: name,
-      //   fields: ["name", "geometry", "place_id", "photo"],
-      // };
-      // const service = this.getGooglePlacesService();
-      // service.findPlaceFromQuery(request, (results, status) => {
-      //   if (
-      //     status === this.google.maps.places.PlacesServiceStatus.OK &&
-      //     results
-      //   ) {
-      //     const { place_id } = results[0];
-
-      //     this.setPlace(results[0]);
-      //     this.addMarker(results[0]);
-
-      //     this.map.setCenter(results[0].geometry.location);
-      //   }
-      // });
+      // this.setPlace(place);
+      // this.addMarker(place);
     },
 
     async getPlaceDetails(place) {
@@ -195,10 +164,17 @@ export default {
       }
     },
 
-    hidePlaceOnMap(place) {
-      const { place_id } = place;
-      this.markers = this.markers.filter((e) => e.place_id !== place_id);
+    removeAllMarkers() {
+      this.markers = [];
+      // console.log(this.markers);
+      // this.$nextTick(() => {
+      // });
     },
+
+    // hidePlaceOnMap(place) {
+    //   const { place_id } = place;
+    //   this.markers = this.markers.filter((e) => e.place_id !== place_id);
+    // },
 
     getGooglePlacesService() {
       if (this.googlePlacesService !== null) return this.googlePlacesService;
@@ -208,8 +184,14 @@ export default {
   },
 
   created() {
-    // this.$root.$on("show-place-on-map", this.showPlaceOnMap); // register hook for SchedulePlacesCard.vueow
-    // this.$root.$on("hide-place-on-map", this.hidePlaceOnMap); // register hook for SchedulePlacesCard.vue
+    this.$root.$on("show-place-on-itinerary-map", this.showPlaceOnMap); // register hook for ItineraryTimeline.vue
+    // this.$root.$on("hide-place-on-itinerary-map", this.hidePlaceOnMap); // register hook for ItineraryTimeline.vue
+    this.$root.$on("add-marker-on-itinerary-map", this.addMarker);
+
+    this.$root.$on(
+      "remove-all-markers-on-itinerary-map",
+      this.removeAllMarkers
+    );
 
     this.$gmapApiPromiseLazy(); // init google api
   },
@@ -220,19 +202,6 @@ export default {
 
   computed: {
     google: gmapApi,
-    mapCoordinates() {
-      if (!this.map) {
-        // google map not inited
-        return {
-          lat: 0,
-          lnt: 0,
-        };
-      }
-      return {
-        lat: this.map.getCenter().lat(),
-        lng: this.map.getCenter().lng(),
-      };
-    },
   },
 };
 </script>

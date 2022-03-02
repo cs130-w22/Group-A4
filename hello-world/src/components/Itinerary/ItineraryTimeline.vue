@@ -97,12 +97,18 @@ export default {
       return new Date(date_str);
     },
     showPlace(place) {
-      this.$root.$emit("show-place-on-map", place);
+      this.$root.$emit("show-place-on-itinerary-map", place);
+    },
+
+    addMarker(place) {
+      this.$root.$emit("add-marker-on-itinerary-map", place);
     },
   },
   created() {
     // this.timeline.trip_event
-    // console.log(this.timeline);
+    for (const day_event of Object.values(this.timeline.trip_event)) {
+      day_event.forEach((place) => this.addMarker(place));
+    }
   },
 };
 </script>

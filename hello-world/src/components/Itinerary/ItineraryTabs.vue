@@ -73,6 +73,7 @@ export default {
       immediate: true,
       deep: true,
       handler() {
+        if (!this.isInit) return;
         if (this.isSignIn) {
           const access_token = this.$cookie.get("access_token");
 
