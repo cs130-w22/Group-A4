@@ -264,9 +264,12 @@ class SchedulingTEST(SearchLocation):
         simulated_data = {
             "places": nearby_places,
             "dates": [
-                "2022-02-22",
-                "2022-02-23",
-                "2022-02-24"
+                "2022-03-03",
+                "2022-03-04",
+                "2022-03-05",
+                "2022-03-06",
+                "2022-03-07",
+                "2022-03-08"
             ],
             "wakeUpTime": "09:00"
         }

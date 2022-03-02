@@ -53,8 +53,16 @@
           </v-chip-group>
         </v-card-text>
         <!-- <v-btn color="primary" @click="(step3 = true), e6++"> Confirm </v-btn> -->
-        <v-btn color="primary" @click="generateItinerary">
+        <v-btn v-if="isSignIn" color="primary" @click="generateItinerary">
           Generate itinerary
+        </v-btn>
+        <v-btn
+          v-else
+          class="white--text"
+          color="teal"
+          v-on:click="onSignInClicked"
+        >
+          Log in to continue
         </v-btn>
       </v-card>
     </v-stepper-content>
@@ -104,6 +112,13 @@ export default {
   name: "ScheduleStepper",
 
   computed: {
+    isSignIn() {
+      return this.$root.$children[0].isSignIn;
+    },
+
+    isInit() {
+      return this.$root.$children[0].isInit;
+    },
     location() {
       return this.$route.params.location;
     },
@@ -127,6 +142,9 @@ export default {
   },
 
   methods: {
+    onSignInClicked() {
+      this.$root.$children[0].onSignInClicked();
+    },
     allowedDates(val) {
       const today = new Date();
       const candidateDay = new Date(val);
@@ -138,10 +156,18 @@ export default {
         return;
       }
 
-      // console.log(this.userOptions);
+      const places = this.$parent.$parent.$children[2].$refs.placeCards.places;
 
-      const places =
-        this.$parent.$parent.$children[2].$refs.placeCards.places.slice(15);
+      for (let i = 0; i < places.length; i++) {
+        let place = places[i];
+        if (typeof place.geometry.location.lat === "function") {
+          place.geometry.location.lat = place.geometry.location.lat();
+        }
+        if (typeof place.geometry.location.lng === "function") {
+          place.geometry.location.lng = place.geometry.location.lng();
+        }
+      }
+      // console.log(places);
 
       this.userOptions.places = places;
 

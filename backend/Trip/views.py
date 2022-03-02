@@ -130,7 +130,7 @@ class ItineraryViewUpdate(generics.RetrieveUpdateAPIView):
     def patch(self, request, *args, **kwargs):
         return self.partial_update(request, *args, **kwargs)
 
-    def get(self, request, pk):
+    def get(self, request, pk, wrap_coord=True):
         # group by each date
         try:
             itinerary = Itinerary.objects.get(id=pk)
@@ -142,8 +142,18 @@ class ItineraryViewUpdate(generics.RetrieveUpdateAPIView):
         itinerary_json = itinerary_serializer.data
         date_grouped_table = defaultdict(list)
         for event in itinerary_json['trip_event']:
+            # wrap lat/lng as RUOYU HE requested :)
+            if wrap_coord:
+                event['geometry'] = {
+                    'location': {
+                        'lat': event['lat'],
+                        'lng': event['lng']
+                    }
+                }
             date = str(datetime.strptime(event['start_time'], "%Y-%m-%dT%H:%M:%S%z").date())
             date_grouped_table[str(date)].append(event)
+
+
 
         # group by date
         itinerary_json['trip_event'] = date_grouped_table
