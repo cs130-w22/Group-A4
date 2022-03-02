@@ -17,7 +17,7 @@ class TripEventSerializer(WritableNestedModelSerializer):
 
     class Meta:
         model = TripEvent
-        fields = ('id', 'place_id', 'place_name', 'start_time', 'end_time', 'itin', 'place_json')
+        fields = ('id', 'place_id', 'place_name', 'start_time', 'end_time', 'itin', 'lat', 'lng', 'place_json')
 
     # def validate(self, data):
     #     print("\n\n[[[[[[Calling validate() Method...]]]]]]\n\n")

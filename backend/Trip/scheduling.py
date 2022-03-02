@@ -259,18 +259,16 @@ class SchedulingTEST(SearchLocation):
         # SIMULATING FRONTEND, POST TO http://127.0.0.1/trip/schedule/
         headers = {
             'Content-Type': 'application/json',
-            'Authorization': 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjQ1NzU3ODk2LCJpYXQiOjE2NDU2NzE0OTYsImp0aSI6ImI1OWZhZDQwZjQwNzQzMmI4MjhlMTc2MmVmNDhiZDk1IiwidXNlcl9pZCI6MX0.IabsdL3Ht3RqOF5QL8OMAC3A_b6kzeXb5BGZJSpH24k'
+            'Authorization': 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjQ2MjA5OTA1LCJpYXQiOjE2NDYxMjM1MDUsImp0aSI6IjkxMjAxZjkzMzZiMDRhYjJhMzQ2MGM0ZDVhMmZhNTIxIiwidXNlcl9pZCI6MX0.JufpAe_Er3zdQWgqMciiLUfidt9MKKi4zSUQ7zFWZMM'
         }
         simulated_data = {
-            "userOptions": {
-                "places": nearby_places,
-                "dates": [
-                    "2022-02-22",
-                    "2022-02-23",
-                    "2022-02-24"
-                ],
-                "wakeUpTime": "09:00"
-            }
+            "places": nearby_places,
+            "dates": [
+                "2022-02-22",
+                "2022-02-23",
+                "2022-02-24"
+            ],
+            "wakeUpTime": "09:00"
         }
         simulated_data = json.dumps(simulated_data)
         response = requests.post(
@@ -435,9 +433,10 @@ class SchedulingAPI(APIView):
                     place_id=p.place_id,
                     place_name=p.name,
                     itin=new_itinerary,
-                    # TODO: set start_time/end_time
                     start_time=p.start_time,
                     end_time=(p.start_time + p.duration),
+                    lat=p.lat,
+                    lng=p.lng
                 )
                 new_tripevent.save()
 

@@ -33,6 +33,8 @@ class TripEvent(models.Model):
     itin = models.ForeignKey(Itinerary, on_delete=models.CASCADE, related_name="trip_event")
     start_time = models.DateTimeField()
     end_time = models.DateTimeField()
+    lat = models.FloatField()
+    lng = models.FloatField()
     # use for storing json data for this place
     place_json = models.TextField()
 
