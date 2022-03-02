@@ -10,7 +10,7 @@
         <ScheduleStepper> </ScheduleStepper>
       </v-sheet>
     </v-col>
-    <ScheduleBar></ScheduleBar>
+    <ScheduleBar ref="ScheduleBar"></ScheduleBar>
   </v-row>
 </template>
 <script>

@@ -103,7 +103,6 @@ export default {
     getPlaceInfo() {
       this.loading = true;
 
-      console.log(this.location);
       axios
         .get("http://127.0.0.1:8000/trip/search/loc/", {
           headers: { "Content-Type": "application/json" },

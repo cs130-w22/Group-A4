@@ -20,6 +20,13 @@ FrontPageRouter.beforeRouteLeave = function (to, from, next) {
     }
 }
 
+ScheduleRouter.beforeRouteEnter = function (to, from, next) {
+    next(vm => {
+        // the drawer for a new place is always open
+        vm.$refs.ScheduleBar.drawer = true;
+    })
+}
+
 // ItineraryTabItemRouter.beforeRouteLeave = function (to, from, next) {
 //     prevItineraryId = this.id;
 //     next();
