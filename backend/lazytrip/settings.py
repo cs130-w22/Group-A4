@@ -28,6 +28,8 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+# suppress naive timezone warning
+USE_TZ = False
 
 # Application definition
 
@@ -54,6 +56,12 @@ INSTALLED_APPS = [
     # django apps for the project
     'User',
     'Trip',
+]
+
+# allow frontend to see all headers
+CORS_ORIGIN_ALLOW_ALL = True
+CORS_EXPOSE_HEADERS = [
+    'Set-Cookie'
 ]
 
 # for Google OAuth (django-allauth)
@@ -87,6 +95,7 @@ SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(days=1),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
 }
+
 
 # Google Auth / Registration Settings
 LOGIN_REDIRECT_URL = "/"                            # the url that redirects after user logged in

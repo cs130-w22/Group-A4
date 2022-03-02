@@ -1,17 +1,16 @@
 <template>
   <v-row>
-    <ScheduleBar></ScheduleBar>
-
-    <v-col cols="12" sm="9">
+    <v-col :cols="$vuetify.breakpoint.lgAndUp ? 9 : 6">
       <v-sheet rounded="lg" min-height="90vh">
         <ScheduleMap> </ScheduleMap>
       </v-sheet>
     </v-col>
-    <v-col cols="12" sm="3">
+    <v-col :cols="$vuetify.breakpoint.lgAndUp ? 3 : 6">
       <v-sheet rounded="lg" min-height="90vh">
         <ScheduleStepper> </ScheduleStepper>
       </v-sheet>
     </v-col>
+    <ScheduleBar ref="ScheduleBar"></ScheduleBar>
   </v-row>
 </template>
 <script>
