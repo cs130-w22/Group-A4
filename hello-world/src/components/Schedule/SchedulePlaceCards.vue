@@ -6,7 +6,7 @@
     ></div>
 
     <v-row dense justify="center">
-      <v-col cols="11">
+      <!-- <v-col cols="11">
         <v-toolbar dense flat>
           <gmap-autocomplete v-on:place_changed="setPlace" class="introInput">
             <template v-slot:input="slotProps">
@@ -22,7 +22,7 @@
           </gmap-autocomplete>
           <v-btn dark small @click="addMarker(currentPlace)">Add my own</v-btn>
         </v-toolbar>
-      </v-col>
+      </v-col> -->
       <v-progress-linear
         reverse
         query
@@ -96,6 +96,8 @@ export default {
   },
 
   created() {
+    this.$root.$on("get-selected-place-cards", this.getSelectedPlaceCards);
+
     this.getPlaceInfo();
   },
 
@@ -126,23 +128,31 @@ export default {
       this.$root.$emit("hide-place-on-map", place);
       this.places = this.places.filter((e) => e.place_id !== place.place_id);
     },
-
-    setPlace(place) {
-      this.currentPlace = place;
-    },
-    addMarker(place) {
-      if (this.places.some((e) => e.place_id === place.place_id)) return; // places already contain this place
-      const placeObj = place;
-      if (!("photos" in placeObj)) {
-        placeObj.photo_url =
-          "https://lahousing.lacity.org/AAHR/Images/No_Image_Available.jpg";
-      } else {
-        placeObj.photo_url = place.photos[0].getUrl();
+    getSelectedPlaceCards(callback) {
+      const selectedPlaces = [];
+      for (const index in this.selected) {
+        selectedPlaces.push(this.places[index]);
       }
-
-      this.places.unshift(placeObj);
-      this.$root.$emit("show-place-on-map", place);
+      callback(selectedPlaces);
     },
+
+    // setPlace(place) {
+    //   this.currentPlace = place;
+    // },
+    // addMarker(place) {
+    //   if (place === null) return; // user dose not pick a valid position
+    //   if (this.places.some((e) => e.place_id === place.place_id)) return; // places already contain this place
+    //   const placeObj = place;
+    //   if (!("photos" in placeObj)) {
+    //     placeObj.photo_url =
+    //       "https://lahousing.lacity.org/AAHR/Images/No_Image_Available.jpg";
+    //   } else {
+    //     placeObj.photo_url = place.photos[0].getUrl();
+    //   }
+
+    //   this.places.unshift(placeObj);
+    //   this.$root.$emit("show-place-on-map", place);
+    // },
   },
 };
 </script>

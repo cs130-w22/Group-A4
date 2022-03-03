@@ -155,48 +155,45 @@ export default {
         this.snackbar = true;
         return;
       }
-
-      const places = this.$parent.$parent.$children[2].$refs.placeCards.places;
-
-      for (let i = 0; i < places.length; i++) {
-        let place = places[i];
-        if (typeof place.geometry.location.lat === "function") {
-          place.geometry.location.lat = place.geometry.location.lat();
-        }
-        if (typeof place.geometry.location.lng === "function") {
-          place.geometry.location.lng = place.geometry.location.lng();
-        }
-      }
-      // console.log(places);
-
-      this.userOptions.places = places;
-
       this.e6 = 4;
 
-      const ac_token = this.$cookie.get("access_token");
-      if (ac_token !== null) {
-        const headers = {
-          "Content-Type": "application/json",
-          Authorization: "Bearer " + ac_token,
-        };
+      const that = this;
+      this.$root.$emit("get-selected-place-cards", function (selectedPlaces) {
+        for (let i = 0; i < selectedPlaces.length; i++) {
+          let place = selectedPlaces[i];
+          if (typeof place.geometry.location.lat === "function") {
+            place.geometry.location.lat = place.geometry.location.lat();
+          }
+          if (typeof place.geometry.location.lng === "function") {
+            place.geometry.location.lng = place.geometry.location.lng();
+          }
+        }
+        that.userOptions.places = selectedPlaces;
+        const ac_token = that.$cookie.get("access_token");
+        if (ac_token !== null) {
+          const headers = {
+            "Content-Type": "application/json",
+            Authorization: "Bearer " + ac_token,
+          };
 
-        this.loading = true;
-        axios
-          .post("http://localhost:8000/trip/schedule/", this.userOptions, {
-            headers,
-          })
-          .then((resp) => {
-            this.$router.push({
-              path: "/itinerary/" + resp.data.id,
-            });
-          })
-          .catch((err) => {
-            console.error(err);
-          })
-          .finally(() => (this.loading = false));
-      } else {
-        console.log("User does not have access token");
-      }
+          that.loading = true;
+          axios
+            .post("http://localhost:8000/trip/schedule/", that.userOptions, {
+              headers,
+            })
+            .then((resp) => {
+              that.$router.push({
+                path: "/itinerary/" + resp.data.id,
+              });
+            })
+            .catch((err) => {
+              console.error(err);
+            })
+            .finally(() => (that.loading = false));
+        } else {
+          console.log("User does not have access token");
+        }
+      });
     },
   },
 };

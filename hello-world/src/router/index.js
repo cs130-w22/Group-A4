@@ -27,26 +27,21 @@ ScheduleRouter.beforeRouteEnter = function (to, from, next) {
     })
 }
 
-// ItineraryTabItemRouter.beforeRouteLeave = function (to, from, next) {
-//     prevItineraryId = this.id;
-//     next();
-// }
+
+ItineraryTabItemRouter.beforeRouteUpdate = function (to, from, next) {
+    this.$root.$emit("remove-all-markers-on-itinerary-map");
+    next();
+}
 
 ItineraryRouter.beforeRouteEnter = function (to, from, next) {
     const access_token = Vue.cookie.get('access_token')
 
     if (access_token === null) { // user does not has access token, show this page with overlay
         next();
-    }
-    // else if (prevItineraryId !== -1) { // user was previously visiting a tab and navigated away, using saved tab id to restore the old tab
-    //     console.log(to, from)
-    //     const saveItineraryId = prevItineraryId
-    //     prevItineraryId = -1;
-
-    //     next("/itinerary/" + saveItineraryId)
-    // }
-    else { // user has access token, fetch the menu for him
+    } else { // user has access token, fetch the menu for him
         next(vm => {
+            vm.$root.$emit("remove-all-markers-on-itinerary-map");
+
             const headers = {
                 'Content-Type': 'application/json',
                 Authorization: 'Bearer ' + access_token,

@@ -1,10 +1,15 @@
 <template>
-  <ItineraryTimeline v-if="timeline !== null" :timeline="timeline">
-  </ItineraryTimeline>
+  <div>
+    <!-- <ItineraryMap></ItineraryMap> -->
+
+    <ItineraryTimeline v-if="timeline !== null" :timeline="timeline">
+    </ItineraryTimeline>
+  </div>
 </template>
 
 <script>
 import ItineraryTimeline from "./ItineraryTimeline";
+// import ItineraryMap from "./ItineraryMap";
 
 import axios from "axios";
 
@@ -13,6 +18,7 @@ export default {
   props: ["id"],
   components: {
     ItineraryTimeline,
+    // ItineraryMap,
   },
 
   data() {
