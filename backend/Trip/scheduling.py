@@ -259,7 +259,7 @@ class SchedulingTEST(SearchLocation):
         # SIMULATING FRONTEND, POST TO http://127.0.0.1/trip/schedule/
         headers = {
             'Content-Type': 'application/json',
-            'Authorization': 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjQ2MjA5OTA1LCJpYXQiOjE2NDYxMjM1MDUsImp0aSI6IjkxMjAxZjkzMzZiMDRhYjJhMzQ2MGM0ZDVhMmZhNTIxIiwidXNlcl9pZCI6MX0.JufpAe_Er3zdQWgqMciiLUfidt9MKKi4zSUQ7zFWZMM'
+            'Authorization': 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjQ2MzgxMTEzLCJpYXQiOjE2NDYyOTQ3MTMsImp0aSI6ImFiYzY0MWNkYjcxNTQzZTRhYmRjYTE4MjYxZTY1NGMyIiwidXNlcl9pZCI6MX0.enQ7hjzvGt2JJqeitSb6G5Ipw1doHLNHKtkKZWR9lpA'
         }
         print("MMMMMMMMMMM")
         pprint(nearby_places)
@@ -267,11 +267,7 @@ class SchedulingTEST(SearchLocation):
             "places": nearby_places,
             "dates": [
                 "2022-03-03",
-                "2022-03-04",
-                "2022-03-05",
-                "2022-03-06",
-                "2022-03-07",
-                "2022-03-08"
+                "2022-03-03"
             ],
             "wakeUpTime": "09:00"
         }
@@ -303,6 +299,22 @@ class SchedulingAPI(APIView):
     }
     """
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
+    @staticmethod
+    def __find_durations(date_strings: list[str]):
+        """
+        takes in list of strings in %Y-%d-%m format, find how many days to stay (max_date - min_date)
+        @return:
+            days: int, how many days to stay
+            first_date: first date in the list, in format %Y-%m-%d
+        """
+        temp_dates = [datetime.strptime(date_str, "%Y-%m-%d") for date_str in date_strings]
+        min_date = min(temp_dates)
+        max_date = max(temp_dates)
+        stay_days = (max_date - min_date).days + 1
+        return stay_days, datetime.strftime(min_date, "%Y-%m-%d")
+
+
 
     def __radius_based_on_days(self, days):
         """
@@ -386,9 +398,10 @@ class SchedulingAPI(APIView):
         data = request.data
         places = data['places']
         dates = data['dates']
+        # BUGFIX: because frontend only select 2 dates, min_data and max_date, need to calculate how many days
+        days, first_date = self.__find_durations(dates)
         wakeup_time = data['wakeUpTime']
-        wakeup_datetime = dates[0] + " " + wakeup_time
-        days = len(dates)
+        wakeup_datetime = first_date + " " + wakeup_time
         hotel = None
         if 'hotel' in data:
             hotel = data['hotel']
@@ -400,6 +413,8 @@ class SchedulingAPI(APIView):
         if not isinstance(dates, list):
             raise ParseError(
                 detail=f"Dates should be list of strings.", code=None)
+
+
 
         """
         this extension strategy will search SEARCH_LIMIT times given MIN_PLACES_PER_DAY,
