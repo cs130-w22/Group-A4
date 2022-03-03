@@ -38,7 +38,7 @@ ATTRACTION_TYPES = [
     # "university",
     # "zoo"
 ]
-RADIUS = 100000
+RADIUS = 50 * 1000  # initial searching radius = 50km
 
 
 class SearchLocation(APIView):
@@ -161,7 +161,6 @@ class SearchLocation(APIView):
             # place['review'] = review
             filtered_places.append(place)
 
-        pprint(filtered_places)
         return HttpResponse(json.dumps(filtered_places), content_type='application/json')
 
 
