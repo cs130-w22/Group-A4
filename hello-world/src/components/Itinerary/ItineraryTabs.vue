@@ -17,12 +17,11 @@
       center-active
       show-arrows
       @change="onTabChanged"
-      hide-slider
       optional
       class="ItineraryTabs"
     >
-      <v-tab v-for="(itinerary, index) in itinerarys" :key="itinerary.id">
-        <v-badge v-if="index === 0" color="pink" dot>
+      <v-tab v-for="itinerary in itinerarys" :key="itinerary.id">
+        <v-badge v-if="itinerary === latestItinerary" color="pink" dot>
           <span>{{ itinerary.title }} </span>
         </v-badge>
         <span v-else>
@@ -66,6 +65,11 @@ export default {
       if (this.tab === undefined || this.tab === -1) return null;
 
       return this.itinerarys[this.tab].id;
+    },
+    latestItinerary() {
+      return this.itinerarys.reduce((r, a) => {
+        return r.last_modified > a.last_modified ? r : a;
+      });
     },
   },
   watch: {

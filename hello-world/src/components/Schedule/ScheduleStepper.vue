@@ -159,10 +159,16 @@ export default {
 
       const that = this;
       this.$root.$emit("get-selected-place-cards", function (selectedPlaces) {
-        // let this = that;
-        // console.log(selectedPlaces);
+        for (let i = 0; i < selectedPlaces.length; i++) {
+          let place = selectedPlaces[i];
+          if (typeof place.geometry.location.lat === "function") {
+            place.geometry.location.lat = place.geometry.location.lat();
+          }
+          if (typeof place.geometry.location.lng === "function") {
+            place.geometry.location.lng = place.geometry.location.lng();
+          }
+        }
         that.userOptions.places = selectedPlaces;
-        // console.log(that.userOptions);
         const ac_token = that.$cookie.get("access_token");
         if (ac_token !== null) {
           const headers = {
@@ -188,23 +194,6 @@ export default {
           console.log("User does not have access token");
         }
       });
-
-      // // const places = this.$parent.$parent.$children[2].$refs.placeCards.places;
-
-      // console.log(places[0].geometry.location);
-
-      // for (let i = 0; i < places.length; i++) {
-      //   let place = places[i];
-      //   // console.log(place.geometry.location);
-
-      //   if (typeof place.geometry.location.lat === "function") {
-      //     place.geometry.location.lat = place.geometry.location.lat();
-      //   }
-      //   if (typeof place.geometry.location.lng === "function") {
-      //     place.geometry.location.lng = place.geometry.location.lng();
-      //   }
-      // }
-      // console.log(places);
     },
   },
 };

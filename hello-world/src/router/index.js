@@ -27,6 +27,7 @@ ScheduleRouter.beforeRouteEnter = function (to, from, next) {
     })
 }
 
+
 ItineraryTabItemRouter.beforeRouteUpdate = function (to, from, next) {
     this.$root.$emit("remove-all-markers-on-itinerary-map");
     next();
@@ -39,6 +40,8 @@ ItineraryRouter.beforeRouteEnter = function (to, from, next) {
         next();
     } else { // user has access token, fetch the menu for him
         next(vm => {
+            vm.$root.$emit("remove-all-markers-on-itinerary-map");
+
             const headers = {
                 'Content-Type': 'application/json',
                 Authorization: 'Bearer ' + access_token,
