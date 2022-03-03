@@ -1,104 +1,108 @@
 <template>
-  <v-timeline dense clipped class="mr-8">
-    <v-slide-x-transition group>
-      <v-timeline-item
-        v-for="event in timeline"
-        :key="event.id"
-        class="mb-4"
-        color="pink"
-        small
-      >
-        <v-row justify="space-between">
-          <v-col cols="7" v-text="event.text"></v-col>
-          <v-col class="text-right" cols="5" v-text="event.time"></v-col>
-        </v-row>
-      </v-timeline-item>
-    </v-slide-x-transition>
+  <v-card
+    class="mx-auto overflow-y-auto"
+    :height="$vuetify.breakpoint.lgAndUp ? '85vh' : '80vh'"
+  >
+    <v-card-title class="text-h5 ml-10">
+      {{ timeline.title }}
+    </v-card-title>
 
-    <v-timeline-item class="mb-6" hide-dot>
-      <span>2/11/2022</span>
-    </v-timeline-item>
-
-    <v-timeline-item
-      class="mb-4"
-      color="grey"
-      icon-color="grey lighten-2"
-      small
+    <div
+      v-for="[day_date, day_event] of Object.entries(timeline.trip_event)"
+      :key="day_event.id"
     >
-      <v-row justify="space-between">
-        <v-col cols="7"> Depart from Hotel </v-col>
-        <v-col class="text-right" cols="5"> 9:00 EDT </v-col>
-      </v-row>
-    </v-timeline-item>
-
-    <!-- <v-timeline-item class="mb-4" small>
-      <v-row justify="space-between">
-        <v-col cols="7">
-          <v-chip class="white--text ml-0" color="purple" label small>
-            Stop 1
-          </v-chip>
-          Hollywood Sign
-        </v-col>
-        <v-col class="text-right" cols="5"> 10:00 EDT </v-col>
-      </v-row>
-    </v-timeline-item> -->
-    <!-- <v-timeline-item class="mb-4" color="grey" small>
-      <v-row justify="space-between">
-        <v-col cols="7">
-          Order confirmation email was sent to John Leider (john@vuetifyjs.com).
-        </v-col>
-        <v-col class="text-right" cols="5"> 15:25 EDT </v-col>
-      </v-row>
-    </v-timeline-item>
-
-    <v-timeline-item class="mb-4" hide-dot>
-      <v-btn class="mx-0"> Resend Email </v-btn>
-    </v-timeline-item> -->
-
-    <v-timeline-item class="mb-4" color="grey" small>
-      <v-row justify="space-between">
-        <v-col cols="7">
-          A $15.00 USD payment was processed on PayPal Express Checkout
-        </v-col>
-        <v-col class="text-right" cols="5"> 15:25 EDT </v-col>
-      </v-row>
-    </v-timeline-item>
-
-    <v-timeline-item class="mb-4" small>
-      <v-row justify="space-between">
-        <v-col cols="7">
-          <v-chip class="white--text ml-0" color="purple" label small>
-            Stop 2
-          </v-chip>
-          University of California, Los Angeles
-        </v-col>
-        <v-col class="text-right" cols="5"> 15:25 EDT </v-col>
-      </v-row>
-    </v-timeline-item>
-
-    <v-timeline-item color="grey" small>
-      <v-row justify="space-between">
-        <v-col cols="7"> Go back to hotel </v-col>
-        <v-col class="text-right" cols="5"> 19:00 EDT </v-col>
-      </v-row>
-    </v-timeline-item>
-  </v-timeline>
+      <v-container class="fill-height">
+        <v-row align="center">
+          <strong
+            class="display-1 font-weight-regular mr-4"
+            style="margin-left: 54px"
+            >{{ convertToDate(day_date).getUTCDate() }}</strong
+          >
+          <v-col justify="end">
+            <div class="title font-weight-light">
+              {{ dayInWeeks[convertToDate(day_date).getUTCDay()] }}
+            </div>
+            <div class="text-uppercase font-weight-light">
+              {{ monthInYears[convertToDate(day_date).getUTCMonth()] }}
+              {{ convertToDate(day_date).getUTCFullYear() }}
+            </div>
+          </v-col>
+        </v-row>
+      </v-container>
+      <v-card-text class="py-0">
+        <v-timeline align-top dense>
+          <div v-for="place in day_event" :key="place.id">
+            <v-timeline-item :color="day_event.color" small>
+              <v-row class="pt-1">
+                <v-col cols="4">
+                  <strong>
+                    {{ convertToDate(place.start_time).getUTCHours() }} : 00 -
+                    {{ convertToDate(place.end_time).getUTCHours() }} : 00
+                  </strong>
+                </v-col>
+                <v-col cols="8">
+                  <strong>{{ place.place_name }}</strong>
+                  <v-icon
+                    color="primary"
+                    class="ml-1"
+                    @click="showPlace(place)"
+                  >
+                    mdi-information
+                  </v-icon>
+                </v-col>
+              </v-row>
+            </v-timeline-item>
+          </div>
+        </v-timeline>
+      </v-card-text>
+    </div>
+  </v-card>
 </template>
 <script>
 export default {
   name: "ItineraryTimeline",
-  data: () => ({
-    events: [],
-    input: null,
-    nonce: 0,
-  }),
-
-  computed: {
-    timeline() {
-      return this.events.slice().reverse();
+  props: ["timeline"],
+  data() {
+    return {
+      dayInWeeks: [
+        "Sunday",
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+      ],
+      monthInYears: [
+        "January",
+        "February",
+        "March",
+        "April",
+        "May",
+        "June",
+        "July",
+        "August",
+        "September",
+        "October",
+        "November",
+        "December",
+      ],
+    };
+  },
+  methods: {
+    convertToDate(date_str) {
+      return new Date(date_str);
+    },
+    showPlace(place) {
+      this.$root.$emit("show-place-on-itinerary-map", place);
     },
   },
-
-  methods: {},
+  beforeMount() {
+    // this.timeline.trip_event
+    for (const day_event of Object.values(this.timeline.trip_event)) {
+      day_event.color = "#" + Math.floor(Math.random() * 16777215).toString(16);
+      // day_event.forEach((place) => this.addMarker(place));
+    }
+  },
 };
 </script>

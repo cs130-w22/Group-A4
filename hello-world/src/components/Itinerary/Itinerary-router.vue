@@ -6,7 +6,7 @@
       </v-sheet>
     </v-col>
     <v-col cols="6">
-      <ItineraryTabs></ItineraryTabs>
+      <ItineraryTabs ref="ItineraryTabs"></ItineraryTabs>
     </v-col>
   </v-row>
 </template>
