@@ -31,11 +31,8 @@
       </v-container>
       <v-card-text class="py-0">
         <v-timeline align-top dense>
-          <div v-for="(place, index) in day_event" :key="place.id">
-            <v-timeline-item
-              :color="index % 2 === 1 ? 'pink' : 'teal lighten-3'"
-              small
-            >
+          <div v-for="place in day_event" :key="place.id">
+            <v-timeline-item :color="day_event.color" small>
               <v-row class="pt-1">
                 <v-col cols="4">
                   <strong>
@@ -99,15 +96,12 @@ export default {
     showPlace(place) {
       this.$root.$emit("show-place-on-itinerary-map", place);
     },
-
-    addMarker(place) {
-      this.$root.$emit("add-marker-on-itinerary-map", place);
-    },
   },
-  created() {
+  beforeMount() {
     // this.timeline.trip_event
     for (const day_event of Object.values(this.timeline.trip_event)) {
-      day_event.forEach((place) => this.addMarker(place));
+      day_event.color = "#" + Math.floor(Math.random() * 16777215).toString(16);
+      // day_event.forEach((place) => this.addMarker(place));
     }
   },
 };

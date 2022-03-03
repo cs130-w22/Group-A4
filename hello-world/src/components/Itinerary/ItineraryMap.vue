@@ -15,10 +15,9 @@
       ref="itineraryMap"
     >
       <GmapMarker
-        v-for="(marker, index) in markers"
+        v-for="marker in markers"
         :key="marker.place_id"
         :position="marker.position"
-        :label="(index + 1).toString()"
         @click="markerClicked(marker)"
       >
         <GmapInfoWindow
@@ -86,9 +85,7 @@ export default {
       this.currentPlace = place;
     },
     async addMarker(place) {
-      if (this.markers.some((e) => e.place_id === place.place_id)) {
-        return;
-      }
+      if (this.markers.some((e) => e.place_id === place.place_id)) return;
 
       if (place) {
         let placeDetail = await this.getPlaceDetails(place);
@@ -100,7 +97,7 @@ export default {
         this.userCoordinates = marker;
         const placeObj = placeDetail;
         placeObj.position = marker;
-        placeObj.infoWindowShown = false;
+        placeObj.infoWindowShown = true;
         try {
           placeObj.review = placeDetail.reviews[0].text;
           placeObj.photo_url = await placeDetail.photos[0].getUrl();
@@ -108,10 +105,9 @@ export default {
           placeObj.review = "No review"; // google api fails to return anything useful
         }
 
+        this.markers.forEach((e) => (e.infoWindowShown = false));
         this.markers.push(placeDetail);
       }
-
-      console.log(this.markers);
     },
 
     markerClicked(marker) {
@@ -124,19 +120,17 @@ export default {
     },
 
     showPlaceOnMap(place) {
-      let markersFound = this.markers.filter(
+      const markersFound = this.markers.filter(
         (e) => e.place_id === place.place_id
       );
 
       if (markersFound.length > 0) {
-        this.markers.forEach((e) => (e.infoWindowShown = false));
-        markersFound[0].infoWindowShown = true;
+        // clicked a marker that is present, change its state
+        this.markerClicked(markersFound[0]);
       } else {
-        console.log("clicked a marker that is not present");
+        // clicked a marker that is not present
+        this.addMarker(place); // add marker first
       }
-
-      // this.setPlace(place);
-      // this.addMarker(place);
     },
 
     async getPlaceDetails(place) {
@@ -154,27 +148,24 @@ export default {
           (results, status) => resolve({ results, status })
         )
       );
+
       if (
         status === this.google.maps.places.PlacesServiceStatus.OK &&
         results
       ) {
         return Promise.resolve(results);
       } else {
+        // console.log(results);
+        // console.log(status);
+        alert("You clicked too fast");
+
         return Promise.reject(results);
       }
     },
 
     removeAllMarkers() {
       this.markers = [];
-      // console.log(this.markers);
-      // this.$nextTick(() => {
-      // });
     },
-
-    // hidePlaceOnMap(place) {
-    //   const { place_id } = place;
-    //   this.markers = this.markers.filter((e) => e.place_id !== place_id);
-    // },
 
     getGooglePlacesService() {
       if (this.googlePlacesService !== null) return this.googlePlacesService;
@@ -184,16 +175,16 @@ export default {
   },
 
   created() {
+    this.$gmapApiPromiseLazy(); // init google api
+
     this.$root.$on("show-place-on-itinerary-map", this.showPlaceOnMap); // register hook for ItineraryTimeline.vue
     // this.$root.$on("hide-place-on-itinerary-map", this.hidePlaceOnMap); // register hook for ItineraryTimeline.vue
-    this.$root.$on("add-marker-on-itinerary-map", this.addMarker);
+    // this.$root.$on("add-marker-on-itinerary-map", this.addMarker);
 
     this.$root.$on(
       "remove-all-markers-on-itinerary-map",
       this.removeAllMarkers
     );
-
-    this.$gmapApiPromiseLazy(); // init google api
   },
 
   mounted() {
