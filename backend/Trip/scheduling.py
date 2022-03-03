@@ -29,6 +29,8 @@ except ImportError:
     from sklearn.cluster import KMeans
 # from clustering.equal_groups import EqualGroupsKMeans as KMeans
 # from k_means_constrained import KMeansConstrained as KMeans
+from geopy.geocoders import Nominatim
+import petname
 
 
 # CONFIG
@@ -105,6 +107,15 @@ class Scheduler:
         timezone_str = tw.tzNameAt(avg_lat, avg_lng)
         tzinfo = pytz.timezone(timezone_str)
 
+        # find out the city name of destination
+        try:
+            geolocator = Nominatim(user_agent="LazyTrip")
+            location = geolocator.reverse(f"{avg_lat}, {avg_lng}", addressdetails=True)
+            self.city_name = location.raw.get('address').get('city')
+        except:
+            # default one in case of geolocator failure
+            self.city_name = "Trip"
+
         self.timezone = tzinfo
         self.timezone_str = timezone_str
 
@@ -173,8 +184,7 @@ class Scheduler:
         # tranform string typed wakeup_datetime into datetime format
         wakeup_datetime = datetime.strptime(wakeup_datetime, "%Y-%m-%d %H:%M")
 
-        print(
-            f"[Scheduling for {len(self.place_list)} places in {self.days} days...]")
+        print(f"[Scheduling for {len(self.place_list)} places in {self.days} days...]")
         current_schedule_time = wakeup_datetime + TIME_FOR_WAKEUP
         day_offset = timedelta(days=0)
         # run kmeans algorithm
@@ -203,8 +213,7 @@ class Scheduler:
             each_day_places.remove(starting_place)
             each_day_scheduled_result.append(starting_place)
 
-            print(
-                f"+++-> {starting_place.name[:6]}... has scheduled at {starting_place.start_time}")
+            # print(f"+++-> {starting_place.name[:6]}... has scheduled at {starting_place.start_time}")
 
             # got the starting place for each day, find the nearest neighbor and add it to place
             current_place = starting_place
@@ -218,8 +227,8 @@ class Scheduler:
                 # add current scheduling place to schedule list
                 each_day_places.remove(next_place)
                 each_day_scheduled_result.append(next_place)
-                print(
-                    f"+++ {next_place.name[:6]}... has scheduled at {next_place.start_time}")
+                # debug msg
+                # print(f"+++ {next_place.name[:6]}... has scheduled at {next_place.start_time}")
                 current_place = next_place
 
             scheduled_result.append(each_day_scheduled_result)
@@ -259,17 +268,13 @@ class SchedulingTEST(SearchLocation):
         # SIMULATING FRONTEND, POST TO http://127.0.0.1/trip/schedule/
         headers = {
             'Content-Type': 'application/json',
-            'Authorization': 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjQ2MjA5OTA1LCJpYXQiOjE2NDYxMjM1MDUsImp0aSI6IjkxMjAxZjkzMzZiMDRhYjJhMzQ2MGM0ZDVhMmZhNTIxIiwidXNlcl9pZCI6MX0.JufpAe_Er3zdQWgqMciiLUfidt9MKKi4zSUQ7zFWZMM'
+            'Authorization': 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjQ2MzgxMTEzLCJpYXQiOjE2NDYyOTQ3MTMsImp0aSI6ImFiYzY0MWNkYjcxNTQzZTRhYmRjYTE4MjYxZTY1NGMyIiwidXNlcl9pZCI6MX0.enQ7hjzvGt2JJqeitSb6G5Ipw1doHLNHKtkKZWR9lpA'
         }
         simulated_data = {
             "places": nearby_places,
             "dates": [
                 "2022-03-03",
-                "2022-03-04",
-                "2022-03-05",
-                "2022-03-06",
-                "2022-03-07",
-                "2022-03-08"
+                "2022-03-03"
             ],
             "wakeUpTime": "09:00"
         }
@@ -301,6 +306,22 @@ class SchedulingAPI(APIView):
     }
     """
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
+    @staticmethod
+    def __find_durations(date_strings: list[str]):
+        """
+        takes in list of strings in %Y-%d-%m format, find how many days to stay (max_date - min_date)
+        @return:
+            days: int, how many days to stay
+            first_date: first date in the list, in format %Y-%m-%d
+        """
+        temp_dates = [datetime.strptime(date_str, "%Y-%m-%d") for date_str in date_strings]
+        min_date = min(temp_dates)
+        max_date = max(temp_dates)
+        stay_days = (max_date - min_date).days + 1
+        return stay_days, datetime.strftime(min_date, "%Y-%m-%d")
+
+
 
     def __radius_based_on_days(self, days):
         """
@@ -384,9 +405,10 @@ class SchedulingAPI(APIView):
         data = request.data
         places = data['places']
         dates = data['dates']
+        # BUGFIX: because frontend only select 2 dates, min_data and max_date, need to calculate how many days
+        days, first_date = self.__find_durations(dates)
         wakeup_time = data['wakeUpTime']
-        wakeup_datetime = dates[0] + " " + wakeup_time
-        days = len(dates)
+        wakeup_datetime = first_date + " " + wakeup_time
         hotel = None
         if 'hotel' in data:
             hotel = data['hotel']
@@ -398,6 +420,8 @@ class SchedulingAPI(APIView):
         if not isinstance(dates, list):
             raise ParseError(
                 detail=f"Dates should be list of strings.", code=None)
+
+
 
         """
         this extension strategy will search SEARCH_LIMIT times given MIN_PLACES_PER_DAY,
@@ -419,8 +443,11 @@ class SchedulingAPI(APIView):
 
         print("[Debug]: Turning Scheduled Results into Itinerary...")
         # create an empty Itinerary for user
+        random_petname = petname.Generate(words=2, separator="-", letters=5)
+        itinerary_title = f"{S.city_name}-{random_petname}"
+        print(f"[GENERATE TITLE] = {itinerary_title}")
         new_itinerary = Itinerary(
-            title="Your Auto Scheduled Trip",
+            title=itinerary_title,
             user=request.user
         )
         new_itinerary.save()
@@ -428,10 +455,7 @@ class SchedulingAPI(APIView):
         # create each place as an TripEvent, and associate with the Itinerary
         for each_day_places in scheduled_lists:
             for p in each_day_places:
-                print("=>=>=>=> START TIME =>=>=>: ",
-                      datetime.strftime(p.start_time, "%Y-%m-%d %H:%M"))
-                print("=>=>=>=> END TIME =>=>=>: ", datetime.strftime(
-                    p.start_time + p.duration, "%Y-%m-%d %H:%M"))
+
                 new_tripevent = TripEvent(
                     place_id=p.place_id,
                     place_name=p.name,
