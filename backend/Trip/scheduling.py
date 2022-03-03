@@ -29,6 +29,8 @@ except ImportError:
     from sklearn.cluster import KMeans
 # from clustering.equal_groups import EqualGroupsKMeans as KMeans
 # from k_means_constrained import KMeansConstrained as KMeans
+from geopy.geocoders import Nominatim
+import petname
 
 
 # CONFIG
@@ -105,6 +107,15 @@ class Scheduler:
         timezone_str = tw.tzNameAt(avg_lat, avg_lng)
         tzinfo = pytz.timezone(timezone_str)
 
+        # find out the city name of destination
+        try:
+            geolocator = Nominatim(user_agent="LazyTrip")
+            location = geolocator.reverse(f"{avg_lat}, {avg_lng}", addressdetails=True)
+            self.city_name = location.raw.get('address').get('city')
+        except:
+            # default one in case of geolocator failure
+            self.city_name = "Trip"
+
         self.timezone = tzinfo
         self.timezone_str = timezone_str
 
@@ -173,8 +184,7 @@ class Scheduler:
         # tranform string typed wakeup_datetime into datetime format
         wakeup_datetime = datetime.strptime(wakeup_datetime, "%Y-%m-%d %H:%M")
 
-        print(
-            f"[Scheduling for {len(self.place_list)} places in {self.days} days...]")
+        print(f"[Scheduling for {len(self.place_list)} places in {self.days} days...]")
         current_schedule_time = wakeup_datetime + TIME_FOR_WAKEUP
         day_offset = timedelta(days=0)
         # run kmeans algorithm
@@ -203,8 +213,7 @@ class Scheduler:
             each_day_places.remove(starting_place)
             each_day_scheduled_result.append(starting_place)
 
-            print(
-                f"+++-> {starting_place.name[:6]}... has scheduled at {starting_place.start_time}")
+            # print(f"+++-> {starting_place.name[:6]}... has scheduled at {starting_place.start_time}")
 
             # got the starting place for each day, find the nearest neighbor and add it to place
             current_place = starting_place
@@ -218,8 +227,8 @@ class Scheduler:
                 # add current scheduling place to schedule list
                 each_day_places.remove(next_place)
                 each_day_scheduled_result.append(next_place)
-                print(
-                    f"+++ {next_place.name[:6]}... has scheduled at {next_place.start_time}")
+                # debug msg
+                # print(f"+++ {next_place.name[:6]}... has scheduled at {next_place.start_time}")
                 current_place = next_place
 
             scheduled_result.append(each_day_scheduled_result)
@@ -261,8 +270,6 @@ class SchedulingTEST(SearchLocation):
             'Content-Type': 'application/json',
             'Authorization': 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjQ2MzgxMTEzLCJpYXQiOjE2NDYyOTQ3MTMsImp0aSI6ImFiYzY0MWNkYjcxNTQzZTRhYmRjYTE4MjYxZTY1NGMyIiwidXNlcl9pZCI6MX0.enQ7hjzvGt2JJqeitSb6G5Ipw1doHLNHKtkKZWR9lpA'
         }
-        print("MMMMMMMMMMM")
-        pprint(nearby_places)
         simulated_data = {
             "places": nearby_places,
             "dates": [
@@ -436,8 +443,11 @@ class SchedulingAPI(APIView):
 
         print("[Debug]: Turning Scheduled Results into Itinerary...")
         # create an empty Itinerary for user
+        random_petname = petname.Generate(words=2, separator="-", letters=5)
+        itinerary_title = f"{S.city_name}-{random_petname}"
+        print(f"[GENERATE TITLE] = {itinerary_title}")
         new_itinerary = Itinerary(
-            title="Your Auto Scheduled Trip",
+            title=itinerary_title,
             user=request.user
         )
         new_itinerary.save()
@@ -445,10 +455,7 @@ class SchedulingAPI(APIView):
         # create each place as an TripEvent, and associate with the Itinerary
         for each_day_places in scheduled_lists:
             for p in each_day_places:
-                print("=>=>=>=> START TIME =>=>=>: ",
-                      datetime.strftime(p.start_time, "%Y-%m-%d %H:%M"))
-                print("=>=>=>=> END TIME =>=>=>: ", datetime.strftime(
-                    p.start_time + p.duration, "%Y-%m-%d %H:%M"))
+
                 new_tripevent = TripEvent(
                     place_id=p.place_id,
                     place_name=p.name,
